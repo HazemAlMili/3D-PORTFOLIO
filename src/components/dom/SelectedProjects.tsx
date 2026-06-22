@@ -87,7 +87,7 @@ export const SelectedProjects: React.FC = () => {
           {portfolioProjects.map((project) => (
             <article
               key={project.id}
-              className="relative flex flex-col items-start justify-between p-6 bg-[#16181c] border border-[#242830] transition-all duration-300 hover:border-[#9097a2] overflow-hidden group
+              className="relative flex flex-col items-start justify-between p-6 bg-[#16181c]/60 backdrop-blur-md border border-[#242830] transition-all duration-300 hover:border-[#9097a2] overflow-hidden group
                 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[#00e5ff] before:scale-y-0 before:group-hover:scale-y-100 before:transition-transform before:duration-300 before:origin-top"
               aria-labelledby={`${project.id}-title`}
             >

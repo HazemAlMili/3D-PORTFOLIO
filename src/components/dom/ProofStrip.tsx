@@ -44,7 +44,7 @@ export const ProofStrip: React.FC = () => {
           {metricsData.map((metric) => (
             <div
               key={metric.id}
-              className="flex flex-col items-start justify-between p-6 bg-[#16181c] border border-[#242830] transition-colors duration-300 hover:border-[#9097a2] group"
+              className="flex flex-col items-start justify-between p-6 bg-[#16181c]/60 backdrop-blur-md border border-[#242830] transition-colors duration-300 hover:border-[#9097a2] group"
               role="group"
               aria-labelledby={`${metric.id}-title`}
             >

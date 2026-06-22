@@ -71,7 +71,7 @@ export const ArchitectureAssembly: React.FC = () => {
             {assemblyLayers.map((layer) => (
               <div
                 key={layer.index}
-                className="w-full p-5 bg-[#16181c] border border-[#242830] transition-all duration-300 hover:border-[#00e5ff] flex items-start space-x-4 group focus-within:ring-2 focus-within:ring-[#00e5ff]"
+                className="w-full p-5 bg-[#16181c]/60 backdrop-blur-md border border-[#242830] transition-all duration-300 hover:border-[#00e5ff] flex items-start space-x-4 group focus-within:ring-2 focus-within:ring-[#00e5ff]"
                 role="listitem"
               >
                 {/* Layer Index Vector */}

@@ -68,7 +68,7 @@ export const WorkflowPipeline: React.FC = () => {
           {pipelineSteps.map((step, index) => (
             <li
               key={step.id}
-              className="flex-1 p-6 bg-[#16181c] border border-[#242830] transition-colors duration-300 hover:border-[#00e5ff] flex flex-col justify-between space-y-6 relative group"
+              className="flex-1 p-6 bg-[#16181c]/60 backdrop-blur-md border border-[#242830] transition-colors duration-300 hover:border-[#00e5ff] flex flex-col justify-between space-y-6 relative group"
             >
               {/* Content Matrix Block */}
               <div className="space-y-4 text-left">

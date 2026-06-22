@@ -61,6 +61,13 @@ This directory contains the specification documents, handoff reports, and artifa
   * [lawyer-showcase.mdx](file:///d:/PORT/src/content/work/lawyer-showcase.mdx): Lawyer Static Showcase case study document.
   * [useMotionTimeline.ts](file:///d:/PORT/src/hooks/useMotionTimeline.ts): Central motion timeline and camera interpolation hook.
   * [useSectionVisibility.ts](file:///d:/PORT/src/hooks/useSectionVisibility.ts): Viewport visibility transition sync opacity hook.
+  * [CoreRingsMesh.tsx](file:///d:/PORT/src/components/canvas/CoreRingsMesh.tsx): Concentric double rings mesh core asset component.
+  * [SceneContainer.tsx](file:///d:/PORT/src/components/canvas/SceneContainer.tsx): Global background canvas and lighting scene staging.
+  * [ArchitecturePlatesMesh.tsx](file:///d:/PORT/src/components/canvas/ArchitecturePlatesMesh.tsx): Isometric exploded stacking plates architecture mesh component.
+  * [ProjectMonolithMesh.tsx](file:///d:/PORT/src/components/canvas/ProjectMonolithMesh.tsx): Dynamic morphing project monolith capsule mesh component.
+  * [MicroNodeGridMesh.tsx](file:///d:/PORT/src/components/canvas/MicroNodeGridMesh.tsx): High-performance neural points cloud network system component.
+  * [PerformanceLock.tsx](file:///d:/PORT/src/components/canvas/PerformanceLock.tsx): Real-time adaptive WebGL performance optimization agent.
+  * [CosmicParticles.tsx](file:///d:/PORT/src/components/canvas/CosmicParticles.tsx): Global screen-spanning hyperspace particles system component.
 * Reports and Notes:
   * P0-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-validation-summary.md)
   * P0-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-validation-summary.md)
@@ -116,6 +123,13 @@ This directory contains the specification documents, handoff reports, and artifa
   * P7-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-validation-summary.md)
   * P8-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-validation-summary.md)
   * P8-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-validation-summary.md)
+  * P9-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-T01-validation-summary.md)
+  * P9-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-T02-validation-summary.md)
+  * P9-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-T03-validation-summary.md)
+  * P9-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-T04-validation-summary.md)
+  * P9-T05: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-T05-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-T05-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-T05-validation-summary.md)
+  * P9-OVERHAUL: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-OVERHAUL-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-OVERHAUL-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-OVERHAUL-validation-summary.md)
+  * P9-STORY: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P9-STORY-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P9-STORY-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P9-STORY-validation-summary.md)
 
 ## Completed Tickets
 - [x] **P0-T01**: Final creative direction lock.
@@ -172,6 +186,13 @@ This directory contains the specification documents, handoff reports, and artifa
 - [x] **P7-T02**: Local MDX content assets compilation & data streaming layers.
 - [x] **P8-T01**: Global timeline manager compilation & camera keyframe orchestration.
 - [x] **P8-T02**: Component interaction hooks compilation & viewport visibility sync.
+- [x] **P9-T01**: Core mesh engine compilation & asset mapping infrastructure.
+- [x] **P9-T02**: Stacking plates component integration & isometric structural assembly.
+- [x] **P9-T03**: Monolith project mesh configuration & capsule mapping.
+- [x] **P9-T04**: Micro-node grid network component compilation & programmatic vertex linking.
+- [x] **P9-T05**: Integrated scroll testing & end-to-end performance lock.
+- [x] **P9-OVERHAUL**: Cinematic 3D Scene Overhaul: Central Fly-Through, Hyperspace Particles, and Dynamic Mouse Tilt.
+- [x] **P9-STORY**: Immersive scroll-depth story tunnel: Continuous Z-axis penetration and elastic kinetic flight.
 
 
 
