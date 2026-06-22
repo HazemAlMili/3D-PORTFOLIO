@@ -38,6 +38,19 @@ This directory contains the specification documents, handoff reports, and artifa
   * [scroll-engine-setup.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/scroll-engine-setup.md): Scroll progress engine core & WebGL canvas specification.
   * [camera-rigging.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/camera-rigging.md): 3D camera rigging & asynchronous asset loader specification.
   * [device-tiering.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/device-tiering.md): Device performance tiering & GPU memory cleanup specification.
+  * [layout.tsx](file:///d:/PORT/src/app/layout.tsx): Root layout shell structural code.
+  * [globals.css](file:///d:/PORT/src/styles/globals.css): Global CSS stylesheet layers and custom variables.
+  * [Header.tsx](file:///d:/PORT/src/components/dom/Header.tsx): Persistent navigation header client component.
+  * [Hero.tsx](file:///d:/PORT/src/components/dom/Hero.tsx): Hero section viewport DOM client component.
+  * [IdentityLock.tsx](file:///d:/PORT/src/components/dom/IdentityLock.tsx): Section 02 identity narrative lateral split DOM component.
+  * [ProofStrip.tsx](file:///d:/PORT/src/components/dom/ProofStrip.tsx): Section 03 symmetrical 3-column metrics card grid component.
+  * [ArchitectureAssembly.tsx](file:///d:/PORT/src/components/dom/ArchitectureAssembly.tsx): Section 04 asymmetric 6-column architecture layer panels component.
+  * [SelectedProjects.tsx](file:///d:/PORT/src/components/dom/SelectedProjects.tsx): Section 05 2x2 masonry grid of 4 authenticated production projects.
+  * [CaseStudyBridge.tsx](file:///d:/PORT/src/components/dom/CaseStudyBridge.tsx): Section 06 centered graphite CTA bridge to case studies.
+  * [StackEngine.tsx](file:///d:/PORT/src/components/dom/StackEngine.tsx): Section 07 7/5 asymmetric column stratified capability index matrix.
+  * [WorkflowPipeline.tsx](file:///d:/PORT/src/components/dom/WorkflowPipeline.tsx): Section 08 horizontal 3-step ordered list pipeline timeline.
+  * [ExperienceTimeline.tsx](file:///d:/PORT/src/components/dom/ExperienceTimeline.tsx): Section 09 vertical chronological milestone timeline stream.
+  * [ContactPortal.tsx](file:///d:/PORT/src/components/dom/ContactPortal.tsx): Section 10 terminal contact gateway and social links.
 * Reports and Notes:
   * P0-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-validation-summary.md)
   * P0-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-validation-summary.md)
@@ -72,10 +85,23 @@ This directory contains the specification documents, handoff reports, and artifa
   * P4-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-validation-summary.md)
   * P4-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-validation-summary.md)
   * P4-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-validation-summary.md)
+  * P5-ENV-INIT: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-ENV-INIT-main-report.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-ENV-INIT-validation-summary.md)
   * P5-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-validation-summary.md)
   * P5-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-validation-summary.md)
   * P5-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-validation-summary.md)
   * P5-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-validation-summary.md)
+  * P6-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T01-validation-summary.md)
+  * P6-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T02-validation-summary.md)
+  * P6-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T03-validation-summary.md)
+  * P6-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T04-validation-summary.md)
+  * P6-T05: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T05-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T05-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T05-validation-summary.md)
+  * P6-T06: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T06-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T06-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T06-validation-summary.md)
+  * P6-T07: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T07-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T07-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T07-validation-summary.md)
+  * P6-T08: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T08-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T08-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T08-validation-summary.md)
+  * P6-T09: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T09-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T09-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T09-validation-summary.md)
+  * P6-T10: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-validation-summary.md)
+  * P6-T11: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-validation-summary.md)
+  * P6-T12: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-validation-summary.md)
 
 ## Completed Tickets
 - [x] **P0-T01**: Final creative direction lock.
@@ -111,10 +137,23 @@ This directory contains the specification documents, handoff reports, and artifa
 - [x] **P4-T02**: Low-poly asset check.
 - [x] **P4-T03**: Blender camera setup specs.
 - [x] **P4-T04**: Blender scene staging specs.
+- [x] **P5-ENV-INIT**: Local Environment Initialization & Scaffolding Execution.
 - [x] **P5-T01**: Repo scaffolding + package install.
 - [x] **P5-T02**: Scroll state engine + R3F canvas setup.
 - [x] **P5-T03**: Camera rigging + asset test load.
 - [x] **P5-T04**: Device-tiering + memory cleanup validation.
+- [x] **P6-T01**: Global layout shell structural coding.
+- [x] **P6-T02**: Persistent structural navigation header coding.
+- [x] **P6-T03**: Hero section structural coding.
+- [x] **P6-T04**: Identity lock section structural coding.
+- [x] **P6-T05**: Proof strip section structural coding.
+- [x] **P6-T06**: Architecture assembly section structural coding.
+- [x] **P6-T07**: Selected projects grid section structural coding.
+- [x] **P6-T08**: Deep case study preview bridge section structural coding.
+- [x] **P6-T09**: Stack engine section structural coding.
+- [x] **P6-T10**: Workflow pipeline section structural coding.
+- [x] **P6-T11**: Experience timeline section structural coding.
+- [x] **P6-T12**: Terminal contact portal section structural coding.
 
 
 
