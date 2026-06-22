@@ -51,6 +51,14 @@ This directory contains the specification documents, handoff reports, and artifa
   * [WorkflowPipeline.tsx](file:///d:/PORT/src/components/dom/WorkflowPipeline.tsx): Section 08 horizontal 3-step ordered list pipeline timeline.
   * [ExperienceTimeline.tsx](file:///d:/PORT/src/components/dom/ExperienceTimeline.tsx): Section 09 vertical chronological milestone timeline stream.
   * [ContactPortal.tsx](file:///d:/PORT/src/components/dom/ContactPortal.tsx): Section 10 terminal contact gateway and social links.
+  * [mdx.ts](file:///d:/PORT/src/types/mdx.ts): MDX Frontmatter and payload schema definitions.
+  * [mdx-components.tsx](file:///d:/PORT/mdx-components.tsx): Custom root MDX React element rendering overrides.
+  * [page.tsx](file:///d:/PORT/src/app/work/[slug]/page.tsx): Dynamic routing sub-route server-side page controller.
+  * [mdxLoader.ts](file:///d:/PORT/src/lib/mdxLoader.ts): Case study data loader helper.
+  * [enactus-portal-v4.mdx](file:///d:/PORT/src/content/work/enactus-portal-v4.mdx): Enactus Portal v4.0 case study document.
+  * [ai-job-board.mdx](file:///d:/PORT/src/content/work/ai-job-board.mdx): AI Job Board Platform case study document.
+  * [gdg-real-estate.mdx](file:///d:/PORT/src/content/work/gdg-real-estate.mdx): GDG Real Estate Module case study document.
+  * [lawyer-showcase.mdx](file:///d:/PORT/src/content/work/lawyer-showcase.mdx): Lawyer Static Showcase case study document.
 * Reports and Notes:
   * P0-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-validation-summary.md)
   * P0-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-validation-summary.md)
@@ -102,6 +110,8 @@ This directory contains the specification documents, handoff reports, and artifa
   * P6-T10: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T10-validation-summary.md)
   * P6-T11: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T11-validation-summary.md)
   * P6-T12: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-validation-summary.md)
+  * P7-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-validation-summary.md)
+  * P7-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-validation-summary.md)
 
 ## Completed Tickets
 - [x] **P0-T01**: Final creative direction lock.
@@ -154,6 +164,8 @@ This directory contains the specification documents, handoff reports, and artifa
 - [x] **P6-T10**: Workflow pipeline section structural coding.
 - [x] **P6-T11**: Experience timeline section structural coding.
 - [x] **P6-T12**: Terminal contact portal section structural coding.
+- [x] **P7-T01**: MDX engine compilation setup & dynamic routing.
+- [x] **P7-T02**: Local MDX content assets compilation & data streaming layers.
 
 
 
