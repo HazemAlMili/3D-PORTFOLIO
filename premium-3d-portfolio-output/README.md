@@ -59,6 +59,8 @@ This directory contains the specification documents, handoff reports, and artifa
   * [ai-job-board.mdx](file:///d:/PORT/src/content/work/ai-job-board.mdx): AI Job Board Platform case study document.
   * [gdg-real-estate.mdx](file:///d:/PORT/src/content/work/gdg-real-estate.mdx): GDG Real Estate Module case study document.
   * [lawyer-showcase.mdx](file:///d:/PORT/src/content/work/lawyer-showcase.mdx): Lawyer Static Showcase case study document.
+  * [useMotionTimeline.ts](file:///d:/PORT/src/hooks/useMotionTimeline.ts): Central motion timeline and camera interpolation hook.
+  * [useSectionVisibility.ts](file:///d:/PORT/src/hooks/useSectionVisibility.ts): Viewport visibility transition sync opacity hook.
 * Reports and Notes:
   * P0-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-validation-summary.md)
   * P0-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-validation-summary.md)
@@ -112,6 +114,8 @@ This directory contains the specification documents, handoff reports, and artifa
   * P6-T12: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P6-T12-validation-summary.md)
   * P7-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P7-T01-validation-summary.md)
   * P7-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P7-T02-validation-summary.md)
+  * P8-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P8-T01-validation-summary.md)
+  * P8-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P8-T02-validation-summary.md)
 
 ## Completed Tickets
 - [x] **P0-T01**: Final creative direction lock.
@@ -166,6 +170,8 @@ This directory contains the specification documents, handoff reports, and artifa
 - [x] **P6-T12**: Terminal contact portal section structural coding.
 - [x] **P7-T01**: MDX engine compilation setup & dynamic routing.
 - [x] **P7-T02**: Local MDX content assets compilation & data streaming layers.
+- [x] **P8-T01**: Global timeline manager compilation & camera keyframe orchestration.
+- [x] **P8-T02**: Component interaction hooks compilation & viewport visibility sync.
 
 
 
