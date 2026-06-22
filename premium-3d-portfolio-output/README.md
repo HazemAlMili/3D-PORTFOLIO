@@ -34,6 +34,10 @@ This directory contains the specification documents, handoff reports, and artifa
   * [3d-asset-audit.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/3d-asset-audit.md): 3D asset low-poly compliance audit spec.
   * [blender-camera.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/blender-camera.md): 3D camera setup and perspective lens specification.
   * [3d-scene-staging.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/3d-scene-staging.md): 3D spatial staging & lighting rig specification.
+  * [repo-scaffolding.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/repo-scaffolding.md): Repository scaffolding & package dependency specification.
+  * [scroll-engine-setup.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/scroll-engine-setup.md): Scroll progress engine core & WebGL canvas specification.
+  * [camera-rigging.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/camera-rigging.md): 3D camera rigging & asynchronous asset loader specification.
+  * [device-tiering.md](file:///d:/PORT/premium-3d-portfolio-output/docs/portfolio/device-tiering.md): Device performance tiering & GPU memory cleanup specification.
 * Reports and Notes:
   * P0-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T01-validation-summary.md)
   * P0-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P0-T02-validation-summary.md)
@@ -68,6 +72,10 @@ This directory contains the specification documents, handoff reports, and artifa
   * P4-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T02-validation-summary.md)
   * P4-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T03-validation-summary.md)
   * P4-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P4-T04-validation-summary.md)
+  * P5-T01: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T01-validation-summary.md)
+  * P5-T02: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T02-validation-summary.md)
+  * P5-T03: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T03-validation-summary.md)
+  * P5-T04: [Main Report](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-main-report.md) | [Handoff Notes](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-handoff-notes.md) | [Validation Summary](file:///d:/PORT/premium-3d-portfolio-output/P5-T04-validation-summary.md)
 
 ## Completed Tickets
 - [x] **P0-T01**: Final creative direction lock.
@@ -103,6 +111,10 @@ This directory contains the specification documents, handoff reports, and artifa
 - [x] **P4-T02**: Low-poly asset check.
 - [x] **P4-T03**: Blender camera setup specs.
 - [x] **P4-T04**: Blender scene staging specs.
+- [x] **P5-T01**: Repo scaffolding + package install.
+- [x] **P5-T02**: Scroll state engine + R3F canvas setup.
+- [x] **P5-T03**: Camera rigging + asset test load.
+- [x] **P5-T04**: Device-tiering + memory cleanup validation.
 
 
 
