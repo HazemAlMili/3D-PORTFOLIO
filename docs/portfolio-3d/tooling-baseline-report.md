@@ -55,3 +55,4 @@
 - GAP-001 tooling configuration has been successfully resolved.
 - Tooling strict options are fully active. All dev build actions pass compile validation.
 - Kept strictly to task bounds — no 3D packages (three, fiber, drei, gsap, etc.) were installed, and Task 1.2 has not been started.
+- *Update (Task 1.2):* Core dependencies (`three`, `@react-three/fiber@8`, `@react-three/drei@9`, `gsap`, `zustand`) and `@types/three` dev dependency have been installed successfully. No runtime component code has been created.

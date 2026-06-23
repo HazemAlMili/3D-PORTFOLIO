@@ -140,6 +140,16 @@ All future implementation tasks must maintain compiling states under strict Type
 
 ---
 
+## Project Structure Reference
+
+The final project structure and hygiene guidelines are documented in:
+
+[project-structure-report.md](file:///d:/PORT/docs/portfolio-3d/project-structure-report.md)
+
+Future file addition/organization must follow this setup. Important portfolio files must remain organized under `src/` and `docs/`.
+
+---
+
 # 3. Scene Overview
 
 | Scene | Name                             | Device/Environment                | Main Purpose                 | Story Meaning                        |
