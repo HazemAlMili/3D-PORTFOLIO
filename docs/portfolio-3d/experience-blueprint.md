@@ -80,6 +80,66 @@ Variant 7 — Camera passes through glass/screen reflection
 
 ---
 
+## Content Contract Reference
+
+The portfolio content structure is typed in:
+
+[types.ts](file:///d:/PORT/src/portfolio3d/content/types.ts)
+
+All future scene content must follow this contract. Important portfolio copy must not be hardcoded inside scene components.
+
+---
+
+## Visual Token Reference
+
+The locked visual, material, color, lighting, and screen-surface rules are documented in:
+
+[visual-material-tokens.md](file:///d:/PORT/docs/portfolio-3d/visual-material-tokens.md)
+
+Future scene/material implementation must follow that document and must not invent new colors, materials, glow behavior, or visual styles without approval.
+
+---
+
+## Accessibility + Performance Checklist Reference
+
+The enforceable accessibility, fallback, responsive, conversion-access, and performance QA checklist is documented in:
+
+[accessibility-performance-checklist.md](file:///d:/PORT/docs/portfolio-3d/accessibility-performance-checklist.md)
+
+Future implementation phases must use that checklist as a pass/fail reference, not as optional guidance.
+
+---
+
+## Blueprint Self-Audit Reference
+
+The Phase 0 blueprint self-audit is documented in:
+
+[blueprint-self-audit.md](file:///d:/PORT/docs/portfolio-3d/blueprint-self-audit.md)
+
+This audit checks the blueprint against creative, scope, motion, visual, accessibility, performance, content, and implementation-readiness hard rules before the final scene lock report is produced.
+
+---
+
+## Scene Lock Report Reference
+
+The final Phase 0 scene lock report is documented in:
+
+[scene-lock-report.md](file:///d:/PORT/docs/portfolio-3d/scene-lock-report.md)
+
+This report confirms whether the 8-scene blueprint, motion grammar, portal variants, content contract, visual tokens, accessibility/performance checklist, and scope boundaries are locked before Phase 1 begins.
+
+---
+
+## Tooling Baseline Reference
+
+The Phase 1 tooling setup and verification baseline is documented in:
+
+[tooling-baseline-report.md](file:///d:/PORT/docs/portfolio-3d/tooling-baseline-report.md)
+
+All future implementation tasks must maintain compiling states under strict TypeScript options, ESLint flat rules, and build validation.
+
+---
+
 # 3. Scene Overview
 
 | Scene | Name                             | Device/Environment                | Main Purpose                 | Story Meaning                        |
