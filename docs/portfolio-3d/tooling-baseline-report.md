@@ -45,11 +45,11 @@
 - preview availability: PASS
 
 ## Scope Confirmation
-- No Three.js/R3F installed: PASS
+- Three.js/R3F dependencies installed but not initialized in runtime components: PASS
 - No portfolio runtime implementation: PASS
 - No scene components created: PASS
 - No Phase 0 docs rewritten: PASS
-- Task 1.2 not started: PASS
+- Task 1.3 not started: PASS
 
 ## Notes / Risks
 - GAP-001 tooling configuration has been successfully resolved.
