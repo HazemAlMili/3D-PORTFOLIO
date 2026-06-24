@@ -1,52 +1,33 @@
-# ReducedMotionExperience Report
-## Phase 1 Task 1.11
+# Reduced Motion & Low-Tier Device Report (Scene 02)
 
-## Executive Summary
+This document details the implementation, performance metrics, and accessibility verification of the static card variant for Scene 02 (Hero Display).
 
-Create the placeholder UI and structural fallback for the Reduced Motion accessibility feature, establishing the toggle switch and local state stacked DOM fallback layer.
+## 1. Trigger Conditions
 
-## Files Created / Modified
+The static 2D variant mounts and rendering of 3D assets halts when either of the following conditions is met:
+- `reducedMotion === true`: User prefers reduced motion via browser preferences or store toggle.
+- `deviceTier === 'low'`: Device does not support WebGL or has low performance metrics.
 
-| File | Status | Purpose |
+## 2. Architecture & Performance Bypasses
+
+To achieve **zero performance overhead** in static mode, we implemented parent-level conditional mounting inside `SceneManager.tsx`:
+- When static mode is active, `SceneManager` returns `null` for the Scene 02 Hero slot inside the 3D Canvas.
+- Consequently, the R3F reconciler does not instantiate the 3D MainDisplay geometry, floating code fragments, pulsing data lines, or HTML boot sequence overlays.
+- `useFrame` ticks are bypassed, and WebGL state updates are halted entirely for this scene.
+
+## 3. Static Card Layout & Style
+
+The 2D static hero card is built in `Scene02HeroStaticCard.tsx` with camelCase classes in `Scene02HeroStaticCard.module.css`:
+- **Centering & Layout**: Centered vertically and horizontally in the viewport with a dark charcoal background (`#0B0F14`).
+- **Glassmorphism**: Glassmorphic container with `#D4AF37` (Gold) borders, passing WCAG AA contrast ratio requirements.
+- **Micro-animations**: Transition animations are disabled. Hover states utilize subtle scale and color shifting.
+
+## 4. Accessibility Compliance
+
+| Checklist Item | Description | Status |
 |---|---|---|
-| `src/portfolio3d/fallback/ReducedMotionExperience.tsx` | PASS | Toggle and fallback component |
-| `src/portfolio3d/fallback/ReducedMotionExperience.css` | PASS | Style definitions |
-| `src/portfolio3d/fallback/index.ts` | PASS | Export barrel |
-| `src/portfolio3d/README.md` | PASS | Short reference |
-| `docs/portfolio-3d/folder-structure-report.md` | PASS | Folder structure report update |
-
-## Toggle Behavior
-
-- The toggle uses local component state `isReducedMotion` (`useState(false)`).
-- Clicking the toggle button changes `isReducedMotion` to dynamically mount/unmount the stacked DOM fallback.
-
-## Fallback Structure
-
-- The fallback renders as a fixed viewport-covering container (`.reduced-motion-fallback`) with static placeholder text ("PENDING") for the core sections.
-
-## Scope Boundary
-
-| Check | Status | Notes |
-|---|---|---|
-| Next task (P1.12) started | NO | Phase 1 Task 1.12 not started |
-| Packages installed/uninstalled | NO | No package modifications |
-| Files outside allowed scope touched | NO | Scoped strictly to fallback/ and docs/ |
-| Store connection created (`usePortfolioStore`) | NO | State is purely local |
-| Scroll hook connected (`useScrollProgress`) | NO | No scroll events utilized |
-| SceneManager imported or integrated | NO | Sibling module, decoupled |
-| GSAP timelines created | NO | No animations defined |
-| Final fallback content used | NO | Uses static pending labels only |
-| Actual motion suppression logic implemented | NO | Motion suppression is deferred |
-
-## QA Results
-
-| Command | Status | Notes |
-|---|---|---|
-| `npm run typecheck` | PASS | Compiles cleanly. |
-| `npm run lint` | PASS | Lints cleanly. |
-| `npm run build` | PASS | Production compilation succeeds. |
-| `git status` reviewed | PASS | Checked status output. |
-
-## Notes / Risks
-
-- In later tasks, the local toggle state will be wired to the global Zustand store to suppress GSAP timelines and R3F animations.
+| Semantic HTML | Uses `<h1>`, `<h2>`, `<p>`, `<button>` tags | PASS |
+| ARIA Role | Containment wrapped in `role="main"` with `aria-label` | PASS |
+| Keyboard Access | Navigable with Tab, clickable with Enter and Space | PASS |
+| Contrast Ratio | Passes WCAG AA contrast ratio (> 4.5:1) | PASS |
+| Focus States | Visible focus indicators (`:focus-visible`) | PASS |

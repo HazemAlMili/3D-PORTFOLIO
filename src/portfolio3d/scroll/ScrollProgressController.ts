@@ -22,9 +22,22 @@ export function createScrollProgressController() {
     // Clamp to [0, 1] only — delta velocity protection is handled by
     // portfolioStore.setScrollProgress (via scrollProtection.clampScrollDelta).
     const clamped = Math.min(1, Math.max(0, raw));
-    pendingProgress = clamped;
-    if (rafId === null) {
-      rafId = requestAnimationFrame(flush);
+    const reducedMotion = usePortfolioStore.getState().reducedMotion;
+
+    if (reducedMotion) {
+      // If reducedMotion is active, bypass requestAnimationFrame entirely to update instantly.
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      pendingProgress = null;
+      setScrollProgress(clamped);
+      lastSentProgress = clamped;
+    } else {
+      pendingProgress = clamped;
+      if (rafId === null) {
+        rafId = requestAnimationFrame(flush);
+      }
     }
   }
 

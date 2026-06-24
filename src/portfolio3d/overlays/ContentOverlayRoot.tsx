@@ -1,3 +1,5 @@
+import { usePortfolioStore } from "../store/portfolioStore";
+import { HeroOverlay } from "./HeroOverlay";
 import "./ContentOverlayRoot.css";
 
 // Static placeholder map (proves structure for all 8 scenes)
@@ -13,17 +15,31 @@ const SCENE_PLACEHOLDERS: Record<string, string> = {
 };
 
 export function ContentOverlayRoot() {
+  const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
+  const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
+  const deviceTier = usePortfolioStore((state) => state.deviceTier);
+  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+
+  const sceneEntries = Object.entries(SCENE_PLACEHOLDERS);
+
   return (
     <div className="content-overlay-root" aria-label="Content overlay root">
       <div className="content-overlay-container">
-        {Object.entries(SCENE_PLACEHOLDERS).map(([sceneId, text]) => (
-          <div key={sceneId} className="content-overlay-slot" data-scene-id={sceneId}>
-            {text}
-          </div>
-        ))}
+        {sceneEntries.map(([sceneId, text], index) => {
+          const isActive = activeSceneIndex === index;
+          return (
+            <div
+              key={sceneId}
+              className={`content-overlay-slot ${isActive ? "active" : ""}`}
+              data-scene-id={sceneId}
+            >
+              {sceneId === "scene-02-hero" ? (shouldRenderStatic ? null : <HeroOverlay />) : text}
+            </div>
+          );
+        })}
       </div>
       <div className="content-overlay-debug">
-        Overlay mounted — scroll to update scenes (future integration).
+        Overlay mounted — Active Scene: {activeSceneIndex + 1}
       </div>
     </div>
   );

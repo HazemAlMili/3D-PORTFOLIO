@@ -1,10 +1,18 @@
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, Suspense } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF, Text, Html } from "@react-three/drei";
+import { useGLTF, Text } from "@react-three/drei";
 import { Group, RingGeometry, MeshBasicMaterial, Mesh, Color, DoubleSide } from "three";
 import type { GLTF } from "three-stdlib";
 import { usePortfolioStore } from "../store/portfolioStore";
 import "./Scene01Opening.css";
+
+// ── Preload all Scene 01 assets at module level.
+// This starts fetching immediately so that by the time Scene01 renders,
+// assets are likely already cached — avoiding repeated Suspense activations.
+useGLTF.preload("/assets/scene-01/seal.glb");
+useGLTF.preload("/assets/scene-01/codeFragments.glb");
+useGLTF.preload("/assets/scene-01/logo.glb");
+useGLTF.preload("/assets/scene-01/display.glb");
 
 interface Scene01OpeningProps {
   sceneId: string;
@@ -31,73 +39,110 @@ function FallbackMesh({ color = "#333", size = 1 }: { color?: string; size?: num
   );
 }
 
-// Static Reduced-Motion Variant Component
+// ─────────────────────────────────────────────────────────────────────────────
+// Single-hook GLTF loader components.
+// Each calls exactly ONE useGLTF — no try/catch, no conditional hook calls.
+// Parent wraps each with <Suspense fallback={<FallbackMesh>}> so the R3F
+// fiber state is never corrupted by mis-ordered hook invocations.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SealAsset() {
+  const gltf = useGLTF("/assets/scene-01/seal.glb") as unknown as GLTF;
+  useEffect(() => {
+    if (gltf && gltf.scene) {
+      gltf.scene.traverse((child) => {
+        if (child instanceof Mesh) {
+          const m = child.material;
+          const mats = Array.isArray(m) ? m : [m];
+          mats.forEach((mat) => {
+            if ('color' in mat) mat.color = new Color("#D8A84F");
+            if ('metalness' in mat) mat.metalness = 0.7;
+            if ('roughness' in mat) mat.roughness = 0.3;
+          });
+        }
+      });
+    }
+  }, [gltf]);
+  if (!gltf || !gltf.scene) return null;
+  return <primitive object={gltf.scene} scale={1} position={[0, 0, 0]} />;
+}
+
+function FragmentsAsset() {
+  const gltf = useGLTF("/assets/scene-01/codeFragments.glb") as unknown as GLTF;
+  useEffect(() => {
+    if (gltf && gltf.scene) {
+      gltf.scene.traverse((child) => {
+        if (child instanceof Mesh) {
+          const m = child.material;
+          const mats = Array.isArray(m) ? m : [m];
+          mats.forEach((mat) => {
+            if ('color' in mat) mat.color = new Color("#38D6FF");
+            if ('emissive' in mat) {
+              mat.emissive = new Color("#38D6FF");
+              mat.emissiveIntensity = 0.2;
+            }
+          });
+        }
+      });
+    }
+  }, [gltf]);
+  if (!gltf || !gltf.scene) return null;
+  return <primitive object={gltf.scene} scale={1} position={[0, 0, 0]} />;
+}
+
+function LogoAsset() {
+  const gltf = useGLTF("/assets/scene-01/logo.glb") as unknown as GLTF;
+  useEffect(() => {
+    if (gltf && gltf.scene) {
+      gltf.scene.traverse((child) => {
+        if (child instanceof Mesh) {
+          const m = child.material;
+          const mats = Array.isArray(m) ? m : [m];
+          mats.forEach((mat) => {
+            if ('color' in mat) mat.color = new Color("#F4F7FA");
+            if ('metalness' in mat) mat.metalness = 0.1;
+            if ('roughness' in mat) mat.roughness = 0.4;
+          });
+        }
+      });
+    }
+  }, [gltf]);
+  if (!gltf || !gltf.scene) return null;
+  return <primitive object={gltf.scene} scale={1} position={[0, 0, 0]} />;
+}
+
+function DisplayAsset() {
+  const gltf = useGLTF("/assets/scene-01/display.glb") as unknown as GLTF;
+  useEffect(() => {
+    if (gltf && gltf.scene) {
+      gltf.scene.traverse((child) => {
+        if (child instanceof Mesh) {
+          const m = child.material;
+          const mats = Array.isArray(m) ? m : [m];
+          mats.forEach((mat) => {
+            if ('color' in mat) mat.color = new Color("#0B0F14");
+            if ('metalness' in mat) mat.metalness = 0.8;
+            if ('roughness' in mat) mat.roughness = 0.2;
+          });
+        }
+      });
+    }
+  }, [gltf]);
+  if (!gltf || !gltf.scene) return null;
+  return <primitive object={gltf.scene} scale={1} position={[0, 0, 0]} />;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Static Reduced-Motion Variant
+// ─────────────────────────────────────────────────────────────────────────────
 function Scene01OpeningStatic() {
-  let logoGltf: GLTF | null = null;
-  let displayGltf: GLTF | null = null;
-
-  /* eslint-disable react-hooks/rules-of-hooks */
-  try {
-    logoGltf = useGLTF("/assets/scene-01/logo.glb") as unknown as GLTF;
-    displayGltf = useGLTF("/assets/scene-01/display.glb") as unknown as GLTF;
-  } catch (error) {
-    console.warn("Failed to load static GLTF assets for Scene 01:", error);
-  }
-  /* eslint-enable react-hooks/rules-of-hooks */
-
-  // Material refinement for static logo
-  useEffect(() => {
-    if (logoGltf) {
-      logoGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#F4F7FA");
-              if ('metalness' in mat) mat.metalness = 0.1;
-              if ('roughness' in mat) mat.roughness = 0.4;
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#F4F7FA");
-            if ('metalness' in material) material.metalness = 0.1;
-            if ('roughness' in material) material.roughness = 0.4;
-          }
-        }
-      });
-    }
-  }, [logoGltf]);
-
-  // Material refinement for static display
-  useEffect(() => {
-    if (displayGltf) {
-      displayGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#0B0F14");
-              if ('metalness' in mat) mat.metalness = 0.8;
-              if ('roughness' in mat) mat.roughness = 0.2;
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#0B0F14");
-            if ('metalness' in material) material.metalness = 0.8;
-            if ('roughness' in material) material.roughness = 0.2;
-          }
-        }
-      });
-    }
-  }, [displayGltf]);
-
   return (
     <>
       {/* Logo at final position (no animation) */}
       <group position={[0, -0.5, 0.5]} scale={1}>
-        {logoGltf ? (
-          <primitive object={logoGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <FallbackMesh color="#F4F7FA" size={1.5} />
-        )}
+        <Suspense fallback={<FallbackMesh color="#F4F7FA" size={1.5} />}>
+          <LogoAsset />
+        </Suspense>
         <Text
           position={[0, -1.2, 0.1]}
           fontSize={0.4}
@@ -120,11 +165,9 @@ function Scene01OpeningStatic() {
 
       {/* Display at final position (no animation) */}
       <group position={[0, -0.8, 1.5]} scale={1}>
-        {displayGltf ? (
-          <primitive object={displayGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <FallbackMesh color="#0B0F14" size={3} />
-        )}
+        <Suspense fallback={<FallbackMesh color="#0B0F14" size={3} />}>
+          <DisplayAsset />
+        </Suspense>
       </group>
     </>
   );
@@ -150,115 +193,6 @@ function Scene01OpeningAnimated({ localProgress }: { localProgress: number }) {
       side: DoubleSide
     }), 
   []);
-
-  // Load GLTF assets with error handling
-  let sealGltf: GLTF | null = null;
-  let fragmentsGltf: GLTF | null = null;
-  let logoGltf: GLTF | null = null;
-  let displayGltf: GLTF | null = null;
-
-  /* eslint-disable react-hooks/rules-of-hooks */
-  try {
-    sealGltf = useGLTF("/assets/scene-01/seal.glb") as unknown as GLTF;
-    fragmentsGltf = useGLTF("/assets/scene-01/codeFragments.glb") as unknown as GLTF;
-    logoGltf = useGLTF("/assets/scene-01/logo.glb") as unknown as GLTF;
-    displayGltf = useGLTF("/assets/scene-01/display.glb") as unknown as GLTF;
-  } catch (error) {
-    console.warn("Failed to load GLTF assets for Scene 01:", error);
-  }
-  /* eslint-enable react-hooks/rules-of-hooks */
-
-  // Material refinement for animated seal
-  useEffect(() => {
-    if (sealGltf) {
-      sealGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#D8A84F");
-              if ('metalness' in mat) mat.metalness = 0.7;
-              if ('roughness' in mat) mat.roughness = 0.3;
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#D8A84F");
-            if ('metalness' in material) material.metalness = 0.7;
-            if ('roughness' in material) material.roughness = 0.3;
-          }
-        }
-      });
-    }
-  }, [sealGltf]);
-
-  // Material refinement for animated code fragments
-  useEffect(() => {
-    if (fragmentsGltf) {
-      fragmentsGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#38D6FF");
-              if ('emissive' in mat) {
-                mat.emissive = new Color("#38D6FF");
-                mat.emissiveIntensity = 0.2;
-              }
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#38D6FF");
-            if ('emissive' in material) {
-              material.emissive = new Color("#38D6FF");
-              material.emissiveIntensity = 0.2;
-            }
-          }
-        }
-      });
-    }
-  }, [fragmentsGltf]);
-
-  // Material refinement for animated logo
-  useEffect(() => {
-    if (logoGltf) {
-      logoGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#F4F7FA");
-              if ('metalness' in mat) mat.metalness = 0.1;
-              if ('roughness' in mat) mat.roughness = 0.4;
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#F4F7FA");
-            if ('metalness' in material) material.metalness = 0.1;
-            if ('roughness' in material) material.roughness = 0.4;
-          }
-        }
-      });
-    }
-  }, [logoGltf]);
-
-  // Material refinement for animated display
-  useEffect(() => {
-    if (displayGltf) {
-      displayGltf.scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              if ('color' in mat) mat.color = new Color("#0B0F14");
-              if ('metalness' in mat) mat.metalness = 0.8;
-              if ('roughness' in mat) mat.roughness = 0.2;
-            });
-          } else if (material) {
-            if ('color' in material) material.color = new Color("#0B0F14");
-            if ('metalness' in material) material.metalness = 0.8;
-            if ('roughness' in material) material.roughness = 0.2;
-          }
-        }
-      });
-    }
-  }, [displayGltf]);
 
   // Update visibility and transforms based on progress
   useFrame(() => {
@@ -521,47 +455,42 @@ function Scene01OpeningAnimated({ localProgress }: { localProgress: number }) {
     <>
       {/* Anchor for seal/stamp object */}
       <group ref={sealAnchorRef} position={[0, 0.5, 0]}>
-        {sealGltf ? (
-          <primitive object={sealGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <FallbackMesh color="#D8A84F" size={1.2} />
-        )}
+        <Suspense fallback={<FallbackMesh color="#D8A84F" size={1.2} />}>
+          <SealAsset />
+        </Suspense>
         {/* Ripple ring overlay */}
         <mesh ref={rippleRingRef} geometry={ringGeometry} material={ringMaterial} position={[0, 0, 0.01]} />
       </group>
 
       {/* Anchor for code/data fragments */}
       <group ref={codeFragmentsAnchorRef} position={[0, 0, 0]}>
-        {fragmentsGltf ? (
-          <primitive object={fragmentsGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <>
-            {Array.from({ length: 8 }).map((_, i) => {
-              const angle = (i / 8) * Math.PI * 2;
-              const radius = 1.2;
-              return (
-                <group
-                  key={i}
-                  position={[Math.cos(angle) * radius, Math.sin(angle * 2) * 0.3, Math.sin(angle) * radius]}
-                >
-                  <FallbackMesh
-                    color="#38D6FF"
-                    size={0.3}
-                  />
-                </group>
-              );
-            })}
-          </>
-        )}
+        <Suspense
+          fallback={
+            <>
+              {Array.from({ length: 8 }).map((_, i) => {
+                const angle = (i / 8) * Math.PI * 2;
+                const radius = 1.2;
+                return (
+                  <group
+                    key={i}
+                    position={[Math.cos(angle) * radius, Math.sin(angle * 2) * 0.3, Math.sin(angle) * radius]}
+                  >
+                    <FallbackMesh color="#38D6FF" size={0.3} />
+                  </group>
+                );
+              })}
+            </>
+          }
+        >
+          <FragmentsAsset />
+        </Suspense>
       </group>
 
       {/* Anchor for logo reveal */}
       <group ref={logoAnchorRef} position={[0, -0.5, 0.5]}>
-        {logoGltf ? (
-          <primitive object={logoGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <FallbackMesh color="#F4F7FA" size={1.5} />
-        )}
+        <Suspense fallback={<FallbackMesh color="#F4F7FA" size={1.5} />}>
+          <LogoAsset />
+        </Suspense>
         {/* Typography overlay */}
         <Text
           ref={typoText1Ref}
@@ -587,11 +516,9 @@ function Scene01OpeningAnimated({ localProgress }: { localProgress: number }) {
 
       {/* Anchor for main display device */}
       <group ref={displayAnchorRef} position={[0, -0.8, 1.5]}>
-        {displayGltf ? (
-          <primitive object={displayGltf.scene} scale={1} position={[0, 0, 0]} />
-        ) : (
-          <FallbackMesh color="#0B0F14" size={3} />
-        )}
+        <Suspense fallback={<FallbackMesh color="#0B0F14" size={3} />}>
+          <DisplayAsset />
+        </Suspense>
       </group>
     </>
   );
@@ -616,11 +543,7 @@ export function Scene01Opening({ localProgress }: Scene01OpeningProps) {
     return () => clearTimeout(timer);
   }, [localProgress]);
 
-  const handleSkipIntro = () => {
-    const targetProgress = 0.09; // Start of Scene 02
-    usePortfolioStore.getState().setScrollProgress(targetProgress);
-    hasAdvancedRef.current = true;
-  };
+  // Note: skip intro logic moved to Portfolio3DExperience.tsx (DOM overlay, avoids Html portal)
 
   return (
     <group ref={rootGroupRef} position={[0, 0, 0]}>
@@ -630,19 +553,7 @@ export function Scene01Opening({ localProgress }: Scene01OpeningProps) {
       <directionalLight position={[-3, 2, 4]} intensity={0.4} color="#38D6FF" />
       <pointLight position={[0, 3, 2]} intensity={0.3} color="#2F80ED" />
 
-      {/* Skip-Intro Button Overlay */}
-      {localProgress < 0.9 && (
-        <Html position={[0, 0, 0]} center>
-          <button
-            className="skip-intro-button"
-            onClick={handleSkipIntro}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSkipIntro(); }}
-            aria-label="Skip intro and go to hero section"
-          >
-            Skip Intro ⏭
-          </button>
-        </Html>
-      )}
+      {/* Skip-Intro Button: rendered as DOM overlay in Portfolio3DExperience (not inside Canvas) */}
 
       {/* Route to Animated or Static Variant */}
       {reducedMotion ? (

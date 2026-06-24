@@ -16,9 +16,10 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
   isLoading: true,
 
   setScrollProgress: (progress) => {
-    const current = get().scrollProgress;
-    // Clamp delta to MAX_PROGRESS_DELTA to prevent velocity jumps from skipping scenes
-    const safe = clampScrollDelta(current, progress);
+    const { scrollProgress: current, reducedMotion } = get();
+    // Clamp delta to MAX_PROGRESS_DELTA to prevent velocity jumps from skipping scenes,
+    // but bypass if reducedMotion is enabled (for instant teleport).
+    const safe = reducedMotion ? progress : clampScrollDelta(current, progress);
     set({ scrollProgress: clamp01(safe) });
   },
 

@@ -333,3 +333,28 @@ The Cinematic Scroll Navigation Calibration report is at:
 
 This recovery ticket recalibrates the scroll-to-camera progress mapping to achieve a slow, smooth, and weighty cinematic look by adjusting weights, sub-phases, damping factors, and velocity caps.
 
+## Task 4.1 Scene 02 Controller and Layout Anchors Reference
+
+The Scene 02 Controller and Layout Anchors report is at:
+
+`docs/portfolio-3d/scene-02-controller-report.md`
+
+Task 4.1 initializes Phase 4 (Scene 02 Hero Identity Build) by setting up the scene controller, layout anchors (`displayAnchor`, `screenContentAnchor`, `backgroundAnchor`), and simple placeholder geometries.
+
+## Task 4.2 Scene 02 MainDisplay Asset Injection Reference
+
+The Scene 02 MainDisplay Asset Injection report is at:
+
+`docs/portfolio-3d/scene-02-asset-injection-report.md`
+
+Task 4.2 imports the actual GLTF 3D model `mainDisplay.glb` into Scene 02's `displayAnchor`, sets up sub-phase structural scaling and vertical settle animations, prepares the screen surface material properties, and implements error fallback handling.
+
+## Task 4.3 Scene 02 Screen UI Overlay and Typography Reference
+
+The Scene 02 Screen UI Overlay and Typography report is at:
+
+`docs/portfolio-3d/scene-02-typography-report.md`
+
+Task 4.3 injects the typographic layers, identity text meshes, and screen UI overlay graphic nodes inside the `screenContentAnchor` of `Scene02Hero.tsx`, configuring progress-driven visibility, scale, position, opacity transitions, and syncing them with the emissive screen surface opacity.
+
+

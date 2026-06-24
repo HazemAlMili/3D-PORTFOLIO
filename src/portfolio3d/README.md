@@ -33,6 +33,8 @@ The folder is intentionally separated from the root Vite starter app so future i
 
 **Phase 3 — Scene 01 Opening Build: ✅ LOCKED (T3.1–T3.9)**
 
+**Phase 4 — Scene 02 Hero Display Build: 🏃 IN PROGRESS (T4.3 locked)**
+
 
 
 The following are intentionally not created in this task:
@@ -311,4 +313,21 @@ This recovery ticket recalibrates the scroll-to-camera progress mapping to achie
 - `camera/CameraController.tsx` — Refactored to execute pose updates inside `useFrame` using a linear progress interpolation with a `0.06` damping factor. Smooth progress is bypassed when `reducedMotion` is toggled.
 - `scroll/scrollProtection.ts` — Tuned `MAX_PROGRESS_DELTA` velocity cap to `0.04` per frame to prevent aggressive wheel gestures from skipping.
 - `docs/portfolio-3d/cinematic-scroll-calibration-report.md` — [NEW] Detailed calibration report documenting weights, sub-phases, damping parameters, and QA verification.
+
+## Task 4.1 Scene 02 (Hero Identity) Runtime Controller and Main Display Device Layout Anchors
+
+Task 4.1 initializes Phase 4 by setting up the Scene 02 controller, mapping it in SceneManager at Index 1, and configuring anchor groups with primitive placeholder meshes:
+
+- `scenes/Scene02Hero.tsx` — [NEW] Component accepting `sceneId`, `sceneIndex`, and `localProgress`. Defines `displayAnchor`, `screenContentAnchor`, and `backgroundAnchor` containers with standard Box and Plane geometries responsive to local progress values.
+- `scenes/SceneManager.tsx` — Updated to render the Scene02Hero component when active scene index is 1.
+- `scenes/index.ts` — Updated export barrel.
+- `docs/portfolio-3d/scene-02-controller-report.md` — [NEW] Detailed controller and layout anchors report documenting parameters, geometries, progress logic, and QA verification.
+
+## Task 4.2 Scene 02 MainDisplay GLTF Asset Models Injection and Device Scaling
+
+Task 4.2 injects the real 3D model `mainDisplay.glb` into Scene 02's `displayAnchor`, wires it with progress-driven scaling and settle animations, prepares the emissive screen material properties, and implements fallback error handling:
+
+- `scenes/Scene02Hero.tsx` — Updated to load `mainDisplay.glb` with `useGLTF`, apply sub-phase scaling animations (`approach`, `enter`, `immerse`, `exit`) and vertical settles, traverse child meshes to assign screen material properties, and handle loader fallback meshes.
+- `docs/portfolio-3d/scene-02-asset-injection-report.md` — [NEW] Detailed report documenting asset configurations, structural scaling math, and material setups.
+
 

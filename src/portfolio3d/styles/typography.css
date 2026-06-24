@@ -1,0 +1,57 @@
+/* src/portfolio3d/styles/typography.css */
+:root {
+  /* Font scales — mobile-first */
+  --text-xs: 0.75rem;   /* 12px */
+  --text-sm: 0.875rem;  /* 14px */
+  --text-base: 1rem;    /* 16px */
+  --text-lg: 1.125rem;  /* 18px */
+  --text-xl: 1.25rem;   /* 20px */
+  --text-2xl: 1.5rem;   /* 24px */
+  --text-3xl: 2rem;     /* 32px */
+  --text-4xl: 2.5rem;   /* 40px */
+  --text-5xl: 3rem;     /* 48px */
+
+  /* Line heights */
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  --spacing-2xl: 3rem;    /* 48px */
+
+  /* Container max widths */
+  --container-sm: 400px;
+  --container-md: 560px;
+  --container-lg: 720px;
+}
+
+/* Tablet breakpoint (≥768px) */
+@media (min-width: 768px) {
+  :root {
+    --text-base: 1.125rem;  /* 18px */
+    --text-lg: 1.25rem;     /* 20px */
+    --text-xl: 1.5rem;      /* 24px */
+    --text-2xl: 1.75rem;    /* 28px */
+    --text-3xl: 2.25rem;    /* 36px */
+    --text-4xl: 3rem;       /* 48px */
+    --text-5xl: 3.75rem;    /* 60px */
+  }
+}
+
+/* Desktop breakpoint (≥1024px) */
+@media (min-width: 1024px) {
+  :root {
+    --text-base: 1.25rem;   /* 20px */
+    --text-lg: 1.375rem;    /* 22px */
+    --text-xl: 1.625rem;    /* 26px */
+    --text-2xl: 2rem;       /* 32px */
+    --text-3xl: 2.5rem;     /* 40px */
+    --text-4xl: 3.5rem;     /* 56px */
+    --text-5xl: 4.5rem;     /* 72px */
+  }
+}

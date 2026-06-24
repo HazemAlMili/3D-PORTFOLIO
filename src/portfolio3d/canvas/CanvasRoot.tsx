@@ -1,4 +1,5 @@
 import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
 import { CanvasErrorBoundary } from "./CanvasErrorBoundary";
 import { SceneManager } from "../scenes";
 import { CameraController } from "../camera";
@@ -26,7 +27,9 @@ export function CanvasRoot() {
           className="portfolio3d-canvas-element"
         >
           <CameraController />
-          <SceneManager />
+          <Suspense fallback={null}>
+            <SceneManager />
+          </Suspense>
         </Canvas>
       </CanvasErrorBoundary>
     </div>
