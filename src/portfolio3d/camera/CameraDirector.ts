@@ -32,7 +32,7 @@ export function resolveCameraPose(
   sceneStates: Record<string, SceneCameraStates>,
 ): CameraPose {
   const p = clamp01(globalProgress);
-  let index = segments.findIndex((s) => p >= s.start && p <= s.end);
+  let index = p === 1 ? segments.length - 1 : segments.findIndex((s) => p >= s.start && p < s.end);
   if (index === -1) index = p <= 0 ? 0 : segments.length - 1;
 
   const segment = segments[index];

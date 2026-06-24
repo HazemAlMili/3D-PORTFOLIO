@@ -4,6 +4,8 @@ interface ScenePlaceholderProps {
   sceneId: SceneId;
   sceneIndex: number;
   localProgress: number;
+  /** Occlusion culling flag — when false, suppresses this scene's render output. Defaults to true. */
+  visible?: boolean;
 }
 
 const SCENE_LABELS: Record<SceneId, string> = {
@@ -17,7 +19,9 @@ const SCENE_LABELS: Record<SceneId, string> = {
   "scene-08-contact": "Final Sync / Contact",
 };
 
-export function ScenePlaceholder({ sceneId, sceneIndex, localProgress }: ScenePlaceholderProps) {
+export function ScenePlaceholder({ sceneId, sceneIndex, localProgress, visible = true }: ScenePlaceholderProps) {
+  // Occlusion culling flag: suppress render for inactive scenes
+  if (!visible) return null;
   return (
     <div className="scene-placeholder" style={styles.container}>
       <div className="scene-placeholder__label" style={styles.label}>

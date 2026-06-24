@@ -33,6 +33,8 @@ Scaffold the `src/portfolio3d/` responsibility-separated folder structure withou
 - `src/portfolio3d/camera/.gitkeep`
 - `src/portfolio3d/camera/cameraTypes.ts`
 - `src/portfolio3d/camera/CameraDirector.ts`
+- `src/portfolio3d/camera/cameraKeyframes.ts`
+- `src/portfolio3d/camera/CameraController.tsx`
 - `src/portfolio3d/camera/index.ts`
 - `src/portfolio3d/scroll/.gitkeep`
 - `src/portfolio3d/scroll/scrollSegments.ts`
@@ -173,8 +175,90 @@ The dev-only FPS performance monitor is documented in:
 
 Task 1.13 creates the dev-only PerformanceMonitor HUD. It calculates real-time FPS using requestAnimationFrame and is strictly hidden in production builds using `import.meta.env.DEV`.
 
+## Task 2.1 Camera Keyframe Data Structure Reference
+
+The camera keyframe data layer is documented in:
+
+`docs/portfolio-3d/camera-keyframes-report.md`
+
+Task 2.1 creates the typed data structure `SCENE_CAMERA_KEYFRAMES` containing placeholder keyframes for all 8 scenes.
+
+## Task 2.2 Deterministic Interpolation Function Reference
+
+The deterministic interpolation resolver is documented in:
+
+`docs/portfolio-3d/interpolation-function-report.md`
+
+Task 2.2 verifies the pure math interpolation logic `resolveCameraPose` in `CameraDirector.ts` and aligns boundary checks.
+
+## Task 2.3 Per-Scene Approach Camera Motion Reference
+
+The runtime approach camera controller is documented in:
+
+`docs/portfolio-3d/camera-controller-report.md`
+
+Task 2.3 implements `CameraController.tsx` which binds the pose resolver to the Three.js camera strictly during the Approach sub-phase (0 to 0.25 local progress).
+
+## Task 2.4 Per-Scene Enter Camera Motion Reference
+
+The runtime enter camera controller is documented in:
+
+`docs/portfolio-3d/enter-camera-motion-report.md`
+
+Task 2.4 expands `CameraController.tsx` update guard from 0.25 to 0.45 local progress, mapping active camera position, target, and fov values through both Approach and Enter sub-phases.
+
+## Task 2.5 Per-Scene Immerse Camera Motion Reference
+
+The runtime immerse camera documentation is at:
+
+`docs/portfolio-3d/immerse-camera-motion-report.md`
+
+Task 2.5 expands `CameraController.tsx` update guard from 0.45 to 0.8 local progress, covering Approach, Enter, and Immerse sub-phases. During Immerse, the resolver returns the `enter` pose, causing the camera to hold steady for content focus.
+
+## Task 2.6 Per-Scene Exit Camera Motion Reference
+
+The runtime exit camera documentation is at:
+
+`docs/portfolio-3d/exit-camera-motion-report.md`
+
+Task 2.6 expands `CameraController.tsx` update guard from 0.8 to 1.0 local progress, completing full 0–1 scroll cycle coverage across all 8 scenes. `resolveCameraPose` handles the enter→exit interpolation and automatic scene handoff — no boundary logic required in the controller.
+
 ## Notes / Risks
 
 - Folders are kept clean, only containing `.gitkeep` files to track the scaffolding folder system.
 - Responsibility separation is cleanly structured, matching original architecture specifications.
+- Phase 2 runtime camera binding is complete with T2.6.
+
+## Task 2.7 Clipping Guards and Occlusion Culling Flags Reference
+
+The clipping guards and visibility flags documentation is at:
+
+`docs/portfolio-3d/clipping-guards-report.md`
+
+Task 2.7 verifies and documents `near: 0.1` / `far: 100` on the Canvas camera, adds `visible` props to `SceneManager` and `ScenePlaceholder` for layout suppression and occlusion culling flag control, and creates the dev-only `cameraClipping.ts` safety helper. All flags default to `true` — no behavior changes.
+
+## Task 2.8 Reverse-Scroll State Protection Reference
+
+The scroll protection documentation is at:
+
+`docs/portfolio-3d/scroll-protection-report.md`
+
+Task 2.8 creates `scroll/scrollProtection.ts` (pure delta-clamping utilities, `MAX_PROGRESS_DELTA = 0.05`) and enhances `portfolioStore.setScrollProgress` to read current progress via `get()` and clamp the incoming delta. The controller passes raw values; the store owns the velocity safety budget.
+
+## Task 2.9 Dev-Only Scroll Debug HUD Reference
+
+The scroll debug HUD documentation is at:
+
+`docs/portfolio-3d/scroll-debug-hud-report.md`
+
+Task 2.9 creates the `debug/` module containing `ScrollDebugHUD.tsx`, `ScrollDebugHUD.css`, and `index.ts`. The HUD displays global progress, active scene, local progress, sub-phase, clipping status, and camera distance. Strictly dev-only via `import.meta.env.DEV` guard. Mounted in `Portfolio3DExperience.tsx` alongside `PerformanceMonitor`.
+
+
+
+
+
+
+
+
+
 

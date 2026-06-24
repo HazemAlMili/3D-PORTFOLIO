@@ -19,6 +19,8 @@ export function createScrollProgressController() {
   }
 
   function updateProgress(raw: number) {
+    // Clamp to [0, 1] only — delta velocity protection is handled by
+    // portfolioStore.setScrollProgress (via scrollProtection.clampScrollDelta).
     const clamped = Math.min(1, Math.max(0, raw));
     pendingProgress = clamped;
     if (rafId === null) {

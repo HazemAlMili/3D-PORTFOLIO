@@ -13,13 +13,21 @@ const SCENE_IDS: SceneId[] = [
   "scene-08-contact",
 ];
 
-export function SceneManager() {
+interface SceneManagerProps {
+  /** When false, suppresses all scene rendering (layout suppression for inactive states). */
+  visible?: boolean;
+}
+
+export function SceneManager({ visible = true }: SceneManagerProps) {
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const sceneLocalProgress = usePortfolioStore((state) => state.sceneLocalProgress);
 
   // Guard against invalid index
   const safeIndex = Math.min(Math.max(0, activeSceneIndex), SCENE_IDS.length - 1);
   const sceneId = SCENE_IDS[safeIndex];
+
+  // Layout suppression: render nothing when visibility is disabled
+  if (!visible) return null;
 
   return (
     <ScenePlaceholder

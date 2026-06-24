@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { CanvasRoot } from "./canvas/CanvasRoot";
 import { useScrollProgress } from "./scroll/useScrollProgress";
 import { ContentOverlayRoot } from "./overlays/ContentOverlayRoot";
 import { PerformanceMonitor } from "./performance/PerformanceMonitor";
 import { ReducedMotionExperience } from "./fallback/ReducedMotionExperience";
+import { ScrollDebugHUD } from "./debug";
 import { resolveCameraPose } from "./camera/CameraDirector";
 import { buildSceneSegments } from "./scroll/scrollSegments";
 import { getSceneProgress } from "./scroll/SceneProgressMapper";
 import { usePortfolioStore } from "./store/portfolioStore";
-import type { CameraPose, SceneCameraStates } from "./camera/cameraTypes";
+import type { SceneCameraStates } from "./camera/cameraTypes";
 import "./Portfolio3DExperience.css";
 
 export function Portfolio3DExperience() {
@@ -16,7 +17,6 @@ export function Portfolio3DExperience() {
 
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const setActiveScene = usePortfolioStore((state) => state.setActiveScene);
-  const [pose, setPose] = useState<CameraPose | null>(null);
 
   // Sync scrollProgress to active scene and local progress
   useEffect(() => {
@@ -25,11 +25,12 @@ export function Portfolio3DExperience() {
     setActiveScene(sceneProgress.sceneIndex, sceneProgress.localProgress);
   }, [scrollProgress, setActiveScene]);
 
-  // Execute CameraDirector interpolation logic and log
+  // Execute CameraDirector interpolation logic and log in dev
   useEffect(() => {
+    if (!import.meta.env.DEV) return;
     const segments = buildSceneSegments();
-    
-    // Dummy states (all zeros) for each scene
+
+    // Dummy states (all zeros) for each scene — used only for dev console verification
     const dummyStates = segments.reduce((acc, seg) => {
       acc[seg.sceneId] = {
         approach: { position: [0, 0, 0], target: [0, 0, 0], fov: 50 },
@@ -40,11 +41,7 @@ export function Portfolio3DExperience() {
     }, {} as Record<string, SceneCameraStates>);
 
     const result = resolveCameraPose(scrollProgress, segments, dummyStates);
-    setPose(result);
-
-    if (import.meta.env.DEV) {
-      console.log("[CameraDirector] Resolved Pose:", result);
-    }
+    console.log("[CameraDirector] Resolved Pose:", result);
   }, [scrollProgress]);
 
   return (
@@ -55,12 +52,7 @@ export function Portfolio3DExperience() {
       <ContentOverlayRoot />
       <PerformanceMonitor />
       <ReducedMotionExperience />
-      {/* Dev-only debug wrapper to satisfy lint unused-vars check */}
-      {import.meta.env.DEV && pose && (
-        <div style={{ display: "none" }}>
-          Debug Camera Pose: {pose.position.join(",")}, {pose.target.join(",")}, {pose.fov}
-        </div>
-      )}
+      <ScrollDebugHUD />
     </section>
   );
 }
