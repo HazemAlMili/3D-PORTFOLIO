@@ -16,7 +16,7 @@
  * A MAX_PROGRESS_DELTA of 0.05 means at most ~40% of one scene can be
  * traversed per frame — the camera always moves through every sub-phase.
  */
-export const MAX_PROGRESS_DELTA = 0.05;
+export const MAX_PROGRESS_DELTA = 0.04;
 
 /**
  * Minimum delta magnitude required to register a direction change.

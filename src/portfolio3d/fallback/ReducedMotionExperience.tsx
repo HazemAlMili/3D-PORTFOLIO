@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { usePortfolioStore } from "../store/portfolioStore";
 import "./ReducedMotionExperience.css";
 
 export function ReducedMotionExperience() {
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const isReducedMotion = usePortfolioStore((state) => state.reducedMotion);
+  const setReducedMotion = usePortfolioStore((state) => state.setReducedMotion);
 
   const toggleReducedMotion = () => {
-    setIsReducedMotion((prev) => !prev);
+    setReducedMotion(!isReducedMotion);
   };
 
   return (

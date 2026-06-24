@@ -1,5 +1,6 @@
 import { usePortfolioStore } from "../store/portfolioStore";
 import { ScenePlaceholder } from "./ScenePlaceholder";
+import { Scene01Opening } from "./Scene01Opening";
 import type { SceneId } from "../content/types";
 
 const SCENE_IDS: SceneId[] = [
@@ -28,6 +29,17 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
   // Layout suppression: render nothing when visibility is disabled
   if (!visible) return null;
+
+  // Scene 01 gets the 3D component
+  if (safeIndex === 0) {
+    return (
+      <Scene01Opening
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
 
   return (
     <ScenePlaceholder

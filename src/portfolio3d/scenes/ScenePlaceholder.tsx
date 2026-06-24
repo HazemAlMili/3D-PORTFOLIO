@@ -1,3 +1,4 @@
+import { Html } from "@react-three/drei";
 import type { SceneId } from "../content/types";
 
 interface ScenePlaceholderProps {
@@ -23,17 +24,19 @@ export function ScenePlaceholder({ sceneId, sceneIndex, localProgress, visible =
   // Occlusion culling flag: suppress render for inactive scenes
   if (!visible) return null;
   return (
-    <div className="scene-placeholder" style={styles.container}>
-      <div className="scene-placeholder__label" style={styles.label}>
-        {SCENE_LABELS[sceneId] || sceneId}
+    <Html center style={{ pointerEvents: "none" }}>
+      <div className="scene-placeholder" style={styles.container}>
+        <div className="scene-placeholder__label" style={styles.label}>
+          {SCENE_LABELS[sceneId] || sceneId}
+        </div>
+        <div className="scene-placeholder__index" style={styles.index}>
+          Scene {sceneIndex + 1} of 8
+        </div>
+        <div className="scene-placeholder__progress" style={styles.progress}>
+          Local progress: {(localProgress * 100).toFixed(0)}%
+        </div>
       </div>
-      <div className="scene-placeholder__index" style={styles.index}>
-        Scene {sceneIndex + 1} of 8
-      </div>
-      <div className="scene-placeholder__progress" style={styles.progress}>
-        Local progress: {(localProgress * 100).toFixed(0)}%
-      </div>
-    </div>
+    </Html>
   );
 }
 

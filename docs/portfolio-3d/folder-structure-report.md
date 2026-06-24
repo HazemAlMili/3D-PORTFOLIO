@@ -253,12 +253,83 @@ The scroll debug HUD documentation is at:
 
 Task 2.9 creates the `debug/` module containing `ScrollDebugHUD.tsx`, `ScrollDebugHUD.css`, and `index.ts`. The HUD displays global progress, active scene, local progress, sub-phase, clipping status, and camera distance. Strictly dev-only via `import.meta.env.DEV` guard. Mounted in `Portfolio3DExperience.tsx` alongside `PerformanceMonitor`.
 
+## Task 3.1 Scene 01 Runtime Controller Reference
 
+The Scene 01 runtime controller and asset anchors documentation is at:
 
+`docs/portfolio-3d/scene-01-controller-report.md`
 
+Task 3.1 creates the `Scene01Opening.tsx` component with a root group container, named asset anchors (`sealAnchor`, `codeFragmentsAnchor`, `logoAnchor`, `displayAnchor`), placeholder primitives, and progress-driven visibility and transform changes. Routed via `SceneManager.tsx` and exported via `scenes/index.ts`.
 
+## Task 3.2 Scene 01 Asset Injection Reference
 
+The Scene 01 GLTF asset injection documentation is at:
 
+`docs/portfolio-3d/scene-01-asset-injection-report.md`
 
+Task 3.2 imports `useGLTF` from `@react-three/drei` and loads the GLB model assets (`seal.glb`, `codeFragments.glb`, `logo.glb`, `display.glb`) from the static assets directory, nesting them within their respective anchor groups. It implements standard try/catch error handling, degrading gracefully to colored primitive fallbacks on loading failures.
 
+## Task 3.3 Scene 01 Seal Impact-Strike Reference
+
+The Scene 01 seal impact-strike animation documentation is at:
+
+`docs/portfolio-3d/scene-01-impact-report.md`
+
+Task 3.3 implements the spring-like impact animations for the seal's scale, position, and rotation (squashing on strike at `p = 0.12`, bouncing, and settling to rest) alongside a local expanding and fading ripple ring. All animation frames are mathematically mapped to `localProgress` for complete reverse-scroll compatibility.
+
+## Task 3.4 Scene 01 Logo Reveal Reference
+
+The Scene 01 logo reveal animation documentation is at:
+
+`docs/portfolio-3d/scene-01-logo-reveal-report.md`
+
+Task 3.4 implements the smooth logo reveal sequence inside `Scene01Opening.tsx`. Driven by progress within the `0.40 – 0.70` local window using a quartic ease-out curve, the logo scale, opacity, and rotation settle into position, while custom typography overlay meshes track and fade in alongside it.
+
+## Task 3.5 Scene 01 Display Pullback Reference
+
+The Scene 01 display pullback animation documentation is at:
+
+`docs/portfolio-3d/scene-01-pullback-report.md`
+
+Task 3.5 implements the final display pullback animation inside `Scene01Opening.tsx` during the `0.60 – 1.00` progress window. The Display container pulls back from a zoomed-in, close position to its final resting coordinate (`y: -0.8`, `z: 1.5`) using an ease-out cubic curve, establishing a stable viewport-safe framing that prepares for the Scene 02 (Hero Identity) transition.
+
+## Task 3.6 Scene 01 Skip-Intro, Timer, and Lighting Reference
+
+The Scene 01 skip navigation and lighting environment documentation is at:
+
+`docs/portfolio-3d/scene-01-skip-and-lighting-report.md`
+
+Task 3.6 implements a keyboard-accessible Skip Intro DOM overlay button positioned fixed in the bottom-right corner, backed by an auto-advance 10-second timer to bypass the opening sequence automatically during inactivity. It also configures a soft, multi-source studio lighting environment (ambient, key, fill, point lights) to illuminate the scene elements.
+
+## Task 3.7 Scene 01 Reduced-Motion Variant Reference
+
+The Scene 01 reduced-motion variant documentation is at:
+
+`docs/portfolio-3d/scene-01-reduced-motion-report.md`
+
+Task 3.7 implements a static composition path inside `Scene01Opening.tsx`. When `reducedMotion` is active, a parent router mounts `Scene01OpeningStatic` which completely bypasses `useFrame` rendering ticks, locks the logo/display in final rest configurations, and skips loading the decorative `seal.glb` and `codeFragments.glb` assets to minimize payload and memory footprint. Normal animated layout is preserved when `reducedMotion` is inactive.
+
+## Task 3.8 Scene 01 Visual Alignment Audit Reference
+
+The Scene 01 visual alignment audit report is at:
+
+`docs/portfolio-3d/scene-01-visual-audit-report.md`
+
+Task 3.8 performs a comprehensive visual audit of Scene 01, verifying asset scale normalization, color token adherence, lighting parameters, and responsive framing boundaries across desktop, tablet, and mobile, while validating the reduced-motion variant.
+
+## Task 3.9 Phase 3 QA Gate Reference
+
+The Phase 3 QA Gate Report is at:
+
+`docs/portfolio-3d/phase-3-qa-gate-report.md`
+
+Task 3.9 provides the final QA validation sign-off, confirming build stability and checklist validation before unlocking Phase 4.
+
+## P2.P3.RECOVERY.01 Cinematic Scroll Navigation Calibration Reference
+
+The Cinematic Scroll Navigation Calibration report is at:
+
+`docs/portfolio-3d/cinematic-scroll-calibration-report.md`
+
+This recovery ticket recalibrates the scroll-to-camera progress mapping to achieve a slow, smooth, and weighty cinematic look by adjusting weights, sub-phases, damping factors, and velocity caps.
 

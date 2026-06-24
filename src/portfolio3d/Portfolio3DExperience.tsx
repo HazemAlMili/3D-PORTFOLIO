@@ -49,6 +49,10 @@ export function Portfolio3DExperience() {
       <div className="portfolio3d-canvas-shell">
         <CanvasRoot />
       </div>
+      
+      {/* Scroll spacer to define vertical scrollable height (8 scenes * 100vh) */}
+      <div className="portfolio3d-scroll-spacer" style={{ height: "800vh", pointerEvents: "none" }} />
+      
       <ContentOverlayRoot />
       <PerformanceMonitor />
       <ReducedMotionExperience />

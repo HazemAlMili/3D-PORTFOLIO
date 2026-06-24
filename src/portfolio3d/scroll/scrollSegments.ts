@@ -17,7 +17,7 @@ export interface SceneSegment {
   };
 }
 
-export const SCROLL_WEIGHTS = [0.08, 0.10, 0.12, 0.18, 0.12, 0.10, 0.12, 0.18];
+export const SCROLL_WEIGHTS = [0.18, 0.09, 0.11, 0.16, 0.11, 0.09, 0.11, 0.15];
 
 export const SCENE_IDS = [
   "scene-01-opening",
@@ -41,10 +41,10 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
       start,
       end,
       subPhases: {
-        approach: [0, 0.25],
-        enter: [0.25, 0.45],
-        immerse: [0.45, 0.8],
-        exit: [0.8, 1.0],
+        approach: [0, 0.35],
+        enter: [0.35, 0.55],
+        immerse: [0.55, 0.85],
+        exit: [0.85, 1.0],
       },
     };
   });

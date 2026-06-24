@@ -25,12 +25,10 @@ export function CanvasRoot() {
           }}
           className="portfolio3d-canvas-element"
         >
-          {/* Ambient light for validation check, no scenes or orbit controls */}
-          <ambientLight intensity={0.5} />
           <CameraController />
+          <SceneManager />
         </Canvas>
       </CanvasErrorBoundary>
-      <SceneManager />
     </div>
   );
 }

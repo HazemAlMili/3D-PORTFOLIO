@@ -1,0 +1,31 @@
+/* Scene01Opening.css */
+.skip-intro-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: rgba(11, 15, 20, 0.7);
+  backdrop-filter: blur(4px);
+  color: #A7B0BC;
+  border: 1px solid #34404D;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 100;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  font-family: system-ui, -apple-system, sans-serif;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+.skip-intro-button:hover {
+  background: rgba(47, 128, 237, 0.2);
+  border-color: #2F80ED;
+  color: #F4F7FA;
+}
+
+.skip-intro-button:focus-visible {
+  outline: 2px solid #2F80ED;
+  outline-offset: 2px;
+}

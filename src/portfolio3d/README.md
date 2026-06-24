@@ -31,7 +31,7 @@ The folder is intentionally separated from the root Vite starter app so future i
 
 **Phase 2 — Camera + Scroll Journey Prototype: ✅ LOCKED (T2.1–T2.10)**
 
-**Phase 3 — Scene 01 Opening Build: 🔓 UNLOCKED — pending**
+**Phase 3 — Scene 01 Opening Build: ✅ LOCKED (T3.1–T3.9)**
 
 
 
@@ -243,3 +243,72 @@ Task 2.9 implements the dev-only Scroll Debug HUD overlay:
 - `Portfolio3DExperience.tsx` — Mounts `<ScrollDebugHUD />`. Cleaned up the now-superseded hidden debug div.
 
 Strictly dev-only via `import.meta.env.DEV` guard. Returns `null` in production. Mirrors the `PerformanceMonitor` architecture pattern.
+
+## Task 3.1 Scene 01 Runtime Controller and Asset Injection Anchors
+
+Task 3.1 establishes the runtime shell and asset pipeline infrastructure for Scene 01 (Opening / Seal Activation):
+
+- `scenes/Scene01Opening.tsx` — [NEW] Component featuring a root group ref, 4 anchor refs (`sealAnchor`, `codeFragmentsAnchor`, `logoAnchor`, `displayAnchor`), placeholder primitive meshes, and R3F progress-driven visibility/animation triggers.
+- `scenes/SceneManager.tsx` — Updated to render the Scene01Opening component when active scene index is 0.
+- `scenes/index.ts` — Updated export barrel.
+
+## Task 3.2 Scene 01 Asset Injection and Hierarchy Setup
+
+Task 3.2 imports production-grade GLB assets using standard loader hooks and embeds them within the scene:
+
+- `scenes/Scene01Opening.tsx` — Integrated `useGLTF` from `@react-three/drei` to load `seal.glb`, `codeFragments.glb`, `logo.glb`, and `display.glb`. Implemented robust try/catch loading blocks with local ESLint rules override, falling back gracefully to custom `FallbackMesh` rendering on any loading exceptions.
+- `public/assets/scene-01/` — Generated 4 valid binary GLB assets (`seal.glb`, `codeFragments.glb`, `logo.glb`, `display.glb`) using a temporary export script to act as production-grade placeholders.
+
+## Task 3.3 Scene 01 Seal Impact-Strike and Local Ripple Triggers
+
+Task 3.3 adds dynamic, spring-like transformations and visual triggers representing the seal-strike moment:
+
+- `scenes/Scene01Opening.tsx` — Extended the `useFrame` callback to calculate a compression-strike animation at progress `0.12` using a damped sinusoidal spring function (`Math.sin` & `Math.exp`), together with positional Y-bounces and rotational tilts. Created a nested flat `RingGeometry` expanding and fading out as a localized impact ripple wave during the peak strike phase (`0.12` ± `0.05`).
+
+## Task 3.4 Scene 01 Logo Reveal and Typographic Layers Tracking
+
+Task 3.4 implements a smooth, quartic ease-out reveal animation for the brand logo and typography layers:
+
+- `scenes/Scene01Opening.tsx` — Added Drei `<Text>` nodes to act as high-fidelity typographic layers tracking the logo. Configured `useFrame` to animate the logo scale (`0.3` to `1.0`), slide-up position, and opacity during the `0.40 – 0.70` progress window. Opacity updates are fully type-safe, traversing and mutating mesh material properties without explicit `any` casting.
+
+## Task 3.5 Scene 01 Display Pullback and Viewport Framing Transition
+
+Task 3.5 implements the final visual pullback and framing transition of the primary Display device:
+
+- `scenes/Scene01Opening.tsx` — Added an `easeOutCubic` easing function. Updated `useFrame` to animate the Display scale (`1.5` down to `1.0`), slide-back depth (`Z: 0.2` back to `1.5`), and height (`Y: -0.2` down to `-0.8`) during the final `0.60 – 1.00` progress window. These properties settle the device into a viewport-safe landing coordinate that frames it as the active workspace canvas and leaves headroom for Scene 02 overlay presentations.
+
+## Task 3.6 Scene 01 Skip-Intro, Duration Cap, and Studio Lighting Setup
+
+Task 3.6 completes the user affordances, timing caps, and lighting environment for Scene 01:
+
+- `scenes/Scene01Opening.tsx` — Integrated a fixed DOM-based skip button using Drei's `<Html>` wrapper (hidden when progress exceeds `0.9`). Built a `useEffect` timer that triggers an automatic jump to Scene 02 (`progress: 0.09`) after 10 seconds of scroll inactivity. Configured ambient, point, and dual directional light sources to illuminate the opening scene.
+- `scenes/Scene01Opening.css` — [NEW] Implemented premium styles for the Skip Intro button, utilizing backdrop blur filters, focus visual outlines for accessibility, and subtle hover transition animations.
+
+## Task 3.7 Scene 01 Reduced-Motion Variant Setup
+
+Task 3.7 establishes a parallel, accessibility-compliant static rendering path for users preferring reduced motion:
+
+- `scenes/Scene01Opening.tsx` — Refactored into a variant router component that mounts either the static `Scene01OpeningStatic` or the animated `Scene01OpeningAnimated` component. In reduced-motion mode, `Scene01OpeningStatic` skips R3F rendering ticks, places the logo/display directly at their final resting composition, and skips loading the heavy `seal.glb` and `codeFragments.glb` assets to minimize loading footprint. Normal mode executes the full animated path as usual.
+
+## Task 3.8 Scene 01 Visual Alignment Audit, Asset Scale Normalization, and Baseline Shading Check
+
+Task 3.8 performs a comprehensive visual audit of Scene 01 to align all elements (seal, fragments, logo, display) with locked material, scale, and lighting rules:
+
+- `scenes/Scene01Opening.tsx` — Traverses loaded GLTF scenes to apply locked color/roughness/metalness values dynamically (gold `#D8A84F` seal, cyan `#38D6FF` fragments, white `#F4F7FA` logo, graphite `#0B0F14` display) and sets appropriate lighting parameters without over-bloom.
+- `docs/portfolio-3d/scene-01-visual-audit-report.md` — [NEW] Detailed audit report documenting scales, lights, material tokens compliance, responsive framing, and QA verification.
+
+## Task 3.9 Phase 3 QA Gate (Comprehensive Verification & Checklist Sign-off)
+
+Task 3.9 serves as the final QA validation gate for Phase 3 (Scene 01 Opening Build), locking the phase and confirming visual/functional stability:
+
+- `docs/portfolio-3d/phase-3-qa-gate-report.md` — [NEW] Detailed Phase 3 QA Gate report confirming all checks, automated build passes, manual verification parameters, and formal Phase 4 sign-off.
+
+## P2.P3.RECOVERY.01 Cinematic Scroll Navigation Calibration
+
+This recovery ticket recalibrates the scroll-to-camera progress mapping to achieve a slow, smooth, and weighty cinematic look:
+
+- `scroll/scrollSegments.ts` — Updated SCROLL_WEIGHTS to slow Scene 01 pacing (budget increased from 8% to 18%) and redistributed sub-phases to 35% approach, 20% enter, 30% immerse, and 15% exit.
+- `camera/CameraController.tsx` — Refactored to execute pose updates inside `useFrame` using a linear progress interpolation with a `0.06` damping factor. Smooth progress is bypassed when `reducedMotion` is toggled.
+- `scroll/scrollProtection.ts` — Tuned `MAX_PROGRESS_DELTA` velocity cap to `0.04` per frame to prevent aggressive wheel gestures from skipping.
+- `docs/portfolio-3d/cinematic-scroll-calibration-report.md` — [NEW] Detailed calibration report documenting weights, sub-phases, damping parameters, and QA verification.
+
