@@ -1,0 +1,104 @@
+/* fallback/WebGLFallback.css */
+.webgl-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #05070A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #F4F7FA;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.webgl-fallback__container {
+  max-width: 720px;
+  width: 100%;
+  background: #0B0F14;
+  border: 1px solid #1E2A33;
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.webgl-fallback__badge {
+  display: inline-block;
+  background: #2A1A1A;
+  color: #FF5C5C;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 16px;
+  border-radius: 20px;
+  border: 1px solid #3A2A2A;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+.webgl-fallback__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #F4F7FA;
+  margin-bottom: 12px;
+}
+
+.webgl-fallback__subtitle {
+  font-size: 1.1rem;
+  color: #A7B0BC;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.webgl-fallback__body {
+  font-size: 0.95rem;
+  color: #8A94A0;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.webgl-fallback__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+  border-top: 1px solid #1E2A33;
+  padding-top: 32px;
+  margin-bottom: 32px;
+}
+
+.webgl-fallback__section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #38D6FF;
+  margin-bottom: 8px;
+}
+
+.webgl-fallback__section p,
+.webgl-fallback__section li {
+  font-size: 0.9rem;
+  color: #A7B0BC;
+  line-height: 1.6;
+}
+
+.webgl-fallback__section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.webgl-fallback__section li {
+  padding: 4px 0;
+}
+
+.webgl-fallback__footer {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #5A6A7A;
+  border-top: 1px solid #1E2A33;
+  padding-top: 24px;
+  font-style: italic;
+}

@@ -1,0 +1,112 @@
+/* fallback/ReducedMotionExperience.css */
+.reduced-motion-wrapper {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.reduced-motion-toggle {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.toggle-button {
+  background: #2A3A4A;
+  color: #A7B0BC;
+  border: 1px solid #34404D;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  pointer-events: auto;
+}
+
+.toggle-button:hover {
+  background: #34404D;
+  border-color: #4A5A6A;
+}
+
+.toggle-button.active {
+  background: #2F80ED;
+  color: #F4F7FA;
+  border-color: #2F80ED;
+}
+
+.toggle-status {
+  color: #A7B0BC;
+  font-size: 0.7rem;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+.reduced-motion-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #05070A;
+  z-index: 50;
+  pointer-events: auto;
+  overflow-y: auto;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallback-content {
+  max-width: 800px;
+  width: 100%;
+  background: #0B0F14;
+  border: 1px solid #1E2A33;
+  border-radius: 16px;
+  padding: 40px 32px;
+  color: #F4F7FA;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.fallback-content h2 {
+  font-size: 2rem;
+  color: #38D6FF;
+  margin-bottom: 16px;
+}
+
+.fallback-content p {
+  color: #A7B0BC;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.fallback-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.fallback-content li {
+  padding: 8px 12px;
+  border-bottom: 1px solid #1E2A33;
+  color: #A7B0BC;
+  font-size: 0.9rem;
+}
+
+.fallback-content li:last-child {
+  border-bottom: none;
+}

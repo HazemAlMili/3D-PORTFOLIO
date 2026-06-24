@@ -1,0 +1,31 @@
+.performance-monitor {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-family: "Courier New", monospace;
+  font-size: 0.8rem;
+  color: #A7B0BC;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+}
+
+.performance-monitor__label {
+  color: #5A6A7A;
+  font-weight: 400;
+}
+
+.performance-monitor__value {
+  color: #38D6FF;
+  font-weight: 600;
+  min-width: 30px;
+  text-align: right;
+}
