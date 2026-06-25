@@ -14,15 +14,16 @@ import type { SceneId } from "../content/types";
  */
 export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
   "scene-01-opening": {
-    approach: { position: [0, 0, 15], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 5], target: [0, 0, 0], fov: 45 },
-    exit: { position: [0, 0, 15], target: [0, 0, 0], fov: 50 },
+    approach: { position: [0, 0.3, 12], target: [0, 0, 0], fov: 50 },
+    enter: { position: [0, 0, 0.8], target: [0, 0, 0], fov: 80 },
+    exit: { position: [0, 0.3, 12], target: [0, 0, 0], fov: 50 },
   },
   "scene-02-hero": {
     approach: { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 4], target: [0, 0, 0], fov: 45 },
-    // exit.position = approach.position (mirror of approach)
-    exit: { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
+    // enter: close approach — device fills viewport, gives "inside the screen" feel.
+    // MainDisplay front face is at Z=+0.15 (depth 0.3), so Z=0.8 clears it safely.
+    enter: { position: [0, 0, 0.8], target: [0, 0, 0], fov: 78 },
+    exit:  { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
   },
   "scene-03-architecture": {
     // approach.position = enter.position + screenNormal * (screenHeight * 1.8)

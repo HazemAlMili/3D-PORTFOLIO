@@ -33,14 +33,22 @@ export function ContentOverlayRoot() {
               className={`content-overlay-slot ${isActive ? "active" : ""}`}
               data-scene-id={sceneId}
             >
-              {sceneId === "scene-02-hero" ? (shouldRenderStatic ? null : <HeroOverlay />) : text}
+              {sceneId === "scene-02-hero" ? (
+                shouldRenderStatic ? null : <HeroOverlay />
+              ) : sceneId === "scene-01-opening" ? (
+                null
+              ) : (
+                text
+              )}
             </div>
           );
         })}
       </div>
-      <div className="content-overlay-debug">
-        Overlay mounted — Active Scene: {activeSceneIndex + 1}
-      </div>
+      {import.meta.env.DEV && (
+        <div className="content-overlay-debug">
+          Overlay mounted — Active Scene: {activeSceneIndex + 1}
+        </div>
+      )}
     </div>
   );
 }

@@ -17,7 +17,10 @@ export interface SceneSegment {
   };
 }
 
-export const SCROLL_WEIGHTS = [0.18, 0.09, 0.11, 0.16, 0.11, 0.09, 0.11, 0.15];
+// Scene 02 weight increased 0.10 → 0.14 (4-step content hold needs scroll room)
+// Scene 03 reduced 0.12 → 0.08 (not yet aligned; compensates the added weight)
+// Total: 0.16+0.14+0.08+0.18+0.12+0.10+0.12+0.10 = 1.00 ✅
+export const SCROLL_WEIGHTS = [0.16, 0.14, 0.08, 0.18, 0.12, 0.10, 0.12, 0.10];
 
 export const SCENE_IDS = [
   "scene-01-opening",
@@ -36,16 +39,36 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
     const start = cursor;
     const end = cursor + w;
     cursor = end;
+    const sceneId = SCENE_IDS[i];
+    const isScene01 = sceneId === "scene-01-opening";
+    const isScene02 = sceneId === "scene-02-hero";
     return {
-      sceneId: SCENE_IDS[i],
+      sceneId,
       start,
       end,
-      subPhases: {
-        approach: [0, 0.35],
-        enter: [0.35, 0.55],
-        immerse: [0.55, 0.85],
-        exit: [0.85, 1.0],
-      },
+      subPhases: isScene01
+        ? {
+            // Scene 01 — cinematic portal: extended immerse hold
+            approach: [0, 0.20],
+            enter:    [0.20, 0.35],
+            immerse:  [0.35, 0.75],
+            exit:     [0.75, 1.0],
+          }
+        : isScene02
+        ? {
+            // Scene 02 — hero identity: fast approach, long 4-step hold
+            approach: [0, 0.10],
+            enter:    [0.10, 0.30],
+            immerse:  [0.30, 0.78],
+            exit:     [0.78, 1.0],
+          }
+        : {
+            // Default for all other scenes (not yet individually tuned)
+            approach: [0, 0.35],
+            enter:    [0.35, 0.55],
+            immerse:  [0.55, 0.85],
+            exit:     [0.85, 1.0],
+          },
     };
   });
 }

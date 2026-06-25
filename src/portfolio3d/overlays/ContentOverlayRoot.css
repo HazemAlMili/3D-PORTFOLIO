@@ -66,3 +66,16 @@
   border-radius: 4px;
   pointer-events: none;
 }
+
+/* Custom slot override for Scene 02 to prevent transform containing block issues */
+.content-overlay-slot[data-scene-id="scene-02-hero"] {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  transform: none;
+}
+.content-overlay-slot[data-scene-id="scene-02-hero"].active {
+  transform: none;
+}

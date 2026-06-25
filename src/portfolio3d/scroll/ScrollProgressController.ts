@@ -1,40 +1,42 @@
 import { usePortfolioStore } from "../store/portfolioStore";
 
 let rafId: number | null = null;
-let pendingProgress: number | null = null;
-let lastSentProgress: number | null = null;
+let targetProgress: number | null = null;
 
 export function createScrollProgressController() {
   const setScrollProgress = usePortfolioStore.getState().setScrollProgress;
 
   function flush() {
-    if (pendingProgress !== null) {
-      if (lastSentProgress === null || Math.abs(pendingProgress - lastSentProgress) > 0.0001) {
-        setScrollProgress(pendingProgress);
-        lastSentProgress = pendingProgress;
+    if (targetProgress !== null) {
+      setScrollProgress(targetProgress);
+      const current = usePortfolioStore.getState().scrollProgress;
+
+      // If store progress has not yet caught up to target progress (e.g. due to clamping),
+      // keep requesting frames until we reach the target.
+      if (Math.abs(current - targetProgress) > 0.0001) {
+        rafId = requestAnimationFrame(flush);
+      } else {
+        targetProgress = null;
+        rafId = null;
       }
-      pendingProgress = null;
+    } else {
+      rafId = null;
     }
-    rafId = null;
   }
 
   function updateProgress(raw: number) {
-    // Clamp to [0, 1] only — delta velocity protection is handled by
-    // portfolioStore.setScrollProgress (via scrollProtection.clampScrollDelta).
     const clamped = Math.min(1, Math.max(0, raw));
     const reducedMotion = usePortfolioStore.getState().reducedMotion;
 
     if (reducedMotion) {
-      // If reducedMotion is active, bypass requestAnimationFrame entirely to update instantly.
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
         rafId = null;
       }
-      pendingProgress = null;
+      targetProgress = null;
       setScrollProgress(clamped);
-      lastSentProgress = clamped;
     } else {
-      pendingProgress = clamped;
+      targetProgress = clamped;
       if (rafId === null) {
         rafId = requestAnimationFrame(flush);
       }
@@ -46,8 +48,7 @@ export function createScrollProgressController() {
       cancelAnimationFrame(rafId);
       rafId = null;
     }
-    pendingProgress = null;
-    lastSentProgress = null;
+    targetProgress = null;
   }
 
   return { updateProgress, destroy };
