@@ -26,11 +26,9 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
     exit:  { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
   },
   "scene-03-architecture": {
-    // approach.position = enter.position + screenNormal * (screenHeight * 1.8)
-    // Placeholder calculation: [0, 0, 4] + [0, 0, 1] * (2.0 * 1.8) = [0, 0, 7.6]
-    approach: { position: [0, 0, 7.6], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 4], target: [0, 0, 0], fov: 45 },
-    exit: { position: [0, 0, 13], target: [0, 0, 0], fov: 50 },
+    approach: { position: [0, 0, 6.0], target: [0, 0, 0], fov: 50 },
+    enter: { position: [0, 0, 1.6], target: [0, 0, 0], fov: 75 },
+    exit: { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
   },
   "scene-04-projects": {
     approach: { position: [0, 0, 12], target: [0, 0, 0], fov: 50 },

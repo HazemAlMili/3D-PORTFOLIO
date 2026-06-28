@@ -1,0 +1,124 @@
+@import "../styles/typography.css";
+
+.staticArchCard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #040608;
+  z-index: 100;
+  padding: var(--spacing-md);
+  box-sizing: border-box;
+}
+
+.staticArchCardContent {
+  max-width: var(--container-lg);
+  width: 100%;
+  background: rgba(11, 17, 25, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border-radius: 12px;
+  border: 1px solid rgba(56, 214, 255, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+}
+
+.staticArchHeader {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: #38D6FF;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--spacing-xs) 0;
+  text-align: center;
+}
+
+.staticArchSubtitle {
+  font-size: var(--text-sm);
+  color: #A7B0BC;
+  margin: 0 0 var(--spacing-xl) 0;
+  text-align: center;
+}
+
+.staticArchStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.staticArchLayer {
+  background: #0B1119;
+  border: 1px solid #1B283A;
+  border-radius: 6px;
+  padding: var(--spacing-md);
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.staticArchLayer:hover {
+  border-color: #38D6FF;
+}
+
+.staticArchLayerTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: #D8A84F;
+  margin-bottom: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.staticArchLayerIndex {
+  font-family: monospace;
+  font-size: var(--text-sm);
+  color: #38D6FF;
+  opacity: 0.8;
+}
+
+.staticArchLayerDesc {
+  font-size: var(--text-base);
+  color: #F4F7FA;
+  margin-bottom: var(--spacing-xs);
+}
+
+.staticArchLayerSpecs {
+  font-family: monospace;
+  font-size: var(--text-xs);
+  color: #A7B0BC;
+  opacity: 0.7;
+}
+
+.staticArchFooter {
+  font-size: var(--text-xs);
+  color: rgba(167, 176, 188, 0.4);
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* Responsive constraints */
+@media (max-width: 640px) {
+  .staticArchCardContent {
+    padding: var(--spacing-lg) var(--spacing-sm);
+    margin: var(--spacing-xs);
+    max-height: 96vh;
+    overflow-y: auto;
+  }
+
+  .staticArchLayer {
+    padding: var(--spacing-sm);
+  }
+
+  .staticArchLayerTitle {
+    font-size: var(--text-base);
+  }
+
+  .staticArchLayerDesc {
+    font-size: var(--text-sm);
+  }
+}

@@ -11,6 +11,7 @@ import { getSceneProgress } from "./scroll/SceneProgressMapper";
 import { usePortfolioStore } from "./store/portfolioStore";
 import type { SceneCameraStates } from "./camera/cameraTypes";
 import { Scene02HeroStaticCard } from "./scenes/Scene02HeroStaticCard";
+import { Scene03ArchitectureStaticCard } from "./scenes/Scene03ArchitectureStaticCard";
 import "./Portfolio3DExperience.css";
 
 export function Portfolio3DExperience() {
@@ -85,6 +86,7 @@ export function Portfolio3DExperience() {
       )}
       
       {activeSceneIndex === 1 && shouldRenderStatic && <Scene02HeroStaticCard />}
+      {activeSceneIndex === 2 && shouldRenderStatic && <Scene03ArchitectureStaticCard />}
       
       <ContentOverlayRoot />
       <PerformanceMonitor />

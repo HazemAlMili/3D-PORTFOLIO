@@ -35,6 +35,8 @@ export function ContentOverlayRoot() {
             >
               {sceneId === "scene-02-hero" ? (
                 shouldRenderStatic ? null : <HeroOverlay />
+              ) : sceneId === "scene-03-architecture" ? (
+                null
               ) : sceneId === "scene-01-opening" ? (
                 null
               ) : (

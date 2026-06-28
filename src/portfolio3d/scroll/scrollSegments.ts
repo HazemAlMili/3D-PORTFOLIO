@@ -42,6 +42,7 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
     const sceneId = SCENE_IDS[i];
     const isScene01 = sceneId === "scene-01-opening";
     const isScene02 = sceneId === "scene-02-hero";
+    const isScene03 = sceneId === "scene-03-architecture";
     return {
       sceneId,
       start,
@@ -61,6 +62,14 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
             enter:    [0.10, 0.30],
             immerse:  [0.30, 0.78],
             exit:     [0.78, 1.0],
+          }
+        : isScene03
+        ? {
+            // Scene 03 — architecture: balanced approach and 5-step hold
+            approach: [0.00, 0.45],
+            enter:    [0.45, 0.60],
+            immerse:  [0.60, 0.85],
+            exit:     [0.85, 1.00],
           }
         : {
             // Default for all other scenes (not yet individually tuned)

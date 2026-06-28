@@ -2,6 +2,7 @@ import { usePortfolioStore } from "../store/portfolioStore";
 import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene01Opening } from "./Scene01Opening";
 import { Scene02Hero } from "./Scene02Hero";
+import { Scene03Architecture } from "./Scene03Architecture";
 import type { SceneId } from "../content/types";
 
 const SCENE_IDS: SceneId[] = [
@@ -54,6 +55,21 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
     return (
       <Scene02Hero
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
+
+  // Scene 03 gets the Architecture component
+  if (safeIndex === 2) {
+    if (shouldRenderStatic) {
+      return null; // Bypass 3D rendering pipeline for Scene 03 in static mode
+    }
+
+    return (
+      <Scene03Architecture
         sceneId={sceneId}
         sceneIndex={safeIndex}
         localProgress={sceneLocalProgress}
