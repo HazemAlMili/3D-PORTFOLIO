@@ -114,13 +114,28 @@ export interface SystemCoreContent {
   layers: SystemCoreLayer[];
 }
 
+export interface ContactCta {
+  label: string;
+  href: string;
+  type: "email" | "external" | "download";
+  status: "placeholder" | "missing" | "verified";
+}
+
+export interface ContactLink {
+  id: string;
+  label: string;
+  href: string;
+  type: "github" | "linkedin" | "email" | "cv" | "external";
+  status: "placeholder" | "missing" | "verified";
+}
+
 export interface ContactContent {
+  developerName?: string;
+  developerRole?: string;
   headline: string;
-  closingLine: string;
-  email: string;
-  linkedin?: string;
-  github?: string;
-  cvUrl: string;
+  intro?: string;
+  primaryCta: ContactCta;
+  secondaryLinks: ContactLink[];
 }
 
 export interface NavigationItem {

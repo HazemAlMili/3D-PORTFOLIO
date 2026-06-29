@@ -2,6 +2,7 @@ import { usePortfolioStore } from "../store/portfolioStore";
 import { HeroOverlay } from "./HeroOverlay";
 import { Scene04ProjectsStaticCard } from "../scenes/Scene04ProjectsStaticCard";
 import { Scene06ResponsivePerformanceStaticCard } from "../scenes/Scene06ResponsivePerformanceStaticCard";
+import { Scene08ContactStaticCard } from "../scenes/Scene08ContactStaticCard";
 import "./ContentOverlayRoot.css";
 
 // Static placeholder map (proves structure for all 8 scenes)
@@ -41,6 +42,8 @@ export function ContentOverlayRoot() {
                 shouldRenderStatic ? <Scene04ProjectsStaticCard /> : null
               ) : sceneId === "scene-06-responsive-performance" ? (
                 shouldRenderStatic ? <Scene06ResponsivePerformanceStaticCard /> : null
+              ) : sceneId === "scene-08-contact" ? (
+                shouldRenderStatic ? <Scene08ContactStaticCard /> : null
               ) : sceneId === "scene-03-architecture" ? (
                 null
               ) : sceneId === "scene-01-opening" ? (

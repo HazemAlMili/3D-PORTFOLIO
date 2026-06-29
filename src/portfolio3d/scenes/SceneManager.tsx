@@ -7,6 +7,7 @@ import { Scene04Projects } from "./Scene04Projects";
 import { Scene05ProductUX } from "./Scene05ProductUX";
 import { Scene06ResponsivePerformance } from "./Scene06ResponsivePerformance";
 import { Scene07SystemCore } from "./Scene07SystemCore";
+import { Scene08Contact } from "./Scene08Contact";
 import type { SceneId } from "../content/types";
 
 const SCENE_IDS: SceneId[] = [
@@ -134,6 +135,21 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
     return (
       <Scene07SystemCore
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
+
+  // Scene 08 gets the Contact component (preview mount)
+  if (safeIndex === 7) {
+    if (shouldRenderStatic) {
+      return null; // Bypass 3D rendering pipeline for Scene 08 in static mode
+    }
+
+    return (
+      <Scene08Contact
         sceneId={sceneId}
         sceneIndex={safeIndex}
         localProgress={sceneLocalProgress}

@@ -1,0 +1,150 @@
+/* Scene08ContactStaticCard.module.css */
+
+.staticContactCard {
+  width: 100%;
+  max-width: 680px;
+  background: rgba(10, 14, 22, 0.85);
+  border: 1px solid rgba(56, 214, 255, 0.15);
+  border-radius: 8px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 10px 45px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #F4F7FA;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.role {
+  font-size: 0.85rem;
+  color: #A0AEC0;
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.divider {
+  position: relative;
+  width: 70%;
+  height: 1px;
+  background: rgba(56, 214, 255, 0.25);
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dividerDot {
+  width: 6px;
+  height: 6px;
+  background: #38D6FF;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #38D6FF;
+}
+
+.bodyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 90%;
+}
+
+.headline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #F4F7FA;
+  margin: 0;
+}
+
+.intro {
+  font-size: 0.9rem;
+  color: #A0AEC0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ctaContainer {
+  margin: 0.5rem 0;
+}
+
+.primaryCta {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #38D6FF;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(56, 214, 255, 0.05);
+  border: 1px dashed rgba(56, 214, 255, 0.3);
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.linksGrid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1rem;
+}
+
+.linkSlot {
+  font-size: 0.85rem;
+  color: #A0AEC0;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+.missingLink {
+  color: #7A828E;
+  opacity: 0.5;
+}
+
+/* Viewport Adjustments */
+@media (max-width: 480px) {
+  .staticContactCard {
+    padding: 2rem 1.25rem;
+    max-width: 95%;
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .headline {
+    font-size: 1.15rem;
+  }
+
+  .intro {
+    font-size: 0.85rem;
+  }
+
+  .linksGrid {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+}

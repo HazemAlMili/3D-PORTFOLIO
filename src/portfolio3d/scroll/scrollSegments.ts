@@ -96,6 +96,13 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
             immerse:  [0.50, 0.88],
             exit:     [0.88, 1.00],
           }
+        : sceneId === "scene-08-contact"
+        ? {
+            approach: [0.00, 0.35],
+            enter:    [0.35, 0.52],
+            immerse:  [0.52, 0.92],
+            exit:     [0.92, 1.00],
+          }
         : {
             // Default for all other scenes (not yet individually tuned)
             approach: [0, 0.35],

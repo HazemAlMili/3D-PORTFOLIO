@@ -51,8 +51,8 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
     exit: { position: [0.0, 1.6, 8.5], target: [0, 0, 0], fov: 50 },
   },
   "scene-08-contact": {
-    approach: { position: [0, 0, 12], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 4], target: [0, 0, 0], fov: 45 },
-    exit: { position: [0, 0, 12], target: [0, 0, 0], fov: 50 },
+    approach: { position: [0.0, 0.6, 12.0], target: [0.0, 0.15, 0.0], fov: 50 },
+    enter:    { position: [0.0, 0.28, 4.2],  target: [0.0, 0.15, 0.0], fov: 44 },
+    exit:     { position: [0.0, 0.45, 11.0], target: [0.0, 0.15, 0.0], fov: 50 },
   },
 };
