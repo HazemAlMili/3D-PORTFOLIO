@@ -3,6 +3,8 @@ import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene01Opening } from "./Scene01Opening";
 import { Scene02Hero } from "./Scene02Hero";
 import { Scene03Architecture } from "./Scene03Architecture";
+import { Scene04Projects } from "./Scene04Projects";
+import { Scene05ProductUX } from "./Scene05ProductUX";
 import type { SceneId } from "../content/types";
 
 const SCENE_IDS: SceneId[] = [
@@ -70,6 +72,36 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
     return (
       <Scene03Architecture
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
+
+  // Scene 04 gets the Projects component
+  if (safeIndex === 3) {
+    if (shouldRenderStatic) {
+      return null; // Bypass 3D rendering pipeline for Scene 04 in static mode
+    }
+
+    return (
+      <Scene04Projects
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
+
+  // Scene 05 gets the Product UX component (preview mount)
+  if (safeIndex === 4) {
+    if (shouldRenderStatic) {
+      return null; // Bypass 3D rendering pipeline for Scene 05 in static mode
+    }
+
+    return (
+      <Scene05ProductUX
         sceneId={sceneId}
         sceneIndex={safeIndex}
         localProgress={sceneLocalProgress}

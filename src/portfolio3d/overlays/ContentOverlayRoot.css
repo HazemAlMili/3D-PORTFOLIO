@@ -79,3 +79,8 @@
 .content-overlay-slot[data-scene-id="scene-02-hero"].active {
   transform: none;
 }
+
+/* Custom slot override for Scene 04 projects card width */
+.content-overlay-slot[data-scene-id="scene-04-projects"] {
+  max-width: 800px;
+}

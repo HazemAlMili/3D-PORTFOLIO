@@ -43,6 +43,8 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
     const isScene01 = sceneId === "scene-01-opening";
     const isScene02 = sceneId === "scene-02-hero";
     const isScene03 = sceneId === "scene-03-architecture";
+    const isScene04 = sceneId === "scene-04-projects";
+    const isScene05 = sceneId === "scene-05-product-ux";
     return {
       sceneId,
       start,
@@ -70,6 +72,22 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
             enter:    [0.45, 0.60],
             immerse:  [0.60, 0.85],
             exit:     [0.85, 1.00],
+          }
+        : isScene04
+        ? {
+            // Scene 04 — projects: cinematic laptop approach & hold
+            approach: [0.00, 0.40],
+            enter:    [0.40, 0.55],
+            immerse:  [0.55, 0.88],
+            exit:     [0.88, 1.00],
+          }
+        : isScene05
+        ? {
+            // Scene 05 — product ux: cinematic tablet approach & hold
+            approach: [0.00, 0.40],
+            enter:    [0.40, 0.55],
+            immerse:  [0.55, 0.88],
+            exit:     [0.88, 1.00],
           }
         : {
             // Default for all other scenes (not yet individually tuned)

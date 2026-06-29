@@ -80,7 +80,13 @@ export interface ProjectsContent {
 
 export interface ProductThinkingContent {
   headline: string;
+  intro?: string;
   principles: string[];
+  steps?: {
+    id: string;
+    title: string;
+    description: string;
+  }[];
 }
 
 export interface ResponsivePerformanceContent {

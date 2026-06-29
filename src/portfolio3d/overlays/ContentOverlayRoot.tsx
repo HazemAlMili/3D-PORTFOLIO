@@ -1,5 +1,6 @@
 import { usePortfolioStore } from "../store/portfolioStore";
 import { HeroOverlay } from "./HeroOverlay";
+import { Scene04ProjectsStaticCard } from "../scenes/Scene04ProjectsStaticCard";
 import "./ContentOverlayRoot.css";
 
 // Static placeholder map (proves structure for all 8 scenes)
@@ -35,6 +36,8 @@ export function ContentOverlayRoot() {
             >
               {sceneId === "scene-02-hero" ? (
                 shouldRenderStatic ? null : <HeroOverlay />
+              ) : sceneId === "scene-04-projects" ? (
+                shouldRenderStatic ? <Scene04ProjectsStaticCard /> : null
               ) : sceneId === "scene-03-architecture" ? (
                 null
               ) : sceneId === "scene-01-opening" ? (
