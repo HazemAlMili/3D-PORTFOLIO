@@ -1,7 +1,7 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Line } from "@react-three/drei";
-import { Vector3, Mesh, MeshStandardMaterial } from "three";
+import { Vector3, Mesh, MeshStandardMaterial, Group } from "three";
 import { SCENE_08_COLORS, SCENE_08_ANCHORS } from "../constants/scene08Config";
 import { usePortfolioStore } from "../store/portfolioStore";
 
@@ -11,6 +11,11 @@ export function FinalSystemComposition() {
   // References for animation
   const pedestalRingRef = useRef<MeshStandardMaterial>(null);
   const packetProgressRef = useRef<number>(0);
+  
+  const monitorRef = useRef<Group>(null);
+  const laptopRef = useRef<Group>(null);
+  const mobileRef = useRef<Group>(null);
+  const backendRef = useRef<Group>(null);
 
   // Setup device outline coordinates dynamically
   const monitorPoints = useMemo(() => {
@@ -125,6 +130,48 @@ export function FinalSystemComposition() {
     } else {
       packetProgressRef.current = 0.5;
     }
+
+    // 3. Subtle idle oscillations for symbolic silhouettes
+    if (!reducedMotion) {
+      // Monitor
+      if (monitorRef.current) {
+        monitorRef.current.position.y = SCENE_08_ANCHORS.monitor[1] + Math.sin(elapsed * 0.7) * 0.025;
+        monitorRef.current.rotation.y = 0.4 + Math.cos(elapsed * 0.35) * 0.015;
+      }
+      // Laptop
+      if (laptopRef.current) {
+        laptopRef.current.position.y = SCENE_08_ANCHORS.laptop[1] + Math.sin(elapsed * 0.8 + 1.5) * 0.025;
+        laptopRef.current.rotation.y = -0.4 + Math.sin(elapsed * 0.4) * 0.015;
+      }
+      // Mobile phone
+      if (mobileRef.current) {
+        mobileRef.current.position.y = SCENE_08_ANCHORS.mobile[1] + Math.sin(elapsed * 0.95 + 3.0) * 0.02;
+        mobileRef.current.rotation.x = 0.15 + Math.cos(elapsed * 0.5) * 0.015;
+      }
+      // Backend Core
+      if (backendRef.current) {
+        backendRef.current.position.y = SCENE_08_ANCHORS.backend[1] + Math.sin(elapsed * 0.65 + 4.5) * 0.03;
+        backendRef.current.rotation.y = -0.3 + elapsed * 0.04; // Calm continuous rotation for backend cylinder
+      }
+    } else {
+      // Reset to original static positions in reduced motion
+      if (monitorRef.current) {
+        monitorRef.current.position.y = SCENE_08_ANCHORS.monitor[1];
+        monitorRef.current.rotation.y = 0.4;
+      }
+      if (laptopRef.current) {
+        laptopRef.current.position.y = SCENE_08_ANCHORS.laptop[1];
+        laptopRef.current.rotation.y = -0.4;
+      }
+      if (mobileRef.current) {
+        mobileRef.current.position.y = SCENE_08_ANCHORS.mobile[1];
+        mobileRef.current.rotation.x = 0.15;
+      }
+      if (backendRef.current) {
+        backendRef.current.position.y = SCENE_08_ANCHORS.backend[1];
+        backendRef.current.rotation.y = -0.3;
+      }
+    }
   });
 
   return (
@@ -165,7 +212,7 @@ export function FinalSystemComposition() {
       </group>
 
       {/* ================= MONITOR ANCHOR ================= */}
-      <group position={SCENE_08_ANCHORS.monitor} rotation={[0, 0.4, 0]}>
+      <group ref={monitorRef} position={SCENE_08_ANCHORS.monitor} rotation={[0, 0.4, 0]}>
         <Line points={monitorPoints.screen} color={SCENE_08_COLORS.accentBlue} lineWidth={0.8} transparent opacity={0.3} />
         <Line points={monitorPoints.stand} color={SCENE_08_COLORS.accentBlue} lineWidth={0.8} transparent opacity={0.3} />
         <Line points={monitorPoints.base} color={SCENE_08_COLORS.accentBlue} lineWidth={0.8} transparent opacity={0.3} />
@@ -177,7 +224,7 @@ export function FinalSystemComposition() {
       </group>
 
       {/* ================= LAPTOP ANCHOR ================= */}
-      <group position={SCENE_08_ANCHORS.laptop} rotation={[0, -0.4, 0]}>
+      <group ref={laptopRef} position={SCENE_08_ANCHORS.laptop} rotation={[0, -0.4, 0]}>
         <Line points={laptopPoints.lid} color={SCENE_08_COLORS.accentCyan} lineWidth={0.8} transparent opacity={0.3} />
         <Line points={laptopPoints.base} color={SCENE_08_COLORS.accentCyan} lineWidth={0.8} transparent opacity={0.3} />
         {/* Glowing keyboard base indicator */}
@@ -188,7 +235,7 @@ export function FinalSystemComposition() {
       </group>
 
       {/* ================= MOBILE ANCHOR ================= */}
-      <group position={SCENE_08_ANCHORS.mobile} rotation={[0.15, 0.35, -0.05]}>
+      <group ref={mobileRef} position={SCENE_08_ANCHORS.mobile} rotation={[0.15, 0.35, -0.05]}>
         <Line points={mobilePoints} color={SCENE_08_COLORS.accentBlue} lineWidth={0.8} transparent opacity={0.3} />
         {/* Home/screen indicator dot */}
         <mesh position={[0, 0, 0]}>
@@ -198,7 +245,7 @@ export function FinalSystemComposition() {
       </group>
 
       {/* ================= BACKEND CORE ANCHOR ================= */}
-      <group position={SCENE_08_ANCHORS.backend} rotation={[0, -0.3, 0]}>
+      <group ref={backendRef} position={SCENE_08_ANCHORS.backend} rotation={[0, -0.3, 0]}>
         {/* Database Cylinder silhouette */}
         <mesh position={[0, 0, 0]}>
           <cylinderGeometry args={[0.2, 0.2, 0.5, 8, 2, true]} />
