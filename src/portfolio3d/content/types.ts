@@ -101,10 +101,17 @@ export interface ResponsivePerformanceContent {
   principles: PerformancePrinciple[];
 }
 
+export interface SystemCoreLayer {
+  id: string;
+  title: string;
+  description: string;
+  node?: string; // Maps to a Scene 07 geometry node (e.g. "api", "auth", "database")
+}
+
 export interface SystemCoreContent {
   headline: string;
-  requiredMessage: string;
-  topics: string[];
+  intro?: string;
+  layers: SystemCoreLayer[];
 }
 
 export interface ContactContent {
