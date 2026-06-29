@@ -5,6 +5,7 @@ import { Scene02Hero } from "./Scene02Hero";
 import { Scene03Architecture } from "./Scene03Architecture";
 import { Scene04Projects } from "./Scene04Projects";
 import { Scene05ProductUX } from "./Scene05ProductUX";
+import { Scene06ResponsivePerformance } from "./Scene06ResponsivePerformance";
 import type { SceneId } from "../content/types";
 
 const SCENE_IDS: SceneId[] = [
@@ -102,6 +103,21 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
     return (
       <Scene05ProductUX
+        sceneId={sceneId}
+        sceneIndex={safeIndex}
+        localProgress={sceneLocalProgress}
+      />
+    );
+  }
+
+  // Scene 06 gets the Responsive + Performance component (preview mount)
+  if (safeIndex === 5) {
+    if (shouldRenderStatic) {
+      return null; // Bypass 3D rendering pipeline for Scene 06 in static mode
+    }
+
+    return (
+      <Scene06ResponsivePerformance
         sceneId={sceneId}
         sceneIndex={safeIndex}
         localProgress={sceneLocalProgress}

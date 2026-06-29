@@ -1,0 +1,94 @@
+/* Scene06ResponsivePerformanceStaticCard.module.css */
+
+.staticPerfCard {
+  width: 100%;
+  max-width: 800px;
+  background: rgba(18, 22, 33, 0.85);
+  border: 1px solid rgba(56, 214, 255, 0.15);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+}
+
+.staticPerfContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #F4F7FA;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0;
+  text-align: center;
+  border-bottom: 2px solid rgba(56, 214, 255, 0.3);
+  padding-bottom: 0.75rem;
+}
+
+.intro {
+  font-size: 1rem;
+  color: #A0AEC0;
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+  padding: 0 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.principleCard {
+  background: rgba(10, 13, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.principleCard:hover {
+  border-color: rgba(56, 214, 255, 0.2);
+}
+
+.principleTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #38D6FF; /* Emphasize active cyan */
+  margin: 0;
+}
+
+.principleDesc {
+  font-size: 0.9rem;
+  color: #A0AEC0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .staticPerfCard {
+    padding: 1.25rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .intro {
+    font-size: 0.95rem;
+    padding: 0;
+  }
+}

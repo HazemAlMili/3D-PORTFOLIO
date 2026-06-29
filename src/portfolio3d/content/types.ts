@@ -89,10 +89,16 @@ export interface ProductThinkingContent {
   }[];
 }
 
+export interface PerformancePrinciple {
+  id: string;
+  title: string;
+  description: string;
+}
+
 export interface ResponsivePerformanceContent {
   headline: string;
-  coreMessage: string;
-  topics: string[];
+  intro?: string;
+  principles: PerformancePrinciple[];
 }
 
 export interface SystemCoreContent {
