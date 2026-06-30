@@ -5,7 +5,7 @@ import { Vector3, Mesh, MeshStandardMaterial, Group } from "three";
 import { SCENE_08_COLORS, SCENE_08_ANCHORS } from "../constants/scene08Config";
 import { usePortfolioStore } from "../store/portfolioStore";
 
-export function FinalSystemComposition() {
+export function FinalSystemComposition({ localProgress = 0 }: { localProgress?: number }) {
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
 
   // References for animation
@@ -16,6 +16,26 @@ export function FinalSystemComposition() {
   const laptopRef = useRef<Group>(null);
   const mobileRef = useRef<Group>(null);
   const backendRef = useRef<Group>(null);
+
+  // Transition paths from Scene 07 rotated positions to the Scene 08 Backend Silhouette position
+  const transitionPaths = useMemo(() => {
+    return [
+      {
+        start: new Vector3(...SCENE_08_ANCHORS.systemCoreSourceRotated),
+        end: new Vector3(...SCENE_08_ANCHORS.backend),
+      },
+      {
+        start: new Vector3(...SCENE_08_ANCHORS.databaseSourceRotated),
+        end: new Vector3(...SCENE_08_ANCHORS.backend),
+      },
+    ];
+  }, []);
+
+  // Fade out transition line/packet as we settle into Scene 08 (approach + enter phase)
+  const transitionOpacity = localProgress < 0.52 ? (1 - localProgress / 0.52) : 0;
+
+  // Transition packet progress (0 to 1) along the path
+  const transitionT = Math.min(1, Math.max(0, localProgress / 0.45));
 
   // Setup device outline coordinates dynamically
   const monitorPoints = useMemo(() => {
@@ -295,6 +315,40 @@ export function FinalSystemComposition() {
           <PacketAlongLine start={path.start} end={path.end} color={path.color} progressRef={packetProgressRef} offset={0.5} />
         </group>
       ))}
+
+      {/* ================= TRANSITION SIGNAL (Scene 07 Core -> Scene 08 Backend) ================= */}
+      {transitionOpacity > 0.01 && (
+        <group>
+          {transitionPaths.map((path, idx) => {
+            const packetPos = new Vector3().lerpVectors(path.start, path.end, transitionT);
+            return (
+              <group key={`trans-signal-${idx}`}>
+                {/* Transition connecting path */}
+                <Line
+                  points={[path.start, path.end]}
+                  color={SCENE_08_COLORS.accentCyan}
+                  lineWidth={1.2}
+                  transparent
+                  opacity={transitionOpacity * 0.4}
+                  dashed
+                  dashScale={12}
+                  dashSize={0.05}
+                  gapSize={0.03}
+                />
+                {/* Scroll-deterministic traveling packet */}
+                <mesh position={[packetPos.x, packetPos.y, packetPos.z]}>
+                  <sphereGeometry args={[0.035, 8, 8]} />
+                  <meshBasicMaterial
+                    color={SCENE_08_COLORS.accentCyan}
+                    transparent
+                    opacity={transitionOpacity * 0.9}
+                  />
+                </mesh>
+              </group>
+            );
+          })}
+        </group>
+      )}
     </group>
   );
 }

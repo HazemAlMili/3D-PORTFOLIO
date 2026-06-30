@@ -1,3 +1,6 @@
+import { useRef, useLayoutEffect } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Group } from "three";
 import { usePortfolioStore } from "../store/portfolioStore";
 import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene01Opening } from "./Scene01Opening";
@@ -8,160 +11,219 @@ import { Scene05ProductUX } from "./Scene05ProductUX";
 import { Scene06ResponsivePerformance } from "./Scene06ResponsivePerformance";
 import { Scene07SystemCore } from "./Scene07SystemCore";
 import { Scene08Contact } from "./Scene08Contact";
+import { buildSceneSegments } from "../scroll/scrollSegments";
 import type { SceneId } from "../content/types";
-
-const SCENE_IDS: SceneId[] = [
-  "scene-01-opening",
-  "scene-02-hero",
-  "scene-03-architecture",
-  "scene-04-projects",
-  "scene-05-product-ux",
-  "scene-06-responsive-performance",
-  "scene-07-system-core",
-  "scene-08-contact",
-];
+import { getAdjacentSceneIndexes, getStationPosition, SPATIAL_BOARD_ENABLED } from "../spatial/spatialBoardConfig";
 
 interface SceneManagerProps {
   /** When false, suppresses all scene rendering (layout suppression for inactive states). */
   visible?: boolean;
 }
 
+interface FadeGroupProps {
+  opacity: number;
+  children: React.ReactNode;
+}
+
+function FadeGroup({ opacity, children }: FadeGroupProps) {
+  const groupRef = useRef<Group>(null);
+
+  // Synchronous traversal to set opacity before browser paints (prevents 1-frame flashes)
+  useLayoutEffect(() => {
+    if (!groupRef.current) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    groupRef.current.traverse((child: any) => {
+      if (child.isMesh || child.isLine || child.isPoints || child.isSprite) {
+        if (child.material) {
+          if (child.userData.originalOpacity === undefined) {
+            child.userData.originalOpacity = child.material.opacity ?? 1.0;
+          }
+          if (child.userData.originalTransparent === undefined) {
+            child.userData.originalTransparent = child.material.transparent ?? false;
+          }
+
+          if (opacity < 1.0) {
+            child.material.transparent = true;
+            child.material.opacity = child.userData.originalOpacity * opacity;
+          } else {
+            child.material.transparent = child.userData.originalTransparent;
+            child.material.opacity = child.userData.originalOpacity;
+          }
+        }
+      }
+      if (child.isLight) {
+        if (child.userData.originalIntensity === undefined) {
+          child.userData.originalIntensity = child.intensity;
+        }
+        child.intensity = child.userData.originalIntensity * opacity;
+      }
+    });
+  }, [opacity, children]);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    groupRef.current.traverse((child: any) => {
+      if (child.isMesh || child.isLine || child.isPoints || child.isSprite) {
+        if (child.material) {
+          if (child.userData.originalOpacity === undefined) {
+            child.userData.originalOpacity = child.material.opacity ?? 1.0;
+          }
+          if (child.userData.originalTransparent === undefined) {
+            child.userData.originalTransparent = child.material.transparent ?? false;
+          }
+
+          if (opacity < 1.0) {
+            child.material.transparent = true;
+            child.material.opacity = child.userData.originalOpacity * opacity;
+          } else {
+            child.material.transparent = child.userData.originalTransparent;
+            child.material.opacity = child.userData.originalOpacity;
+          }
+        }
+      }
+      if (child.isLight) {
+        if (child.userData.originalIntensity === undefined) {
+          child.userData.originalIntensity = child.intensity;
+        }
+        child.intensity = child.userData.originalIntensity * opacity;
+      }
+    });
+  });
+
+  return (
+    <group ref={groupRef} visible={opacity > 0.01}>
+      {children}
+    </group>
+  );
+}
+
+function renderScene(
+  index: number,
+  sceneId: string,
+  localProgress: number,
+  shouldRenderStatic: boolean
+) {
+  if (index === 0) {
+    return (
+      <Scene01Opening
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 1) {
+    return shouldRenderStatic ? null : (
+      <Scene02Hero
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 2) {
+    return shouldRenderStatic ? null : (
+      <Scene03Architecture
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 3) {
+    return shouldRenderStatic ? null : (
+      <Scene04Projects
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 4) {
+    return shouldRenderStatic ? null : (
+      <Scene05ProductUX
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 5) {
+    return shouldRenderStatic ? null : (
+      <Scene06ResponsivePerformance
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 6) {
+    return shouldRenderStatic ? null : (
+      <Scene07SystemCore
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  if (index === 7) {
+    return shouldRenderStatic ? null : (
+      <Scene08Contact
+        sceneId={sceneId as SceneId}
+        sceneIndex={index}
+        localProgress={localProgress}
+      />
+    );
+  }
+  return (
+    <ScenePlaceholder
+      sceneId={sceneId as SceneId}
+      sceneIndex={index}
+      localProgress={localProgress}
+    />
+  );
+}
+
 export function SceneManager({ visible = true }: SceneManagerProps) {
+  const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
-  const sceneLocalProgress = usePortfolioStore((state) => state.sceneLocalProgress);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
   const deviceTier = usePortfolioStore((state) => state.deviceTier);
-
-  // Guard against invalid index
-  const safeIndex = Math.min(Math.max(0, activeSceneIndex), SCENE_IDS.length - 1);
-  const sceneId = SCENE_IDS[safeIndex];
 
   // Layout suppression: render nothing when visibility is disabled
   if (!visible) return null;
 
   const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+  const segments = buildSceneSegments();
 
-  // Scene 01 gets the 3D component
-  if (safeIndex === 0) {
-    return (
-      <Scene01Opening
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
+  // Unified clock: derive current scene index from the same smoothed progress
+  const p = Math.min(1, Math.max(0, scrollProgress));
+  let currentIdx = p >= 1
+    ? segments.length - 1
+    : segments.findIndex((s) => p >= s.start && p < s.end);
+  if (currentIdx === -1) {
+    currentIdx = Math.min(Math.max(0, activeSceneIndex), segments.length - 1);
   }
 
-  // Scene 02 gets the Hero Identity component
-  if (safeIndex === 1) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 02 in static mode
-    }
-
-    return (
-      <Scene02Hero
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 03 gets the Architecture component
-  if (safeIndex === 2) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 03 in static mode
-    }
-
-    return (
-      <Scene03Architecture
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 04 gets the Projects component
-  if (safeIndex === 3) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 04 in static mode
-    }
-
-    return (
-      <Scene04Projects
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 05 gets the Product UX component (preview mount)
-  if (safeIndex === 4) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 05 in static mode
-    }
-
-    return (
-      <Scene05ProductUX
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 06 gets the Responsive + Performance component (preview mount)
-  if (safeIndex === 5) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 06 in static mode
-    }
-
-    return (
-      <Scene06ResponsivePerformance
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 07 gets the System Core component (preview mount)
-  if (safeIndex === 6) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 07 in static mode
-    }
-
-    return (
-      <Scene07SystemCore
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
-
-  // Scene 08 gets the Contact component (preview mount)
-  if (safeIndex === 7) {
-    if (shouldRenderStatic) {
-      return null; // Bypass 3D rendering pipeline for Scene 08 in static mode
-    }
-
-    return (
-      <Scene08Contact
-        sceneId={sceneId}
-        sceneIndex={safeIndex}
-        localProgress={sceneLocalProgress}
-      />
-    );
-  }
+  const indexesToRender = getAdjacentSceneIndexes(currentIdx, segments.length - 1);
 
   return (
-    <ScenePlaceholder
-      sceneId={sceneId}
-      sceneIndex={safeIndex}
-      localProgress={sceneLocalProgress}
-    />
+    <group>
+      {indexesToRender.map((idx) => {
+        const seg = segments[idx];
+        const stationPos = getStationPosition(seg.sceneId as SceneId);
+        // Calculate local progress for each mounted scene based on global scrollProgress
+        const segLocalProgress = (scrollProgress - seg.start) / (seg.end - seg.start);
+        const clampedProgress = Math.min(1, Math.max(0, segLocalProgress));
+        return (
+          <group key={seg.sceneId} position={SPATIAL_BOARD_ENABLED ? stationPos : [0, 0, 0]}>
+             <FadeGroup opacity={1.0}>
+                {renderScene(idx, seg.sceneId, clampedProgress, shouldRenderStatic)}
+             </FadeGroup>
+          </group>
+        );
+      })}
+    </group>
   );
 }

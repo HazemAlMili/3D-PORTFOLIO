@@ -27,3 +27,16 @@ export const SCENE_06_DIMENSIONS = {
   screenWidth: 1.65,
   screenHeight: 3.45,
 } as const;
+
+export const SCENE_06_ANCHORS = {
+  /**
+   * Source anchor representing the tablet screen exit region from Scene 05.
+   * Conceptually, the product UX thinking transitions from here.
+   */
+  tabletUXSource: [0, 1.8, 0.062] as [number, number, number],
+  /**
+   * Target receiving anchor representing the center of the Mobile device
+   * screen inside Scene 06.
+   */
+  mobileScreenTarget: [0, 0, 0.052] as [number, number, number],
+} as const;

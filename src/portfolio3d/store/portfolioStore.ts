@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import type { DeviceTier, PortfolioState } from "./storeTypes";
-import { clampScrollDelta } from "../scroll/scrollProtection";
+import { buildSceneSegments } from "../scroll/scrollSegments";
+import { getSceneProgress } from "../scroll/SceneProgressMapper";
 
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-export const usePortfolioStore = create<PortfolioState>((set, get) => ({
+export const usePortfolioStore = create<PortfolioState>((set) => ({
   scrollProgress: 0,
   activeSceneIndex: 0,
   sceneLocalProgress: 0,
@@ -16,11 +17,17 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
   isLoading: true,
 
   setScrollProgress: (progress) => {
-    const { scrollProgress: current, reducedMotion } = get();
-    // Clamp delta to MAX_PROGRESS_DELTA to prevent velocity jumps from skipping scenes,
-    // but bypass if reducedMotion is enabled (for instant teleport).
-    const safe = reducedMotion ? progress : clampScrollDelta(current, progress);
-    set({ scrollProgress: clamp01(safe) });
+    const nextProgress = clamp01(progress);
+
+    // Sync active scene index and local progress synchronously to establish a single clock source
+    const segments = buildSceneSegments();
+    const sceneProgress = getSceneProgress(nextProgress, segments);
+
+    set({
+      scrollProgress: nextProgress,
+      activeSceneIndex: sceneProgress.sceneIndex,
+      sceneLocalProgress: sceneProgress.localProgress,
+    });
   },
 
   setActiveScene: (index, localProgress) =>

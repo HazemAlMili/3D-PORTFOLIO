@@ -35,5 +35,20 @@ export const SCENE_08_ANCHORS = {
   laptop:   [1.8, -0.1, -1.0] as [number, number, number],
   mobile:   [-1.2, -0.4, -0.6] as [number, number, number],
   backend:  [1.2, -0.4, -0.6] as [number, number, number],
+  /**
+   * Transition anchor representing where the Scene 07 System Core
+   * conceptually was in world coordinates (center of Scene 07 cluster).
+   */
+  systemCoreSource: [0, -0.15, 0] as [number, number, number],
+  /**
+   * Transition anchor representing the visually aligned center of the Scene 07
+   * system core (rotated by the isometric grouping rotation of Scene 07).
+   */
+  systemCoreSourceRotated: [0, -0.145, -0.037] as [number, number, number],
+  /**
+   * Transition anchor representing the visually aligned database node of Scene 07
+   * (rotated by the isometric grouping rotation of Scene 07).
+   */
+  databaseSourceRotated: [-1.168, -0.255, -0.418] as [number, number, number],
 } as const;
 

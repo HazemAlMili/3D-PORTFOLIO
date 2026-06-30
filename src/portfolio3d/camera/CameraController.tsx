@@ -5,7 +5,6 @@ import { usePortfolioStore } from "../store/portfolioStore";
 import { resolveCameraPose } from "./CameraDirector";
 import { SCENE_CAMERA_KEYFRAMES } from "./cameraKeyframes";
 import { buildSceneSegments } from "../scroll/scrollSegments";
-import type { CameraPose } from "./cameraTypes";
 
 const SEGMENTS = buildSceneSegments();
 
@@ -14,44 +13,41 @@ export function CameraController() {
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
 
-  const smoothProgressRef = useRef(0);
-  const prevPoseRef = useRef<CameraPose | null>(null);
+  const currentPosition = useRef(new Vector3());
+  const currentTarget = useRef(new Vector3());
+  const currentFov = useRef(50);
+  const isInitialized = useRef(false);
 
-  useFrame(() => {
-    const target = scrollProgress;
-
-    // Cinematic progress smoothing (damping)
-    if (reducedMotion) {
-      smoothProgressRef.current = target;
-    } else {
-      const delta = target - smoothProgressRef.current;
-      const dampFactor = 0.06; // Tune this for weight
-      smoothProgressRef.current += delta * dampFactor;
-      // Edge case: if delta is extremely small, snap to target to avoid micro-drift
-      if (Math.abs(delta) < 0.0005) {
-        smoothProgressRef.current = target;
-      }
-    }
-
+  useFrame((_, delta) => {
     const pose = resolveCameraPose(
-      smoothProgressRef.current,
+      scrollProgress,
       SEGMENTS,
       SCENE_CAMERA_KEYFRAMES
     );
 
     const targetVec = new Vector3(pose.target[0], pose.target[1], pose.target[2]);
+    const targetPos = new Vector3(pose.position[0], pose.position[1], pose.position[2]);
 
-    if (camera instanceof PerspectiveCamera) {
-      camera.position.set(pose.position[0], pose.position[1], pose.position[2]);
-      camera.lookAt(targetVec);
-      camera.fov = pose.fov;
-      camera.updateProjectionMatrix();
+    if (!isInitialized.current || reducedMotion) {
+      currentPosition.current.copy(targetPos);
+      currentTarget.current.copy(targetVec);
+      currentFov.current = pose.fov;
+      isInitialized.current = true;
     } else {
-      camera.position.set(pose.position[0], pose.position[1], pose.position[2]);
-      camera.lookAt(targetVec);
+      // Frame-rate independent damp chasing (speed = 8.5 for smooth cinematic tracking)
+      const lerpFactor = 1 - Math.exp(-8.5 * delta);
+      currentPosition.current.lerp(targetPos, lerpFactor);
+      currentTarget.current.lerp(targetVec, lerpFactor);
+      currentFov.current += (pose.fov - currentFov.current) * lerpFactor;
     }
 
-    prevPoseRef.current = pose;
+    camera.position.copy(currentPosition.current);
+    camera.lookAt(currentTarget.current);
+
+    if (camera instanceof PerspectiveCamera) {
+      camera.fov = currentFov.current;
+      camera.updateProjectionMatrix();
+    }
   });
 
   return null; // This is a controller component with no UI

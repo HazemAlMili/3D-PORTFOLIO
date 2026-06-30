@@ -5,33 +5,25 @@ import { ContentOverlayRoot } from "./overlays/ContentOverlayRoot";
 import { PerformanceMonitor } from "./performance/PerformanceMonitor";
 import { ReducedMotionExperience } from "./fallback/ReducedMotionExperience";
 import { ScrollDebugHUD } from "./debug";
+import { usePortfolioStore } from "./store/portfolioStore";
 import { resolveCameraPose } from "./camera/CameraDirector";
 import { buildSceneSegments } from "./scroll/scrollSegments";
-import { getSceneProgress } from "./scroll/SceneProgressMapper";
-import { usePortfolioStore } from "./store/portfolioStore";
 import type { SceneCameraStates } from "./camera/cameraTypes";
 import { Scene02HeroStaticCard } from "./scenes/Scene02HeroStaticCard";
 import { Scene03ArchitectureStaticCard } from "./scenes/Scene03ArchitectureStaticCard";
 import { TransitionCaptionRenderer } from "./overlays/TransitionCaptionRenderer";
+import { GlobalTransitionLayer } from "./overlays/GlobalTransitionLayer";
 import "./Portfolio3DExperience.css";
 
 export function Portfolio3DExperience() {
   useScrollProgress(); // Activates scroll progress listener
 
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
-  const setActiveScene = usePortfolioStore((state) => state.setActiveScene);
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const sceneLocalProgress = usePortfolioStore((state) => state.sceneLocalProgress);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
   const deviceTier = usePortfolioStore((state) => state.deviceTier);
   const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
-
-  // Sync scrollProgress to active scene and local progress
-  useEffect(() => {
-    const segments = buildSceneSegments();
-    const sceneProgress = getSceneProgress(scrollProgress, segments);
-    setActiveScene(sceneProgress.sceneIndex, sceneProgress.localProgress);
-  }, [scrollProgress, setActiveScene]);
 
   // Execute CameraDirector interpolation logic in dev
   useEffect(() => {
@@ -70,8 +62,8 @@ export function Portfolio3DExperience() {
         <CanvasRoot />
       </div>
       
-      {/* Scroll spacer to define vertical scrollable height (8 scenes * 100vh) */}
-      <div className="portfolio3d-scroll-spacer" style={{ height: "800vh", pointerEvents: "none" }} />
+      {/* Scroll spacer to define vertical scrollable height (8 scenes * 300vh) */}
+      <div className="portfolio3d-scroll-spacer" style={{ height: "2400vh", pointerEvents: "none" }} />
 
       {/* Skip Intro Button — pure DOM overlay (NOT inside Canvas, avoids Html portal crash) */}
       {showSkipButton && (
@@ -89,6 +81,7 @@ export function Portfolio3DExperience() {
       {activeSceneIndex === 1 && shouldRenderStatic && <Scene02HeroStaticCard />}
       {activeSceneIndex === 2 && shouldRenderStatic && <Scene03ArchitectureStaticCard />}
       
+      <GlobalTransitionLayer />
       <ContentOverlayRoot />
       <TransitionCaptionRenderer />
       <PerformanceMonitor />

@@ -30,3 +30,16 @@ export const SCENE_04_DIMENSIONS = {
   keyboardDepth: 2.4,
   keyboardHeight: 0.15,
 } as const;
+
+export const SCENE_04_ANCHORS = {
+  /**
+   * Source anchor representing the bottom (Deployment) layer of the Scene 03
+   * Architecture blueprint in world coordinates.
+   */
+  architectureSource: [1.1, -0.56, 0.01] as [number, number, number],
+  /**
+   * Target receiving anchor representing the center of the Laptop screen face
+   * in local coordinates where the projects panel renders.
+   */
+  laptopScreenTarget: [0, 0.4, 0.10] as [number, number, number],
+} as const;

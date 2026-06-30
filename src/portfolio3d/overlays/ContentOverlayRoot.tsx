@@ -48,6 +48,10 @@ export function ContentOverlayRoot() {
                 null
               ) : sceneId === "scene-01-opening" ? (
                 null
+              ) : sceneId === "scene-05-product-ux" ? (
+                null
+              ) : sceneId === "scene-07-system-core" ? (
+                null
               ) : (
                 text
               )}
@@ -55,11 +59,6 @@ export function ContentOverlayRoot() {
           );
         })}
       </div>
-      {import.meta.env.DEV && (
-        <div className="content-overlay-debug">
-          Overlay mounted — Active Scene: {activeSceneIndex + 1}
-        </div>
-      )}
     </div>
   );
 }

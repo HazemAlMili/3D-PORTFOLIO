@@ -16,7 +16,7 @@
  * A MAX_PROGRESS_DELTA of 0.05 means at most ~40% of one scene can be
  * traversed per frame — the camera always moves through every sub-phase.
  */
-export const MAX_PROGRESS_DELTA = 0.04;
+export const MAX_PROGRESS_DELTA = 0.015;
 
 /**
  * Minimum delta magnitude required to register a direction change.
@@ -44,10 +44,14 @@ export function clampScrollDelta(
   maxDelta: number = MAX_PROGRESS_DELTA
 ): number {
   const delta = target - current;
-  if (Math.abs(delta) > maxDelta) {
-    return current + Math.sign(delta) * maxDelta;
+  if (Math.abs(delta) < 0.0002) {
+    return target;
   }
-  return target;
+  // Exponential damping: move a fraction (8%) toward the target per frame
+  const step = delta * 0.08;
+  // Clamp step size to maxDelta to prevent rapid swipes from producing jumps
+  const clampedStep = Math.min(maxDelta, Math.max(-maxDelta, step));
+  return current + clampedStep;
 }
 
 /**

@@ -12,13 +12,11 @@ export function Scene08Contact({
   sceneIndex,
   localProgress,
 }: Scene08ContactProps) {
-  void localProgress;
-
   // Let's render a basic 3D placeholder layout with text representing the contact config
   return (
     <group position={[0, 0, 0]} userData={{ sceneId, sceneIndex }}>
       {/* 3D background system composition */}
-      <FinalSystemComposition />
+      <FinalSystemComposition localProgress={localProgress} />
 
       {/* 3D contact name / identity return + CTA lockup */}
       <FinalContactLockup />

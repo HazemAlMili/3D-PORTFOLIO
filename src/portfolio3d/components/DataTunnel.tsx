@@ -9,7 +9,7 @@ export function DataTunnel({ localProgress = 0 }: DataTunnelProps) {
   // Map local progress into tunnel traversal range [0.0, 0.6]
   const tunnelT = Math.min(1, Math.max(0, localProgress / 0.6));
 
-  const origin: [number, number, number] = [0, 2.0, -2.5];
+  const origin: [number, number, number] = [...SCENE_07_LAYOUT.mobileSignalEntry];
   const targets: [number, number, number][] = [
     SCENE_07_LAYOUT.core,
     SCENE_07_LAYOUT.api,
