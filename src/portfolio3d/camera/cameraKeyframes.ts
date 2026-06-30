@@ -2,57 +2,88 @@ import type { SceneCameraStates } from "./cameraTypes";
 import type { SceneId } from "../content/types";
 
 /**
- * PLACEHOLDER keyframes for all 8 scenes.
+ * Camera keyframes for all 8 scenes.
  *
- * These values are temporary and will be replaced with real
- * geometry-based calculations once the GLB devices are available.
+ * Pacing Recalibration — Post-Final Cinematic Repair / Task 1
  *
- * Current pattern:
- * - approach: camera at distance Z=10-15
- * - enter: camera moves closer to Z=3-5
- * - exit: camera pulls back to approach distance
+ * Key principle: the `enter` keyframe IS the reading position.
+ * CameraDirector holds at `enter` during the entire immerse phase.
+ * Therefore enter must be a comfortable, content-readable distance —
+ * NOT inside the screen bezel.
+ *
+ * Before: approach Z=12–14, enter Z=0.8 (zoomed inside bezel — unreadable)
+ * After:  approach Z=8–9,   enter Z=2.0–3.5 (framed device — readable)
+ *
+ * Exit returns to a pullback similar to approach, ready for the next scene's
+ * approach interpolation.
  */
 export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
   "scene-01-opening": {
-    approach: { position: [0, 0.3, 12], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 0.8], target: [0, 0, 0], fov: 80 },
-    exit: { position: [0, 0.3, 12], target: [0, 0, 0], fov: 50 },
+    // Approach: mid-range overview — device visible, environment readable
+    // Enter: comfortable close-up — screen content clear but not inside bezel
+    // Exit: pull back to transfer distance for Scene 02
+    approach: { position: [0, 0.2, 8.0],  target: [0, 0, 0], fov: 52 },
+    enter:    { position: [0, 0,   2.5],  target: [0, 0, 0], fov: 72 },
+    exit:     { position: [0, 0.2, 9.0],  target: [0, 0, 0], fov: 52 },
   },
+
   "scene-02-hero": {
-    approach: { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
-    // enter: close approach — device fills viewport, gives "inside the screen" feel.
-    // MainDisplay front face is at Z=+0.15 (depth 0.3), so Z=0.8 clears it safely.
-    enter: { position: [0, 0, 0.8], target: [0, 0, 0], fov: 78 },
-    exit:  { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
+    // Approach: wide overview giving hero device context in space
+    // Enter: comfortable framing — main display fills screen but isn't inside it
+    // Exit: pull back for Architecture scene handoff
+    approach: { position: [0, 0, 9.0],  target: [0, 0, 0], fov: 52 },
+    enter:    { position: [0, 0, 2.0],  target: [0, 0, 0], fov: 68 },
+    exit:     { position: [0, 0, 9.0],  target: [0, 0, 0], fov: 52 },
   },
+
   "scene-03-architecture": {
-    approach: { position: [0, 0, 6.0], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 1.6], target: [0, 0, 0], fov: 75 },
-    exit: { position: [0, 0, 14], target: [0, 0, 0], fov: 50 },
+    // Approach: wide shot — full ultra-wide monitor visible from the side
+    // Enter: front-facing close frame — architecture layers readable
+    // Exit: pull back and hand off to projects
+    approach: { position: [0.5, 0.2, 7.0],  target: [0, 0, 0], fov: 52 },
+    enter:    { position: [0,   0,   2.2],  target: [0, 0, 0], fov: 70 },
+    exit:     { position: [0,   0.2, 8.5],  target: [0, 0, 0], fov: 52 },
   },
+
   "scene-04-projects": {
-    approach: { position: [0, 0, 12], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 0.8], target: [0, 0, 0], fov: 80 },
-    exit: { position: [0, 0, 12], target: [0, 0, 0], fov: 50 },
+    // Approach: overview — laptop visible in environment
+    // Enter: comfortable laptop screen framing — slide deck readable
+    // Exit: pull back for product UX handoff
+    approach: { position: [0.3, 0.2, 8.0],  target: [0, 0.1, 0], fov: 52 },
+    enter:    { position: [0,   0,   2.2],  target: [0, 0.1, 0], fov: 68 },
+    exit:     { position: [0,   0.2, 8.5],  target: [0, 0,   0], fov: 52 },
   },
+
   "scene-05-product-ux": {
-    approach: { position: [0, 0, 11], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 2.8], target: [0, 0, 0], fov: 70 },
-    exit: { position: [0, 0, 11], target: [0, 0, 0], fov: 50 },
+    // Approach: tablet visible from slight angle
+    // Enter: tablet framing — UX flow steps readable at comfortable distance
+    // Exit: pull back for responsive scene
+    approach: { position: [0.2, 0.1, 8.0],  target: [0, 0, 0], fov: 52 },
+    enter:    { position: [0,   0,   3.5],  target: [0, 0, 0], fov: 65 },
+    exit:     { position: [0,   0.1, 8.5],  target: [0, 0, 0], fov: 52 },
   },
+
   "scene-06-responsive-performance": {
-    approach: { position: [0, 0, 10], target: [0, 0, 0], fov: 50 },
-    enter: { position: [0, 0, 3], target: [0, 0, 0], fov: 40 },
-    exit: { position: [0, 0, 10], target: [0, 0, 0], fov: 50 },
+    // Approach: wide view — phone visible in space with breathing room
+    // Enter: comfortable phone framing — responsive grid and content readable
+    // Mobile: FOV kept lower to prevent phone cropping on narrow viewports
+    approach: { position: [0, 0.1, 8.0],  target: [0, 0, 0], fov: 50 },
+    enter:    { position: [0, 0,   4.0],  target: [0, 0, 0], fov: 44 },
+    exit:     { position: [0, 0.1, 8.5],  target: [0, 0, 0], fov: 50 },
   },
+
   "scene-07-system-core": {
-    approach: { position: [0.0, 1.8, 6.2], target: [0, -0.15, 0], fov: 48 },
-    enter: { position: [1.2, 1.0, 3.8], target: [0, -0.15, 0], fov: 42 },
-    exit: { position: [0.0, 1.6, 8.5], target: [0, 0, 0], fov: 50 },
+    // Preserved from Phase 9 — already 3D-specific and well tuned
+    // Minor: approach Y lowered slightly for better orbital reveal
+    approach: { position: [0.0, 1.6, 6.2], target: [0, -0.15, 0], fov: 48 },
+    enter:    { position: [1.2, 1.0, 3.8], target: [0, -0.15, 0], fov: 42 },
+    exit:     { position: [0.0, 1.6, 8.5], target: [0, 0,     0], fov: 50 },
   },
+
   "scene-08-contact": {
+    // Preserved from Phase 10 — already well tuned for the final contact lockup
     approach: { position: [0.0, 0.6, 12.0], target: [0.0, 0.15, 0.0], fov: 50 },
-    enter:    { position: [0.0, 0.28, 4.2],  target: [0.0, 0.15, 0.0], fov: 44 },
+    enter:    { position: [0.0, 0.28, 4.2], target: [0.0, 0.15, 0.0], fov: 44 },
     exit:     { position: [0.0, 0.45, 11.0], target: [0.0, 0.15, 0.0], fov: 50 },
   },
 };

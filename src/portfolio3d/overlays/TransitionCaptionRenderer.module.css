@@ -1,0 +1,70 @@
+/* TransitionCaptionRenderer.module.css
+ *
+ * Cinematic transition caption — lower-center placement.
+ *
+ * Rules:
+ * - pointer-events: none always — never blocks canvas or scene interaction
+ * - opacity is driven by inline style from scroll progress (deterministic)
+ * - No layout impact — fixed, non-interactable
+ * - No box, no card, no border — just the text with subtle glow
+ */
+@import "../styles/typography.css";
+
+.captionRoot {
+  position: fixed;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 20;
+  width: 90%;
+  max-width: var(--container-md);
+  text-align: center;
+  /* Opacity is driven by inline style; CSS transition smooths it slightly */
+  transition: opacity 0.25s ease-out;
+  will-change: opacity;
+}
+
+.caption {
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-sm);
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(212, 225, 242, 0.82);
+  /* Subtle glow — readable but not loud */
+  text-shadow:
+    0 0 24px rgba(56, 214, 255, 0.28),
+    0 1px 4px rgba(0, 0, 0, 0.6);
+  line-height: var(--leading-normal);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Slightly larger on wider screens */
+@media (min-width: 768px) {
+  .caption {
+    font-size: var(--text-base);
+    letter-spacing: 0.16em;
+  }
+}
+
+/* Mobile — ensure it does not clip off screen edges */
+@media (max-width: 480px) {
+  .captionRoot {
+    bottom: 32%;
+    width: 88%;
+  }
+
+  .caption {
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+  }
+}
+
+/* Reduced motion: allow text, suppress fade transition */
+@media (prefers-reduced-motion: reduce) {
+  .captionRoot {
+    transition: none;
+  }
+}

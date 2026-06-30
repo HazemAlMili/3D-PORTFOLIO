@@ -6,8 +6,8 @@
 export const SCENE_08_SUB_PHASES = {
   approach: [0.00, 0.35] as [number, number],
   enter:    [0.35, 0.52] as [number, number],
-  immerse:  [0.52, 0.92] as [number, number],
-  exit:     [0.92, 1.00] as [number, number],
+  immerse:  [0.52, 0.90] as [number, number],
+  exit:     [0.90, 1.00] as [number, number],
 } as const;
 
 export const SCENE_08_COLORS = {
