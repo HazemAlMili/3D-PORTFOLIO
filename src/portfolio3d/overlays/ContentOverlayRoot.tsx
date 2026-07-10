@@ -3,40 +3,61 @@ import { HeroOverlay } from "./HeroOverlay";
 import { Scene04ProjectsStaticCard } from "../scenes/Scene04ProjectsStaticCard";
 import { Scene06ResponsivePerformanceStaticCard } from "../scenes/Scene06ResponsivePerformanceStaticCard";
 import { Scene08ContactStaticCard } from "../scenes/Scene08ContactStaticCard";
+import { buildSceneSegments } from "../scroll/scrollSegments";
+import { getSceneFadeOpacity } from "../scenes/sceneFade";
+import { SystemBootIdentityOverlay } from "./SystemBootIdentityOverlay";
 import "./ContentOverlayRoot.css";
 
-// Static placeholder map (proves structure for all 8 scenes)
-const SCENE_PLACEHOLDERS: Record<string, string> = {
-  "scene-01-opening": "Opening Content PENDING",
-  "scene-02-hero": "Hero Content PENDING",
-  "scene-03-architecture": "Architecture Content PENDING",
-  "scene-04-projects": "Projects Content PENDING",
-  "scene-05-product-ux": "Product UX Content PENDING",
-  "scene-06-responsive-performance": "Responsive Performance Content PENDING",
-  "scene-07-system-core": "System Core Content PENDING",
-  "scene-08-contact": "Contact Content PENDING",
-};
-
 export function ContentOverlayRoot() {
+  const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
   const deviceTier = usePortfolioStore((state) => state.deviceTier);
   const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
 
-  const sceneEntries = Object.entries(SCENE_PLACEHOLDERS);
+  const segments = buildSceneSegments();
+
+  // Support scene cross-fade adjacent indexing for DOM overlays
+  const getAdjacentOverlayIndexes = (idx: number, maxIdx: number) => {
+    return Array.from(new Set([
+      Math.max(0, idx - 1),
+      idx,
+      Math.min(maxIdx, idx + 1)
+    ])).sort((a, b) => a - b);
+  };
+
+  const indexesToRender = getAdjacentOverlayIndexes(activeSceneIndex, segments.length - 1);
 
   return (
     <div className="content-overlay-root" aria-label="Content overlay root">
       <div className="content-overlay-container">
-        {sceneEntries.map(([sceneId, text], index) => {
-          const isActive = activeSceneIndex === index;
+        {segments.map((seg, index) => {
+          const sceneId = seg.sceneId;
+          const fadeOpacity = getSceneFadeOpacity(index, scrollProgress, segments);
+
+          // Performance optimization: only render adjacent slots that are active or fading in/out
+          const isToRender = indexesToRender.includes(index);
+          const shouldRender = isToRender && (index === activeSceneIndex || fadeOpacity > 0.01);
+
+          if (!shouldRender) return null;
+
+          const isInteractive = index === activeSceneIndex && fadeOpacity > 0.95;
+          const segLocalProgress = (scrollProgress - seg.start) / (seg.end - seg.start);
+          const clampedProgress = Math.min(1, Math.max(0, segLocalProgress));
+
           return (
             <div
               key={sceneId}
-              className={`content-overlay-slot ${isActive ? "active" : ""}`}
+              className="content-overlay-slot"
+              style={{
+                opacity: fadeOpacity,
+                pointerEvents: isInteractive ? "auto" : "none",
+              }}
               data-scene-id={sceneId}
             >
-              {sceneId === "scene-02-hero" ? (
+              {sceneId === "scene-01-opening" ? (
+                <SystemBootIdentityOverlay localProgress={clampedProgress} />
+              ) : sceneId === "scene-02-hero" ? (
                 shouldRenderStatic ? null : <HeroOverlay />
               ) : sceneId === "scene-04-projects" ? (
                 shouldRenderStatic ? <Scene04ProjectsStaticCard /> : null
@@ -44,17 +65,7 @@ export function ContentOverlayRoot() {
                 shouldRenderStatic ? <Scene06ResponsivePerformanceStaticCard /> : null
               ) : sceneId === "scene-08-contact" ? (
                 shouldRenderStatic ? <Scene08ContactStaticCard /> : null
-              ) : sceneId === "scene-03-architecture" ? (
-                null
-              ) : sceneId === "scene-01-opening" ? (
-                null
-              ) : sceneId === "scene-05-product-ux" ? (
-                null
-              ) : sceneId === "scene-07-system-core" ? (
-                null
-              ) : (
-                text
-              )}
+              ) : null}
             </div>
           );
         })}

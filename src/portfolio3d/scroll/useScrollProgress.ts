@@ -2,34 +2,42 @@ import { useEffect, useRef, useCallback } from "react";
 import { createScrollProgressController } from "./ScrollProgressController";
 import { usePortfolioStore } from "../store/portfolioStore";
 
-let isHandlingWheelOrTouch = false;
-let wheelOrTouchTimeout: number | null = null;
-
-function setHandlingWheelOrTouch() {
-  isHandlingWheelOrTouch = true;
-  if (wheelOrTouchTimeout !== null) {
-    window.clearTimeout(wheelOrTouchTimeout);
-  }
-  wheelOrTouchTimeout = window.setTimeout(() => {
-    isHandlingWheelOrTouch = false;
-  }, 150); // Buffer to cover trailing wheel/touch inertial updates
-}
-
 export function useScrollProgress() {
   const controllerRef = useRef<ReturnType<typeof createScrollProgressController> | null>(null);
+  const targetProgressRef = useRef(0);
+  const isHandlingWheelOrTouchRef = useRef(false);
+  const wheelOrTouchTimeoutRef = useRef<number | null>(null);
+
+  const setHandlingWheelOrTouch = useCallback(() => {
+    isHandlingWheelOrTouchRef.current = true;
+    if (wheelOrTouchTimeoutRef.current !== null) {
+      window.clearTimeout(wheelOrTouchTimeoutRef.current);
+    }
+    wheelOrTouchTimeoutRef.current = window.setTimeout(() => {
+      if (controllerRef.current && controllerRef.current.isAnimating()) {
+        // If still animating, defer resetting to false
+        setHandlingWheelOrTouch();
+      } else {
+        isHandlingWheelOrTouchRef.current = false;
+      }
+    }, 150);
+  }, []);
 
   const update = useCallback(() => {
-    if (isHandlingWheelOrTouch) return;
+    if (isHandlingWheelOrTouchRef.current) return;
     const scrollY = window.scrollY;
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+    
+    targetProgressRef.current = progress;
     if (controllerRef.current) {
-      controllerRef.current.updateProgress(progress);
+      controllerRef.current.updateProgress(progress, { syncScrollbar: false });
     }
   }, []);
 
   useEffect(() => {
     controllerRef.current = createScrollProgressController();
+    targetProgressRef.current = usePortfolioStore.getState().scrollProgress;
     update();
 
     let touchStartY = 0;
@@ -39,7 +47,6 @@ export function useScrollProgress() {
       e.preventDefault();
       setHandlingWheelOrTouch();
 
-      const current = usePortfolioStore.getState().scrollProgress;
       let deltaY = e.deltaY;
 
       // Normalize line-scroll delta in Firefox
@@ -48,22 +55,22 @@ export function useScrollProgress() {
       }
 
       // Clamp max delta per event to limit single-tick velocity
-      const maxWheelDelta = 100;
+      const maxWheelDelta = 80;
       const clampedDeltaY = Math.min(maxWheelDelta, Math.max(-maxWheelDelta, deltaY));
 
-      // Map wheel delta to a controlled, small progress step
-      const speedMultiplier = 0.00008;
+      // Map wheel delta to a controlled, small progress step (calm cinematic pacing)
+      const speedMultiplier = 0.00005;
       const progressDelta = clampedDeltaY * speedMultiplier;
 
       // Apply deadzone to ignore tiny trackpad/inertia deltas
-      if (Math.abs(progressDelta) < 0.00015) return;
+      if (Math.abs(progressDelta) < 0.0001) return;
 
-      const nextProgress = Math.min(1, Math.max(0, current + progressDelta));
-      usePortfolioStore.getState().setScrollProgress(nextProgress);
+      const nextProgress = Math.min(1, Math.max(0, targetProgressRef.current + progressDelta));
+      targetProgressRef.current = nextProgress;
 
-      // Sync the native scrollbar position so dragging still aligns
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo(0, maxScroll * nextProgress);
+      if (controllerRef.current) {
+        controllerRef.current.updateProgress(nextProgress, { syncScrollbar: true });
+      }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -83,17 +90,17 @@ export function useScrollProgress() {
         }
         setHandlingWheelOrTouch();
 
-        const current = usePortfolioStore.getState().scrollProgress;
-        const speedMultiplier = 0.0006;
+        const speedMultiplier = 0.0004;
         const progressDelta = deltaY * speedMultiplier;
 
         if (Math.abs(progressDelta) < 0.0001) return;
 
-        const nextProgress = Math.min(1, Math.max(0, current + progressDelta));
-        usePortfolioStore.getState().setScrollProgress(nextProgress);
+        const nextProgress = Math.min(1, Math.max(0, targetProgressRef.current + progressDelta));
+        targetProgressRef.current = nextProgress;
 
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        window.scrollTo(0, maxScroll * nextProgress);
+        if (controllerRef.current) {
+          controllerRef.current.updateProgress(nextProgress, { syncScrollbar: true });
+        }
       }
     };
 
@@ -114,9 +121,9 @@ export function useScrollProgress() {
         controllerRef.current.destroy();
         controllerRef.current = null;
       }
-      if (wheelOrTouchTimeout !== null) {
-        window.clearTimeout(wheelOrTouchTimeout);
+      if (wheelOrTouchTimeoutRef.current !== null) {
+        window.clearTimeout(wheelOrTouchTimeoutRef.current);
       }
     };
-  }, [update]);
+  }, [update, setHandlingWheelOrTouch]);
 }

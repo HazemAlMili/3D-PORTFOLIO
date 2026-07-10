@@ -1,42 +1,51 @@
 import { usePortfolioStore } from "../store/portfolioStore";
-
-let rafId: number | null = null;
-let targetProgress: number | null = null;
+import { clampScrollDelta } from "./scrollProtection";
 
 export function createScrollProgressController() {
-  const setScrollProgress = usePortfolioStore.getState().setScrollProgress;
+  let rafId: number | null = null;
+  let targetProgress: number = 0;
+  let syncScrollbar: boolean = false;
+
+  const SETTLE_EPSILON = 0.0001;
 
   function flush() {
-    if (targetProgress !== null) {
-      setScrollProgress(targetProgress);
-      const current = usePortfolioStore.getState().scrollProgress;
+    const current = usePortfolioStore.getState().scrollProgress;
+    const next = clampScrollDelta(current, targetProgress);
+    const settled = Math.abs(next - targetProgress) <= SETTLE_EPSILON;
 
-      // If store progress has not yet caught up to target progress (e.g. due to clamping),
-      // keep requesting frames until we reach the target.
-      if (Math.abs(current - targetProgress) > 0.0001) {
-        rafId = requestAnimationFrame(flush);
-      } else {
-        targetProgress = null;
-        rafId = null;
-      }
-    } else {
+    const finalNext = settled ? targetProgress : next;
+    usePortfolioStore.getState().setScrollProgress(finalNext);
+
+    if (syncScrollbar) {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo(0, maxScroll * finalNext);
+    }
+
+    if (settled) {
       rafId = null;
+    } else {
+      rafId = requestAnimationFrame(flush);
     }
   }
 
-  function updateProgress(raw: number) {
-    const clamped = Math.min(1, Math.max(0, raw));
+  function updateProgress(target: number, options?: { syncScrollbar?: boolean }) {
+    const clamped = Math.min(1, Math.max(0, target));
     const reducedMotion = usePortfolioStore.getState().reducedMotion;
+
+    targetProgress = clamped;
+    syncScrollbar = options?.syncScrollbar ?? false;
 
     if (reducedMotion) {
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
         rafId = null;
       }
-      targetProgress = null;
-      setScrollProgress(clamped);
+      usePortfolioStore.getState().setScrollProgress(clamped);
+      if (syncScrollbar) {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo(0, maxScroll * clamped);
+      }
     } else {
-      targetProgress = clamped;
       if (rafId === null) {
         rafId = requestAnimationFrame(flush);
       }
@@ -48,8 +57,11 @@ export function createScrollProgressController() {
       cancelAnimationFrame(rafId);
       rafId = null;
     }
-    targetProgress = null;
   }
 
-  return { updateProgress, destroy };
+  function isAnimating() {
+    return rafId !== null;
+  }
+
+  return { updateProgress, destroy, isAnimating };
 }

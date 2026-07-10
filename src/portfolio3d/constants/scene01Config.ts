@@ -1,25 +1,17 @@
-export const SCENE_01_TEXT = {
-  title: "The System Behind Every Screen",
-  subtitle: "Cinematic Full Stack Developer Portfolio",
-  cta: "SCROLL TO EXPLORE ▼",
-};
+/**
+ * scene01Config.ts — Scene 01 System Boot Cinematic Configuration
+ */
 
-export const SCENE_01_COLORS = {
-  bezel: "#2D2D2D",
-  screenBg: "#0B0F14",
-  screenGlow: "#00B4D8",
-  gold: "#D8A84F",
-  textPrimary: "#F4F7FA",
-  textSecondary: "#B0B8C0",
-  textCyan: "#00B4D8",
-};
+export const SCENE01_COLORS = {
+  background: "#05070A",
+  primaryText: "#F4F7FA",
+  accentCyan: "#00B4D8",
+  deepBlue: "#2F80ED",
+  softCyan: "#38D6FF",
+  mutedSlate: "#7C8EA3",
+} as const;
 
-export const SCENE_01_PAGING = {
-  weight: 0.16,
-  subPhases: {
-    approach: [0, 0.20] as [number, number],   // 0.00 -> 0.032
-    enter: [0.20, 0.35] as [number, number],      // 0.032 -> 0.056
-    immerse: [0.35, 0.75] as [number, number],    // 0.056 -> 0.120 (EXTENDED)
-    exit: [0.75, 1.0] as [number, number],        // 0.120 -> 0.160
-  }
-};
+export const SCENE01_BASE_CONFIG = {
+  backgroundColor: SCENE01_COLORS.background,
+  accentColor: SCENE01_COLORS.accentCyan,
+} as const;

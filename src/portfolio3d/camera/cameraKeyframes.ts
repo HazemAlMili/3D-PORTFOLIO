@@ -19,12 +19,13 @@ import type { SceneId } from "../content/types";
  */
 export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
   "scene-01-opening": {
-    // Approach: mid-range overview — device visible, environment readable
-    // Enter: comfortable close-up — screen content clear but not inside bezel
-    // Exit: pull back to transfer distance for Scene 02
-    approach: { position: [0, 0.2, 8.0],  target: [0, 0, 0], fov: 52 },
-    enter:    { position: [0, 0,   2.5],  target: [0, 0, 0], fov: 72 },
-    exit:     { position: [0, 0.2, 9.0],  target: [0, 0, 0], fov: 52 },
+    // System Boot Cinematic Camera Sequence
+    // Approach: Wide, mysterious cinematic start
+    // Enter: Comfortable mid-distance framing name, role, and orbit
+    // Exit: Camera enters the portal center [0, 0, -0.2]
+    approach: { position: [0, 0.15, 7.5], target: [0, 0, 0], fov: 48 },
+    enter:    { position: [0, 0.05, 3.8], target: [0, 0, 0], fov: 50 },
+    exit:     { position: [0, 0.0, 0.9], target: [0, 0, -0.2], fov: 58 },
   },
 
   "scene-02-hero": {

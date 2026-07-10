@@ -17,18 +17,17 @@ export interface SceneSegment {
   };
 }
 
-// Pacing Recalibration — Post-Final Cinematic Repair / Task 1
-// Scene 01: 0.16→0.13 (cinematic intro, tighter; sub-phase fix compensates)
-// Scene 02: 0.14     (kept — hero identity needs scroll room; sub-phase improved)
-// Scene 03: 0.08→0.13 (CRITICAL FIX — architecture is content-dense; was too short)
-// Scene 04: 0.18→0.16 (slightly reduced; hold phase is the priority)
-// Scene 05: 0.12→0.13 (increased — 4-step UX flow needs more hold room)
-// Scene 06: 0.10→0.11 (increased — phone approach deserves more runway)
-// Scene 07: 0.12     (kept — system core is well balanced)
-// Scene 08: 0.10→0.09 (contact scene is simpler; approach is generous)
-// Total: 0.13+0.14+0.13+0.16+0.13+0.11+0.12+0.09 = 1.01 — adjust 08 to 0.08
-// 0.13+0.14+0.13+0.16+0.13+0.11+0.12+0.08 = 1.00 ✅
-export const SCROLL_WEIGHTS = [0.13, 0.14, 0.13, 0.16, 0.13, 0.11, 0.12, 0.08];
+// Pacing Recalibration — Cinematic Pacing Slowdown
+// Scene 01: 0.13→0.16 (cinematic intro, wider scroll space)
+// Scene 02: 0.14     (hero identity scroll room)
+// Scene 03: 0.13     (architecture stack hold)
+// Scene 04: 0.16→0.14 (slightly reduced; balanced)
+// Scene 05: 0.13     (tablet UX hold)
+// Scene 06: 0.11     (phone approach runway)
+// Scene 07: 0.12→0.11 (system core node constellation)
+// Scene 08: 0.08     (contact lockup)
+// Total: 0.16+0.14+0.13+0.14+0.13+0.11+0.11+0.08 = 1.00 ✅
+export const SCROLL_WEIGHTS = [0.16, 0.14, 0.13, 0.14, 0.13, 0.11, 0.11, 0.08];
 
 export const SCENE_IDS = [
   "scene-01-opening",

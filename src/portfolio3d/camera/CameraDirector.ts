@@ -44,6 +44,9 @@ export function resolveCameraPose(
   if (!states) return { position: [0, 0, 0], target: [0, 0, 0], fov: 50 };
 
   if (localT <= approach[1]) {
+    if (index === 0) {
+      return states.approach;
+    }
     const t = easeInOutCubic(normalize(localT, approach[0], approach[1]));
     const prevId = index > 0 ? segments[index - 1].sceneId : segment.sceneId;
     const prevStates = sceneStates[prevId] || states;

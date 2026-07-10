@@ -34,8 +34,8 @@ export function CameraController() {
       currentFov.current = pose.fov;
       isInitialized.current = true;
     } else {
-      // Frame-rate independent damp chasing (speed = 8.5 for smooth cinematic tracking)
-      const lerpFactor = 1 - Math.exp(-8.5 * delta);
+      // Frame-rate independent damp chasing (speed = 3.5 for heavy cinematic rig tracking)
+      const lerpFactor = 1 - Math.exp(-3.5 * delta);
       currentPosition.current.lerp(targetPos, lerpFactor);
       currentTarget.current.lerp(targetVec, lerpFactor);
       currentFov.current += (pose.fov - currentFov.current) * lerpFactor;
