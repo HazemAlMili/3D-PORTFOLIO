@@ -1,142 +1,85 @@
 // scenes/Scene02Hero.tsx
-// Scene 02 — Hero / Main Identity
-// Follows the Scene Experience Contract: device → approach → enter → immerse hold → exit.
-// Content progression is driven by localProgress through the immerse sub-phase [0.30, 0.78].
+// Scene 02 — Hero / Cinematic Command Center Node
+// Rebuilds Scene 02 from a flat monitor box into a 3D Command Center environment.
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group } from "three";
-import { HeroScreenContent } from "../components/HeroScreenContent";
-import { CodeFragment, DataLines } from "../components/background";
-import { CODE_FRAGMENTS } from "../constants/backgroundConfig";
-import { SCENE_02_COLORS, SCENE_02_SUB_PHASES } from "../constants/scene02Config";
+import { HeroCommandNode } from "../components/hero/HeroCommandNode";
+import { SCENE_02_SUB_PHASES } from "../constants/scene02Config";
 import { usePortfolioStore } from "../store/portfolioStore";
+import { PERF_DEBUG } from "../constants/scene01Config";
 
 interface Scene02HeroProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroDevice — procedural monitor frame (no GLB). Matches the screen area
-// used by HeroScreenContent: screen panel 3.6 × 2.6, screen at Z=+0.16.
-// ─────────────────────────────────────────────────────────────────────────────
-function HeroDevice() {
-  return (
-    <group>
-      {/* Bezel — dark graphite metallic box */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[4.0, 2.9, 0.30]} />
-        <meshStandardMaterial
-          color={SCENE_02_COLORS.bezel}
-          metalness={0.88}
-          roughness={0.20}
-        />
-      </mesh>
-
-      {/* Screen surface — emissive dark panel, front face */}
-      <mesh position={[0, 0, 0.16]}>
-        <planeGeometry args={[3.6, 2.55]} />
-        <meshStandardMaterial
-          color={SCENE_02_COLORS.screenBg}
-          emissive={SCENE_02_COLORS.screenEmissive}
-          emissiveIntensity={0.5}
-          metalness={0.05}
-          roughness={0.45}
-        />
-      </mesh>
-
-      {/* Cyan top accent strip */}
-      <mesh position={[0, 1.47, 0.155]}>
-        <boxGeometry args={[4.02, 0.03, 0.01]} />
-        <meshStandardMaterial
-          color={SCENE_02_COLORS.accentCyan}
-          emissive={SCENE_02_COLORS.accentCyan}
-          emissiveIntensity={0.9}
-          metalness={0.9}
-          roughness={0.1}
-        />
-      </mesh>
-
-      {/* Gold bottom accent strip */}
-      <mesh position={[0, -1.47, 0.155]}>
-        <boxGeometry args={[4.02, 0.03, 0.01]} />
-        <meshStandardMaterial
-          color={SCENE_02_COLORS.accentGold}
-          emissive={SCENE_02_COLORS.accentGold}
-          emissiveIntensity={0.6}
-          metalness={0.9}
-          roughness={0.1}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Scene02Hero — outer shell
-// ─────────────────────────────────────────────────────────────────────────────
-export function Scene02Hero({ sceneId, sceneIndex, localProgress }: Scene02HeroProps) {
+export function Scene02Hero({
+  sceneId,
+  sceneIndex,
+  localProgress,
+  opacity = 1.0,
+}: Scene02HeroProps) {
   const deviceGroupRef = useRef<Group>(null);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+  const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
+  const isTransitioningFrom01 = scrollProgress < 0.20 && opacity < 0.98;
 
-  // Damp device floating during enter/immerse — camera is close, we don't want drift
-  const [enterStart] = SCENE_02_SUB_PHASES.enter;
-  const [immerseStart] = SCENE_02_SUB_PHASES.immerse;
+  // P5 - Transition budget: skip rendering and animating next scene if opacity is tiny
+  const shouldRenderHeavy = opacity > 0.02;
+  const shouldAnimate = opacity > 0.05;
+
+  const shouldRenderStatic = reducedMotion === true || !shouldAnimate;
+
+  // Sub-phase boundaries for floating animation dampening
+  const [arrivalStart] = SCENE_02_SUB_PHASES.arrival;
+  const [handoffStart] = SCENE_02_SUB_PHASES.handoff;
 
   useFrame((state) => {
+    if (!shouldRenderHeavy || opacity < 0.05 || (isTransitioningFrom01 && PERF_DEBUG.disableNextSceneDuringExit)) return;
     if (shouldRenderStatic) return;
     if (!deviceGroupRef.current) return;
 
     const p = localProgress;
     const t = state.clock.getElapsedTime();
 
-    // Breathing damps out during enter phase, reaches 0 by immerse start
-    const dampFactor = p < enterStart
-      ? 1
-      : Math.max(0, 1 - (p - enterStart) / (immerseStart - enterStart));
+    // Subtle ambient breathing float of the command center
+    const dampFactor = p >= handoffStart
+      ? Math.max(0, 1 - (p - handoffStart) / (1.0 - handoffStart))
+      : p < arrivalStart ? 0.5 : 1.0;
 
-    deviceGroupRef.current.position.y = Math.sin(t * 1.0) * 0.03 * dampFactor;
-    deviceGroupRef.current.rotation.y = Math.sin(t * 0.5) * 0.015 * dampFactor;
-    deviceGroupRef.current.rotation.x = Math.cos(t * 0.7) * 0.008 * dampFactor;
+    deviceGroupRef.current.position.y = Math.sin(t * 0.8) * 0.02 * dampFactor;
+    deviceGroupRef.current.rotation.y = Math.sin(t * 0.3) * 0.008 * dampFactor;
   });
+
+  // Developer-only isolation toggle for next-scene rendering during exit
+  if (isTransitioningFrom01 && PERF_DEBUG.disableNextSceneDuringExit) {
+    return null;
+  }
+
+  // Render absolutely nothing if opacity is tiny to save frame budget (P5)
+  if (!shouldRenderHeavy) return null;
 
   return (
     <group position={[0, 0, 0]} userData={{ sceneId, sceneIndex }}>
-      {/* Studio lighting */}
-      <ambientLight intensity={0.18} color="#1A2430" />
+      {/* Studio / Command Center lighting */}
+      <ambientLight intensity={0.22} color="#0A1828" />
       <directionalLight position={[5, 5, 5]} intensity={0.9} color="#F4F7FA" />
       <directionalLight position={[-3, 2, 4]} intensity={0.45} color="#38D6FF" />
-      <pointLight position={[0, 0, 3]} intensity={0.4} color="#2F80ED" />
+      <pointLight position={[0, 0, 3]} intensity={0.35} color="#2F80ED" />
 
-      {/* Device shell with subtle floating animation */}
+      {/* 3D Command Node & Capability Modules */}
       <group ref={deviceGroupRef}>
-        <HeroDevice />
-
-        {/* In-screen content — rendered on the screen surface plane (Z=+0.20) */}
-        <group position={[0, 0, 0.20]}>
-          <HeroScreenContent
-            localProgress={localProgress}
-            reducedMotion={shouldRenderStatic}
-          />
-        </group>
+        <HeroCommandNode
+          localProgress={localProgress}
+          opacity={opacity}
+          reducedMotion={shouldRenderStatic}
+        />
       </group>
 
-      {/* Background system elements — behind the device */}
-      <group position={[0, 0, -1.5]}>
-        <DataLines nodeCount={10} lineOpacity={0.06} color="#00B4D8" />
-        {CODE_FRAGMENTS.slice(0, 4).map((f, idx) => (
-          <CodeFragment
-            key={idx}
-            content={f.content}
-            position={f.pos}
-            color="#D4AF37"
-            opacity={0.10 + (idx % 3) * 0.04}
-          />
-        ))}
-      </group>
+      {/* Background system elements — removed at user request */}
     </group>
   );
 }

@@ -15,3 +15,18 @@ export const SCENE01_BASE_CONFIG = {
   backgroundColor: SCENE01_COLORS.background,
   accentColor: SCENE01_COLORS.accentCyan,
 } as const;
+
+export const PERF_DEBUG = {
+  disablePortal: false,
+  disableKernelShell: false,
+  disableParticles: false,
+  disableCodeOrbit: false,
+  disableLayers: false,
+  disableNextSceneDuringExit: false,
+};
+
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).PERF_DEBUG = PERF_DEBUG;
+}
+

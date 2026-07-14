@@ -2,11 +2,13 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { InstancedMesh, Object3D, Color } from "three";
 import { usePortfolioStore } from "../../store/portfolioStore";
-import { SCENE01_COLORS } from "../../constants/scene01Config";
+import { SCENE01_COLORS, PERF_DEBUG } from "../../constants/scene01Config";
 import { SystemBootMotionState } from "./systemBootMotion";
+import { pointerInfluence } from "../../interaction/usePointerInfluence";
 
 interface SystemBootParticlesProps {
   motion: SystemBootMotionState;
+  localProgress: number;
 }
 
 function seededRandom(seed: number) {
@@ -14,10 +16,11 @@ function seededRandom(seed: number) {
   return x - Math.floor(x);
 }
 
-export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
+export function SystemBootParticles({ motion, localProgress }: SystemBootParticlesProps) {
   const deviceTier = usePortfolioStore((state) => state.deviceTier);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
 
+  // Upgrade particle count to support rich glyph resolution
   const count = useMemo(() => {
     if (reducedMotion) return 0;
     if (deviceTier === "low") return 40;
@@ -42,9 +45,14 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
       if (sizeRoll > 0.96) scale = 0.045; // large
       else if (sizeRoll > 0.82) scale = 0.026; // medium
 
-      // Assign type role: 30% are "identity compiling streams", 70% are regular "orbiting data"
+      // Assign type role: 30% are "compile-stream" particles routing to the HUD panel, 70% are regular "orbit-data"
       const roleRoll = seededRandom(i * 105);
       const roleType = roleRoll > 0.7 ? "compile-stream" : "orbit-data";
+
+      // Panel cluster destination in bottom-left quadrant (X ~ -1.25, Y ~ -0.65, Z ~ 0.8)
+      const px = -1.25 + (seededRandom(i * 13) - 0.5) * 0.22;
+      const py = -0.65 + (seededRandom(i * 17) - 0.5) * 0.15;
+      const pz = 0.8 + (seededRandom(i * 19) - 0.5) * 0.1;
 
       // Color scheme
       const randType = seededRandom(i * 111);
@@ -52,19 +60,24 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
       if (randType > 0.85) colorStr = SCENE01_COLORS.primaryText;
       else if (randType > 0.6) colorStr = SCENE01_COLORS.deepBlue;
 
-      arr.push({ r, theta, speed, y, scale, roleType, color: new Color(colorStr) });
+      arr.push({ r, theta, speed, y, scale, roleType, px, py, pz, color: new Color(colorStr) });
     }
     return arr;
   }, [count]);
 
   const tempObject = useMemo(() => new Object3D(), []);
 
+  // Collapse: 0.80 – 0.96 pulls particles toward kernel
+  const collapseProgress = motion.collapseProgress;
+
   useFrame((state) => {
+    if (PERF_DEBUG.disableParticles) return;
     if (!meshRef.current || count === 0) return;
 
     const time = state.clock.getElapsedTime();
 
     particles.forEach((p, i) => {
+
       // 1. DORMANT state: scale is 0
       if (motion.dormant < 0.99) {
         tempObject.scale.setScalar(0);
@@ -76,11 +89,12 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
 
       // Calculate base orbit angles (slowed down for a calmer drift feel)
       const orbitSpeed = time * 0.05 * p.speed + motion.dataGathering * 0.9 * p.speed;
-      const currentTheta = p.theta + orbitSpeed;
+      
+      // Spiral assembly offset: particles spiral inward from outer angles during dataGathering
+      const spiralOffset = (1.0 - motion.dataGathering) * 2.5 * p.speed;
+      const currentTheta = p.theta + orbitSpeed + spiralOffset;
 
       // 2. DATA GATHERING: Stream inward from outer space to their final orbits
-      // When dataGathering is 0, they are pushed far outward (radius * 3).
-      // As dataGathering goes 0 -> 1, they converge to their final radius.
       const gatherFactor = 3.0 - motion.dataGathering * 2.0;
       const currentR = p.r * gatherFactor;
 
@@ -88,39 +102,40 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
       let z = Math.sin(currentTheta) * currentR;
       let currentY = p.y * gatherFactor;
 
-      // 3. IDENTITY COMPILE: Pull compile-stream particles towards text sweep lines
-      if (motion.identityCompile > 0.05 && motion.identityCompile < 0.98 && p.roleType === "compile-stream") {
-        const isNameRange = p.y > 0.0;
-        const targetY = isNameRange ? 0.22 : -0.15;
-        
-        // Sweep boundaries
-        const nameHalfWidth = 1.3;
-        // Correct right-to-left sweep matching name clipPath
-        const nameSweepX = nameHalfWidth - motion.nameReveal * (nameHalfWidth * 2);
-        
-        const roleHalfWidth = 1.1;
-        // Left-to-right sweep matching role clipPath
-        const roleSweepX = -roleHalfWidth + motion.roleReveal * (roleHalfWidth * 2);
-        
-        const targetX = isNameRange ? nameSweepX : roleSweepX;
+      // 3. HUD PANEL ROUTING: compile-stream particles route from kernel [0,0,0] to HUD panel [-1.25, -0.65, 0.8]
+      if (p.roleType === "compile-stream") {
+        if (localProgress >= 0.40 && localProgress <= 0.84) {
+          // Outward routing phase (0.40 - 0.62)
+          const routeMin = 0.40;
+          const routeMax = 0.62;
+          const routeT = Math.min(1, Math.max(0, (localProgress - routeMin) / (routeMax - routeMin)));
+          const routingProgress = routeT * routeT * (3 - 2 * routeT); // smoothstep
+          
+          x = p.px * routingProgress;
+          currentY = p.py * routingProgress;
+          z = p.pz * routingProgress;
 
-        // Lerp position to laser cursor coordinates during reveal
-        const compileWeight = isNameRange ? motion.nameReveal : motion.roleReveal;
-        if (compileWeight > 0.05 && compileWeight < 0.98) {
-          x = x * (1 - compileWeight) + targetX * compileWeight;
-          currentY = currentY * (1 - compileWeight) + targetY * compileWeight;
-          z = z * (1 - compileWeight) + 0.8 * compileWeight; // pull to text depth
+          // Indicator lights subtle pulse / vibration on panel during hold (0.72 - 0.84)
+          if (localProgress >= 0.72) {
+            const glowPulse = Math.sin(time * 6 + i) * 0.005;
+            x += glowPulse;
+            currentY += glowPulse;
+          }
+        } else if (localProgress > 0.84 && localProgress <= 0.92) {
+          // Dissolve back to kernel phase (0.84 - 0.92)
+          const exitProgress = motion.panelExit;
+          x = p.px * (1.0 - exitProgress);
+          currentY = p.py * (1.0 - exitProgress);
+          z = p.pz * (1.0 - exitProgress);
+        } else if (localProgress > 0.92) {
+          // Settle inside core
+          x = 0;
+          currentY = 0;
+          z = 0;
         }
       }
 
-      // 3b. IDENTITY EXIT: Pull compiling data streams back into the center kernel
-      if (motion.identityExit > 0.01 && p.roleType === "compile-stream") {
-        x = x * (1.0 - motion.identityExit);
-        currentY = currentY * (1.0 - motion.identityExit);
-        z = z * (1.0 - motion.identityExit);
-      }
-
-      // 4. PORTAL OPEN: Pull particles inward (radius goes to 0)
+      // 4. PORTAL OPEN: Pull remaining orbit particles inward
       const pullFactor = 1.0 - motion.portalOpen * 0.96;
       x *= pullFactor;
       z *= pullFactor;
@@ -128,22 +143,14 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
 
       tempObject.position.set(x, currentY, z);
 
-      // Particle scale calculations (fade in with firstPulse, out with enterSystem)
-      let scaleFactor = p.scale * motion.firstPulse * (1.0 - motion.enterSystem);
+      // Particle scale: fade in with firstPulse, collapse-shrink toward kernel during collapseProgress
+      // Scale shrinks as particles approach kernel (not abrupt count culling)
+      const collapseShrink = Math.max(0, 1.0 - collapseProgress * 1.15);
+      let scaleFactor = p.scale * motion.firstPulse * (1.0 - motion.enterSystem) * collapseShrink;
 
-      // Dim regular orbiting particles by 50% during identity compilation to keep text legible
-      if (motion.identityCompile > 0.01) {
-        const dimFactor = 1.0 - motion.identityCompile * 0.5;
-        scaleFactor *= dimFactor;
-      }
-
-      // 5. TEXT SAFE ZONE: Prevent remaining orbiting particles from occluding text
-      // Safe zone box: X [-1.6, 1.6], Y [-0.35, 0.35], Z > 0.2
-      const inSafeZone = x > -1.6 && x < 1.6 && currentY > -0.35 && currentY < 0.35 && z > 0.2;
-      const identityActive = motion.nameReveal > 0.05 || motion.roleReveal > 0.05;
-      
-      if (identityActive && inSafeZone && p.roleType !== "compile-stream") {
-        scaleFactor = 0; // hide regular particles crossing in front of text
+      // Dim compile-stream particles by 50% during hold to keep panel text readable
+      if (p.roleType === "compile-stream" && localProgress >= 0.72 && localProgress <= 0.84) {
+        scaleFactor *= 0.5;
       }
 
       tempObject.scale.setScalar(scaleFactor);
@@ -152,6 +159,18 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
       meshRef.current!.setColorAt(i, p.color);
     });
 
+    if (meshRef.current) {
+      if (!reducedMotion) {
+        meshRef.current.rotation.x = pointerInfluence.smoothY * 0.03;
+        meshRef.current.rotation.y = pointerInfluence.smoothX * 0.03;
+        meshRef.current.position.x = pointerInfluence.smoothX * 0.05;
+        meshRef.current.position.y = -pointerInfluence.smoothY * 0.05;
+      } else {
+        meshRef.current.rotation.set(0, 0, 0);
+        meshRef.current.position.set(0, 0, 0);
+      }
+    }
+
     meshRef.current.instanceMatrix.needsUpdate = true;
     if (meshRef.current.instanceColor) {
       meshRef.current.instanceColor.needsUpdate = true;
@@ -159,6 +178,8 @@ export function SystemBootParticles({ motion }: SystemBootParticlesProps) {
   });
 
   if (count === 0) return null;
+
+  if (PERF_DEBUG.disableParticles) return null;
 
   return (
     <instancedMesh

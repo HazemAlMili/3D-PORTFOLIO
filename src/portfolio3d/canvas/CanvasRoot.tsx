@@ -3,9 +3,14 @@ import { Suspense } from "react";
 import { CanvasErrorBoundary } from "./CanvasErrorBoundary";
 import { SceneManager } from "../scenes";
 import { CameraController } from "../camera";
+import { usePortfolioStore } from "../store/portfolioStore";
+import { usePointerListener } from "../interaction/usePointerInfluence";
 import "./CanvasRoot.css";
 
 export function CanvasRoot() {
+  const dpr = usePortfolioStore((state) => state.dpr);
+  usePointerListener();
+
   return (
     <div className="portfolio3d-canvas-container">
       <CanvasErrorBoundary>
@@ -18,7 +23,7 @@ export function CanvasRoot() {
             near: 0.1,
             far: 100,
           }}
-          dpr={[1, 2]}
+          dpr={[1, Math.max(1, Math.min(2, dpr))]}
           gl={{
             antialias: true,
             alpha: true,

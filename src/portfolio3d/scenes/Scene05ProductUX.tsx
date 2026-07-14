@@ -8,9 +8,14 @@ interface Scene05ProductUXProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
-export function Scene05ProductUX({ sceneId, sceneIndex, localProgress }: Scene05ProductUXProps) {
+export function Scene05ProductUX({ sceneId, sceneIndex, localProgress, opacity = 1.0 }: Scene05ProductUXProps) {
+  // Transition budget check
+  const shouldRenderHeavy = opacity > 0.02;
+  if (!shouldRenderHeavy) return null;
+
   // Developer reference check to ensure the config compiles successfully
   if (PRODUCT_THINKING_DATA.headline === "") {
     console.log("Empty headline reference");

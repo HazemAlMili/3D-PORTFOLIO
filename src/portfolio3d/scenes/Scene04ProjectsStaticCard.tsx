@@ -21,6 +21,7 @@ export function Scene04ProjectsStaticCard() {
               aria-controls={`panel-${project.id}`}
               className={`${styles.tabButton} ${activeTab === idx ? styles.activeTab : ""}`}
               onClick={() => setActiveTab(idx)}
+              data-interactive={`project-tab-${project.id}`}
             >
               {project.title}
             </button>

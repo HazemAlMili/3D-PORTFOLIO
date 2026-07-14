@@ -12,8 +12,7 @@ export function ContentOverlayRoot() {
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+  const shouldRenderStatic = reducedMotion === true;
 
   const segments = buildSceneSegments();
 

@@ -2,8 +2,10 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { Group } from "three";
-import { SCENE01_COLORS } from "../../constants/scene01Config";
+import { SCENE01_COLORS, PERF_DEBUG } from "../../constants/scene01Config";
 import { SystemBootMotionState } from "./systemBootMotion";
+import { usePortfolioStore } from "../../store/portfolioStore";
+import { pointerInfluence } from "../../interaction/usePointerInfluence";
 
 interface SystemBootCodeOrbitProps {
   motion: SystemBootMotionState;
@@ -13,6 +15,7 @@ const ORBIT_LABELS = ["UI", "API", "AUTH", "DB", "CACHE", "TEST", "DEPLOY"];
 
 export function SystemBootCodeOrbit({ motion }: SystemBootCodeOrbitProps) {
   const groupRef = useRef<Group>(null);
+  const localProgress = usePortfolioStore((state) => state.sceneLocalProgress);
 
   // Spacing and phase offsets for labels
   const labelData = useMemo(() => {
@@ -25,17 +28,34 @@ export function SystemBootCodeOrbit({ motion }: SystemBootCodeOrbitProps) {
   }, []);
 
   useFrame((state) => {
+    if (PERF_DEBUG.disableCodeOrbit) return;
     if (!groupRef.current) return;
     const elapsed = state.clock.getElapsedTime();
 
     // Rotate the entire orbit container slowly (slowed by 50%)
     const rotateSpeed = elapsed * 0.06 + motion.dataGathering * 0.3;
     groupRef.current.rotation.y = rotateSpeed;
+
+    // Apply pointer influence tilt (only while not collapsing)
+    if (motion.collapseProgress < 0.1) {
+      groupRef.current.rotation.x = pointerInfluence.smoothY * 0.02;
+      groupRef.current.rotation.z = pointerInfluence.smoothX * 0.02;
+    }
+
+    // Cinematic collapse: scale the entire orbit group toward the kernel
+    const collapseScale = 1.0 - motion.collapseProgress * 0.98;
+    groupRef.current.scale.setScalar(Math.max(0.001, collapseScale));
   });
 
+  if (PERF_DEBUG.disableCodeOrbit) return null;
+
+  // Unmount only after fully collapsed
+  if (localProgress >= 1.0) return null;
+
   // Calculate opacity based on beats
-  // Fades in with dataGathering (0.20 - 0.35), fades out with systemLock (0.70 - 0.82)
-  const opacity = motion.dataGathering * (1.0 - motion.systemLock);
+  // Fades in with dataGathering, fades out during late collapse
+  const collapseOpacityFade = Math.max(0, 1.0 - motion.collapseProgress * 1.6);
+  const opacity = motion.dataGathering * (1.0 - motion.systemLock * 0.3) * collapseOpacityFade;
 
   if (opacity <= 0.005) return null;
 

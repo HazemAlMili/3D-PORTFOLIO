@@ -1,154 +1,134 @@
-.system-boot-identity-overlay {
+.system-boot-hud-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 8vh;
+  left: 8vw;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   pointer-events: none;
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   z-index: 10;
-  will-change: filter;
-  transition: filter 0.05s ease-out;
 }
 
-.system-boot-text-container {
+.system-boot-hud-panel {
+  position: relative;
+  background: rgba(4, 7, 12, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 3px solid #38D6FF;
+  padding: 1rem 1.4rem;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 100%;
+  width: clamp(260px, 20vw, 320px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(56, 214, 255, 0.05);
+  will-change: opacity, transform;
 }
 
-/* Stacking groups for solid + ghost alignment */
-.system-boot-name-group,
-.system-boot-role-group {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  will-change: transform;
-  transition: transform 0.05s ease-out;
-}
-
-.system-boot-name-group {
-  height: clamp(3rem, 6vw, 5.5rem);
-}
-
-.system-boot-role-group {
-  height: clamp(2rem, 3vw, 3rem);
-  margin-top: 0.8rem;
-}
-
-.system-boot-name-wrapper,
-.system-boot-role-wrapper {
-  position: relative;
-  display: inline-block;
-  will-change: transform, opacity, clip-path;
-  transition: transform 0.05s ease-out, clip-path 0.05s ease-out;
-  z-index: 2;
-}
-
-/* Solid Typography */
-.system-boot-name {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 700;
-  color: #F4F7FA;
-  margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  white-space: nowrap;
-}
-
-.system-boot-role {
-  font-size: clamp(1rem, 2vw, 1.8rem);
-  font-weight: 500;
-  color: #00B4D8;
-  margin: 0;
-  text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  white-space: nowrap;
-}
-
-/* Ghost outlines positioned behind solid */
-.name-ghost,
-.role-ghost {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: transparent !important;
-  z-index: 1;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.name-ghost {
-  -webkit-text-stroke: 1px rgba(244, 247, 250, 0.16);
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.role-ghost {
-  -webkit-text-stroke: 1.5px rgba(0, 180, 216, 0.18);
-  font-size: clamp(1rem, 2vw, 1.8rem);
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-/* Glowing laser sweeper lines */
-.system-boot-laser {
+/* Border animations */
+.hud-panel-border-top {
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 3px;
-  background: #38D6FF;
-  box-shadow: 
-    0 0 8px #00B4D8,
-    0 0 15px #38D6FF,
-    0 0 30px #2F80ED;
-  pointer-events: none;
-  will-change: left, opacity;
-  border-radius: 2px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #38D6FF, transparent);
+  will-change: width;
+  transition: width 0.05s ease-out;
 }
 
-.name-laser {
-  height: 100%;
-}
-
-.role-laser {
-  height: 100%;
-  background: #00B4D8;
-}
-
-/* Compiling Status Percent Tag */
-.system-boot-status-tag {
+.hud-panel-border-bottom {
   position: absolute;
-  top: -24px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #38D6FF, transparent);
+  will-change: width;
+  transition: width 0.05s ease-out;
+}
+
+.hud-panel-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-panel-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38D6FF;
+  box-shadow: 0 0 8px #38D6FF;
+  animation: hudDotPulse 2s infinite ease-in-out;
+}
+
+.hud-status-label {
   font-family: monospace;
   font-size: 0.65rem;
   color: #38D6FF;
-  letter-spacing: 0.05em;
-  background: rgba(5, 7, 10, 0.85);
-  border: 1px solid rgba(56, 214, 255, 0.4);
-  padding: 2px 6px;
-  border-radius: 3px;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
-.role-tag {
-  top: auto;
-  bottom: -24px;
+.hud-panel-divider {
+  height: 1px;
+  background: rgba(56, 214, 255, 0.12);
+  margin: 0.5rem 0;
+}
+
+.hud-name {
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  font-weight: 700;
+  color: #F4F7FA;
+  margin: 0.1rem 0 0.3rem 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hud-role {
+  font-size: clamp(0.7rem, 0.9vw, 0.78rem);
+  font-weight: 500;
   color: #00B4D8;
-  border-color: rgba(0, 180, 216, 0.4);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes hudDotPulse {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 2px #38D6FF;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px #38D6FF;
+  }
+}
+
+/* Responsiveness on narrow viewports */
+@media (max-width: 768px) {
+  .system-boot-hud-overlay {
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .system-boot-hud-panel {
+    width: 280px;
+    border-left: none;
+    border-top: 3px solid #38D6FF;
+    border-radius: 4px;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .hud-panel-border-top,
+  .hud-panel-border-bottom {
+    display: none;
+  }
 }

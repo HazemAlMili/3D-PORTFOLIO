@@ -22,8 +22,7 @@ export function Portfolio3DExperience() {
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const sceneLocalProgress = usePortfolioStore((state) => state.sceneLocalProgress);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+  const shouldRenderStatic = reducedMotion === true;
 
   // Execute CameraDirector interpolation logic in dev
   useEffect(() => {
@@ -61,6 +60,9 @@ export function Portfolio3DExperience() {
       <div className="portfolio3d-canvas-shell">
         <CanvasRoot />
       </div>
+
+      {/* Global Cinematic Vignette overlay */}
+      <div className="cinematic-vignette" />
       
       {/* Scroll spacer to define vertical scrollable height (8 scenes * 300vh) */}
       <div className="portfolio3d-scroll-spacer" style={{ height: "2400vh", pointerEvents: "none" }} />
@@ -73,6 +75,7 @@ export function Portfolio3DExperience() {
           onClick={handleSkipIntro}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleSkipIntro(); }}
           aria-label="Skip intro and go to hero section"
+          data-interactive="skip-intro"
         >
           Skip Intro ⏭
         </button>

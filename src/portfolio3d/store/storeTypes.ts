@@ -16,6 +16,7 @@ export interface PortfolioState {
   reducedMotion: boolean;
   webglSupported: boolean;
   isLoading: boolean;
+  dpr: number;
 
   setScrollProgress: (progress: number) => void;
   setActiveScene: (index: number, localProgress: number) => void;
@@ -23,4 +24,5 @@ export interface PortfolioState {
   setReducedMotion: (value: boolean) => void;
   setWebglSupported: (value: boolean) => void;
   setLoading: (value: boolean) => void;
+  setDpr: (value: number) => void;
 }

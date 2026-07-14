@@ -12,22 +12,28 @@ interface Scene03ArchitectureProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
 export function Scene03Architecture({
   sceneId,
   sceneIndex,
   localProgress,
+  opacity = 1.0,
 }: Scene03ArchitectureProps) {
   const deviceGroupRef = useRef<Group>(null);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+
+  // Transition budget check
+  const shouldRenderHeavy = opacity > 0.02;
+  const shouldAnimate = opacity > 0.05;
+  const shouldRenderStatic = reducedMotion === true || !shouldAnimate;
 
   const [enterStart] = SCENE_03_SUB_PHASES.enter;
   const [immerseStart] = SCENE_03_SUB_PHASES.immerse;
 
   useFrame((state) => {
+    if (!shouldRenderHeavy) return;
     if (shouldRenderStatic) return;
     if (!deviceGroupRef.current) return;
 
@@ -43,6 +49,8 @@ export function Scene03Architecture({
     deviceGroupRef.current.rotation.y = Math.sin(t * 0.45) * 0.012 * dampFactor;
     deviceGroupRef.current.rotation.x = Math.cos(t * 0.65) * 0.007 * dampFactor;
   });
+
+  if (!shouldRenderHeavy) return null;
 
   return (
     <group position={[0, 0, 0]} userData={{ sceneId, sceneIndex }}>

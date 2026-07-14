@@ -41,7 +41,7 @@ export function Scene01Opening({ localProgress }: Scene01OpeningProps) {
       <SystemBootPortal motion={motion} />
 
       {/* 3. Orbiting Data / Code Particles (optimized instanced mesh) */}
-      <SystemBootParticles motion={motion} />
+      <SystemBootParticles motion={motion} localProgress={localProgress} />
 
       {/* 4. Orbiting Technical Labels / Track lines */}
       <Suspense fallback={null}>

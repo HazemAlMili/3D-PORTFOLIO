@@ -12,34 +12,23 @@ interface Scene04ProjectsProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
-export function Scene04Projects({ sceneId, sceneIndex, localProgress }: Scene04ProjectsProps) {
+export function Scene04Projects({ sceneId, sceneIndex, localProgress, opacity = 1.0 }: Scene04ProjectsProps) {
   const deviceGroupRef = useRef<Group>(null);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+
+  // Transition budget check
+  const shouldRenderHeavy = opacity > 0.02;
+  const shouldAnimate = opacity > 0.05;
+  const shouldRenderStatic = reducedMotion === true || !shouldAnimate;
 
   const [enterStart] = SCENE_04_SUB_PHASES.enter;
-  // Transition calculations from Scene 03 to Scene 04
-  const transitionOpacity = localProgress < 0.40 ? (1 - localProgress / 0.40) : 0;
-  const approachT = Math.min(1, Math.max(0, localProgress / 0.40));
-  const packetPos = new Vector3().lerpVectors(
-    new Vector3(...SCENE_04_ANCHORS.architectureSource),
-    new Vector3(...SCENE_04_ANCHORS.laptopScreenTarget),
-    approachT
-  );
   const [immerseStart, immerseEnd] = SCENE_04_SUB_PHASES.immerse;
-  const immerseLen = immerseEnd - immerseStart;
-
-  // Normalise progress inside immerse hold phase
-  const immerseT = Math.min(1, Math.max(0, (localProgress - immerseStart) / immerseLen));
-
-  // Determine active project based on progress slice
-  const stepCount = PROJECT_DATA.length;
-  const activeIndex = Math.min(stepCount - 1, Math.floor(immerseT * stepCount));
 
   useFrame((state) => {
+    if (!shouldRenderHeavy) return;
     if (shouldRenderStatic) return;
     if (!deviceGroupRef.current) return;
 
@@ -55,6 +44,25 @@ export function Scene04Projects({ sceneId, sceneIndex, localProgress }: Scene04P
     deviceGroupRef.current.rotation.y = Math.sin(t * 0.4) * 0.01 * dampFactor;
     deviceGroupRef.current.rotation.x = Math.cos(t * 0.5) * 0.005 * dampFactor;
   });
+
+  // Transition calculations from Scene 03 to Scene 04
+  const transitionOpacity = localProgress < 0.40 ? (1 - localProgress / 0.40) : 0;
+  const approachT = Math.min(1, Math.max(0, localProgress / 0.40));
+  const packetPos = new Vector3().lerpVectors(
+    new Vector3(...SCENE_04_ANCHORS.architectureSource),
+    new Vector3(...SCENE_04_ANCHORS.laptopScreenTarget),
+    approachT
+  );
+  const immerseLen = immerseEnd - immerseStart;
+
+  // Normalise progress inside immerse hold phase
+  const immerseT = Math.min(1, Math.max(0, (localProgress - immerseStart) / immerseLen));
+
+  // Determine active project based on progress slice
+  const stepCount = PROJECT_DATA.length;
+  const activeIndex = Math.min(stepCount - 1, Math.floor(immerseT * stepCount));
+
+  if (!shouldRenderHeavy) return null;
 
   return (
     <group position={[0, 0, 0]} userData={{ sceneId, sceneIndex }}>

@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { Group } from "three";
 import { usePortfolioStore } from "../../store/portfolioStore";
-import { SCENE01_COLORS } from "../../constants/scene01Config";
+import { SCENE01_COLORS, PERF_DEBUG } from "../../constants/scene01Config";
 import { SystemBootMotionState, normalizeRange } from "./systemBootMotion";
 
 interface SystemBootLayersProps {
@@ -28,14 +28,21 @@ const LAYERS: LayerDefinition[] = [
 export function SystemBootLayers({ motion }: SystemBootLayersProps) {
   const groupRef = useRef<Group>(null);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
+  const localProgress = usePortfolioStore((state) => state.sceneLocalProgress);
 
   useFrame((state) => {
+    if (PERF_DEBUG.disableLayers || localProgress >= 0.92) return;
     if (reducedMotion) return;
     const elapsed = state.clock.getElapsedTime();
     if (groupRef.current) {
       groupRef.current.rotation.y = elapsed * 0.025;
     }
   });
+
+  if (PERF_DEBUG.disableLayers) return null;
+
+  // Unmount only after fully collapsed
+  if (localProgress >= 1.0) return null;
 
   // Base layers opacity: fades out during systemLock / portalOpen
   const baseOpacity = reducedMotion ? 1.0 : (1.0 - motion.systemLock);
@@ -50,15 +57,15 @@ export function SystemBootLayers({ motion }: SystemBootLayersProps) {
         const r = 0.95;
         const x = Math.cos(angle) * r;
         const z = Math.sin(angle) * r;
-        const height = 1.2 * (1.0 - motion.systemLock);
+        const height = 1.2 * (1.0 - motion.systemLock) * (1.0 - motion.collapseProgress);
 
         return (
-          <mesh key={idx} position={[x, 0, z]} renderOrder={14}>
+          <mesh key={idx} position={[x * (1.0 - motion.collapseProgress), 0, z * (1.0 - motion.collapseProgress)]} renderOrder={14}>
             <boxGeometry args={[0.004, height, 0.004]} />
             <meshBasicMaterial
               color={SCENE01_COLORS.mutedSlate}
               transparent
-              opacity={baseOpacity * motion.layersOnline * 0.12}
+              opacity={baseOpacity * motion.layersOnline * 0.12 * (1.0 - motion.collapseProgress)}
               depthWrite={false}
             />
           </mesh>
@@ -68,17 +75,23 @@ export function SystemBootLayers({ motion }: SystemBootLayersProps) {
       {LAYERS.map((layer, idx) => {
         // Reverse stagger order: FRONTEND (idx 4) -> API (3) -> BACKEND (2) -> DB (1) -> DEPLOY (0)
         const staggerIdx = 4 - idx;
-        const revealStart = staggerIdx * 0.14; // slightly wider spacing to show overlap clearly
+        const revealStart = staggerIdx * 0.14;
         const revealEnd = Math.min(1.0, revealStart + 0.32);
         
         const finalReveal = reducedMotion 
           ? 1.0 
           : normalizeRange(motion.layersOnline, revealStart, revealEnd);
 
-        // Collapse layers into Y=0 and scale down to 0 during systemLock (0.70 – 0.82)
-        const collapseY = layer.y * (1.0 - motion.systemLock);
-        const ringScale = 0.95 * (1.0 - motion.systemLock);
-        const currentOpacity = baseOpacity * finalReveal;
+        // Staggered collapse: layers collapse inward at different rates
+        // Higher layers (FRONTEND) collapse slightly earlier than lower ones (DEPLOY)
+        const layerCollapseOffset = idx * 0.05;
+        const layerCollapse = Math.max(0, Math.min(1, motion.collapseProgress - layerCollapseOffset));
+        const layerCollapseSmooth = layerCollapse * layerCollapse * (3 - 2 * layerCollapse);
+
+        // Collapse layers into Y=0 and scale down to 0 driven by collapseProgress
+        const collapseY = layer.y * (1.0 - layerCollapseSmooth);
+        const ringScale = 0.95 * (1.0 - layerCollapseSmooth);
+        const currentOpacity = baseOpacity * finalReveal * (1.0 - layerCollapseSmooth * 0.85);
 
         if (currentOpacity <= 0.005) return null;
 

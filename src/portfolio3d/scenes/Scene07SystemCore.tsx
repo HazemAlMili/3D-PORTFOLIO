@@ -14,13 +14,19 @@ interface Scene07SystemCoreProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
 export function Scene07SystemCore({
   sceneId,
   sceneIndex,
   localProgress,
+  opacity = 1.0,
 }: Scene07SystemCoreProps) {
+  // Transition budget check
+  const shouldRenderHeavy = opacity > 0.02;
+  if (!shouldRenderHeavy) return null;
+
   // Content config reference — used for later node-label integration (Task 9.4+)
   void SYSTEM_CORE_DATA;
   // Static connection lines matching the layout coordinates

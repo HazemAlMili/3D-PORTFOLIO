@@ -7,13 +7,19 @@ interface Scene06ResponsivePerformanceProps {
   sceneId: string;
   sceneIndex: number;
   localProgress: number;
+  opacity?: number;
 }
 
 export function Scene06ResponsivePerformance({
   sceneId,
   sceneIndex,
   localProgress,
+  opacity = 1.0,
 }: Scene06ResponsivePerformanceProps) {
+  // Transition budget check
+  const shouldRenderHeavy = opacity > 0.02;
+  if (!shouldRenderHeavy) return null;
+
   // Transition calculations from Scene 05 to Scene 06
   const transitionOpacity = localProgress < 0.40 ? (1 - localProgress / 0.40) : 0;
   const approachT = Math.min(1, Math.max(0, localProgress / 0.40));

@@ -55,4 +55,16 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     set({
       isLoading: value,
     }),
+
+  dpr: 2,
+  setDpr: (value) =>
+    set({
+      dpr: value,
+    }),
 }));
+
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).portfolioStore = usePortfolioStore;
+}
+

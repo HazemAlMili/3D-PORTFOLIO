@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group, Mesh } from "three";
 import { usePortfolioStore } from "../../store/portfolioStore";
-import { SCENE01_COLORS } from "../../constants/scene01Config";
+import { SCENE01_COLORS, PERF_DEBUG } from "../../constants/scene01Config";
 import { SystemBootMotionState } from "./systemBootMotion";
+import { pointerInfluence } from "../../interaction/usePointerInfluence";
 
 interface SystemBootPortalProps {
   motion: SystemBootMotionState;
@@ -18,6 +19,7 @@ export function SystemBootPortal({ motion }: SystemBootPortalProps) {
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
 
   useFrame((state) => {
+    if (PERF_DEBUG.disablePortal) return;
     if (reducedMotion) return;
     const elapsed = state.clock.getElapsedTime();
 
@@ -25,16 +27,26 @@ export function SystemBootPortal({ motion }: SystemBootPortalProps) {
     if (ring1Ref.current) ring1Ref.current.rotation.z = elapsed * 0.4;
     if (ring2Ref.current) ring2Ref.current.rotation.z = -elapsed * 0.25;
     if (ring3Ref.current) ring3Ref.current.rotation.z = elapsed * 0.6;
+
+    // Apply global mouse parallax to portal group
+    if (groupRef.current) {
+      groupRef.current.position.set(
+        pointerInfluence.smoothX * 0.1,
+        -pointerInfluence.smoothY * 0.1,
+        0
+      );
+    }
   });
+
+  if (PERF_DEBUG.disablePortal) return null;
 
   // Base portal radius: starts at 0, grows to 1.35
   const baseRadius = motion.portalOpen * 1.35;
 
-  // During enterSystem, scale the rings UP aggressively so the camera passes
-  // through the center of the ring without clipping through geometry.
-  const enterScale = 1.0 + motion.enterSystem * 8.0;
+  // During enterSystem, scale the rings UP gently so the camera passes through
+  const enterScale = 1.0 + motion.enterSystem * 4.0;
 
-  const opacity = motion.portalOpen * (1.0 - motion.enterSystem * 0.95);
+  const opacity = motion.portalOpen * (1.0 - motion.enterSystem);
 
   if (opacity <= 0.005) return null;
 

@@ -17,17 +17,17 @@ export interface SceneSegment {
   };
 }
 
-// Pacing Recalibration — Cinematic Pacing Slowdown
-// Scene 01: 0.13→0.16 (cinematic intro, wider scroll space)
+// Pacing Recalibration — Cinematic Pacing & Storyboard Lock
+// Scene 01: 0.16→0.20 (cinematic intro, wide scroll space)
 // Scene 02: 0.14     (hero identity scroll room)
 // Scene 03: 0.13     (architecture stack hold)
-// Scene 04: 0.16→0.14 (slightly reduced; balanced)
-// Scene 05: 0.13     (tablet UX hold)
+// Scene 04: 0.14→0.12 (slightly reduced; balanced)
+// Scene 05: 0.13→0.11 (slightly reduced; balanced)
 // Scene 06: 0.11     (phone approach runway)
-// Scene 07: 0.12→0.11 (system core node constellation)
+// Scene 07: 0.11     (system core node constellation)
 // Scene 08: 0.08     (contact lockup)
-// Total: 0.16+0.14+0.13+0.14+0.13+0.11+0.11+0.08 = 1.00 ✅
-export const SCROLL_WEIGHTS = [0.16, 0.14, 0.13, 0.14, 0.13, 0.11, 0.11, 0.08];
+// Total: 0.20+0.14+0.13+0.12+0.11+0.11+0.11+0.08 = 1.00 ✅
+export const SCROLL_WEIGHTS = [0.20, 0.14, 0.13, 0.12, 0.11, 0.11, 0.11, 0.08];
 
 export const SCENE_IDS = [
   "scene-01-opening",
@@ -53,11 +53,11 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
       end,
       subPhases: sceneId === "scene-01-opening"
         ? {
-            // Scene 01 — cinematic portal: gradual pullback reveal, long hold
+            // Scene 01 — cinematic portal: gradual pullback reveal, long hold to 0.90
             approach: [0.00, 0.25],
             enter:    [0.25, 0.42],
-            immerse:  [0.42, 0.82],
-            exit:     [0.82, 1.00],
+            immerse:  [0.42, 0.90],
+            exit:     [0.90, 1.00],
           }
         : sceneId === "scene-02-hero"
         ? {

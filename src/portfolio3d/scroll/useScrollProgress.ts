@@ -58,8 +58,8 @@ export function useScrollProgress() {
       const maxWheelDelta = 80;
       const clampedDeltaY = Math.min(maxWheelDelta, Math.max(-maxWheelDelta, deltaY));
 
-      // Map wheel delta to a controlled, small progress step (calm cinematic pacing)
-      const speedMultiplier = 0.00005;
+      // Map wheel delta to a controlled, small progress step (further reduced to 0.00003 for high-precision slowdown)
+      const speedMultiplier = 0.00003;
       const progressDelta = clampedDeltaY * speedMultiplier;
 
       // Apply deadzone to ignore tiny trackpad/inertia deltas
@@ -90,7 +90,8 @@ export function useScrollProgress() {
         }
         setHandlingWheelOrTouch();
 
-        const speedMultiplier = 0.0004;
+        // Slow down touch swipe to 0.0002 for high-precision trackpad drift
+        const speedMultiplier = 0.0002;
         const progressDelta = deltaY * speedMultiplier;
 
         if (Math.abs(progressDelta) < 0.0001) return;

@@ -2,6 +2,8 @@ import { useRef, useLayoutEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Group, Material } from "three";
 import { usePortfolioStore } from "../store/portfolioStore";
+import { usePointerInfluence } from "../interaction/usePointerInfluence";
+import { GlobalSceneBackground } from "../background/GlobalSceneBackground";
 import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene01Opening } from "./Scene01Opening";
 import { Scene02Hero } from "./Scene02Hero";
@@ -28,9 +30,13 @@ interface FadeGroupProps {
 
 function FadeGroup({ opacity, children }: FadeGroupProps) {
   const groupRef = useRef<Group>(null);
+  const lastAppliedOpacityRef = useRef<number>(-1);
 
-  const applyOpacity = (target: number) => {
+  const applyOpacity = (target: number, force = false) => {
     if (!groupRef.current) return;
+    if (!force && Math.abs(lastAppliedOpacityRef.current - target) < 0.001) return;
+    lastAppliedOpacityRef.current = target;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupRef.current.traverse((child: any) => {
       if (child.isMesh || child.isLine || child.isPoints || child.isSprite) {
@@ -78,9 +84,8 @@ function FadeGroup({ opacity, children }: FadeGroupProps) {
 
   // Synchronous traversal before browser paint prevents 1-frame opacity flashes
   useLayoutEffect(() => {
-    applyOpacity(opacity);
+    applyOpacity(opacity, true);
   }, [opacity, children]);
-
 
   useFrame(() => {
     applyOpacity(opacity);
@@ -99,7 +104,8 @@ function renderScene(
   index: number,
   sceneId: string,
   localProgress: number,
-  shouldRenderStatic: boolean
+  shouldRenderStatic: boolean,
+  opacity: number
 ) {
   if (index === 0) {
     return (
@@ -116,6 +122,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -125,6 +132,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -134,6 +142,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -143,6 +152,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -152,6 +162,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -161,6 +172,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -170,6 +182,7 @@ function renderScene(
         sceneId={sceneId as SceneId}
         sceneIndex={index}
         localProgress={localProgress}
+        opacity={opacity}
       />
     );
   }
@@ -186,12 +199,13 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const activeSceneIndex = usePortfolioStore((state) => state.activeSceneIndex);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
-  const deviceTier = usePortfolioStore((state) => state.deviceTier);
+
+  usePointerInfluence();
 
   // Layout suppression: render nothing when visibility is disabled
   if (!visible) return null;
 
-  const shouldRenderStatic = reducedMotion === true || deviceTier === "low";
+  const shouldRenderStatic = reducedMotion === true;
   const segments = buildSceneSegments();
 
   // Unified clock: derive current scene index from the same smoothed progress
@@ -214,14 +228,20 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
 
   const indexesToRender = getCrossFadeSceneIndexes(currentIdx, segments.length - 1);
 
+  // P6 - SceneManager Transition Budget Thresholds
+  const RENDER_THRESHOLD = 0.015;
+
   return (
     <group>
+      {/* Global Cinematic System Background */}
+      <GlobalSceneBackground />
+
       {indexesToRender.map((idx) => {
         const seg = segments[idx];
         const fadeOpacity = getSceneFadeOpacity(idx, scrollProgress, segments);
 
-        // Always render the current active scene, or any scene with opacity above threshold
-        const shouldRender = idx === currentIdx || fadeOpacity > 0.01;
+        // Always render the current active scene, or any scene with opacity above threshold (P6 budget)
+        const shouldRender = idx === currentIdx || fadeOpacity > RENDER_THRESHOLD;
 
         if (!shouldRender) return null;
 
@@ -232,7 +252,7 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
         return (
           <group key={seg.sceneId} position={SPATIAL_BOARD_ENABLED ? stationPos : [0, 0, 0]}>
              <FadeGroup opacity={fadeOpacity}>
-                {renderScene(idx, seg.sceneId, clampedProgress, shouldRenderStatic)}
+                {renderScene(idx, seg.sceneId, clampedProgress, shouldRenderStatic, fadeOpacity)}
              </FadeGroup>
           </group>
         );

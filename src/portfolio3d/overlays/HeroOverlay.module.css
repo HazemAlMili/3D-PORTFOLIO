@@ -3,49 +3,98 @@
 
 .heroOverlay {
   position: absolute;
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  top: 50%;
+  left: 6%;
+  transform: translateY(-50%);
+  text-align: left;
   pointer-events: none;
   width: 90%;
-  max-width: var(--container-md);
+  max-width: 540px;
   padding: var(--spacing-md);
+  z-index: 10;
 }
 
 .heroOverlayContent {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.systemStatusTag {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(10, 24, 40, 0.92);
+  border: 1px solid rgba(56, 214, 255, 0.3);
+  border-radius: 20px;
+  font-family: monospace, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: #38D6FF;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-xs);
+  transition: opacity 0.2s ease-out;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #38D6FF;
+  box-shadow: 0 0 8px #38D6FF;
+}
+
+.missionHeadline {
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #F4F7FA;
+  margin: 0;
+  max-width: 540px;
+  text-shadow: 0 4px 16px rgba(5, 7, 10, 0.95), 0 0 10px rgba(5, 7, 10, 0.7);
+  transition: opacity 0.2s ease-out;
+}
+
+.missionSubtext {
+  font-size: clamp(0.88rem, 1.4vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: #A7B0BC;
+  margin: 0 0 var(--spacing-sm) 0;
+  max-width: 500px;
+  text-shadow: 0 2px 10px rgba(5, 7, 10, 0.95);
+  transition: opacity 0.2s ease-out;
 }
 
 .heroOverlayCtas {
   display: flex;
   gap: var(--spacing-md);
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin-top: 0;
+  margin-top: var(--spacing-xs);
   pointer-events: auto;
+  transition: opacity 0.2s ease-out;
 }
 
 .ctaButton {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-size: var(--text-base);
+  padding: 12px 24px;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   cursor: pointer;
-  background: rgba(18, 22, 33, 0.7);
+  background: rgba(10, 24, 40, 0.92);
   color: #F4F7FA;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   outline: none;
-  min-height: 48px; /* Touch target minimum */
-  min-width: 140px;
+  min-height: 44px;
+  min-width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,28 +102,31 @@
 }
 
 .ctaPrimary {
-  border-color: rgba(59, 130, 246, 0.5);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(29, 78, 216, 0.4) 100%);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  border-color: rgba(56, 214, 255, 0.6);
+  background: linear-gradient(135deg, rgba(56, 214, 255, 0.25) 0%, rgba(47, 128, 237, 0.35) 100%);
+  color: #38D6FF;
+  box-shadow: 0 0 15px rgba(56, 214, 255, 0.25);
 }
 
 .ctaPrimary:hover,
 .ctaPrimary:focus-visible {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.6) 0%, rgba(29, 78, 216, 0.6) 100%);
-  border-color: rgba(59, 130, 246, 0.8);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, rgba(56, 214, 255, 0.45) 0%, rgba(47, 128, 237, 0.55) 100%);
+  border-color: rgba(56, 214, 255, 0.9);
+  box-shadow: 0 0 25px rgba(56, 214, 255, 0.45);
+  color: #FFFFFF;
   transform: translateY(-2px);
 }
 
 .ctaSecondary {
   border-color: rgba(255, 255, 255, 0.2);
+  color: #F4F7FA;
 }
 
 .ctaSecondary:hover,
 .ctaSecondary:focus-visible {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
@@ -94,18 +146,36 @@
 }
 
 /* Mobile adjustments */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .heroOverlay {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
     width: 95%;
-    padding: var(--spacing-sm);
+    max-width: 480px;
+    padding: var(--spacing-xs);
+  }
+
+  .heroOverlayContent {
+    align-items: center;
+  }
+
+  .missionHeadline {
+    font-size: 1.35rem;
+    max-width: 100%;
+  }
+
+  .missionSubtext {
+    font-size: 0.88rem;
+    max-width: 100%;
   }
 
   .heroOverlayCtas {
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-sm);
+    justify-content: center;
+    gap: var(--spacing-xs);
     width: 100%;
-    margin-top: var(--spacing-lg);
   }
 
   .ctaButton {
@@ -113,3 +183,94 @@
     max-width: 280px;
   }
 }
+
+/* HERO-11 DOM Capability System Cards */
+.capabilityCardsContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 12;
+  overflow: hidden;
+}
+
+.capabilityCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 8px;
+  background: rgba(7, 19, 32, 0.94);
+  border: 1px solid rgba(56, 214, 255, 0.35);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65), 0 0 10px rgba(56, 214, 255, 0.15);
+  pointer-events: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  will-change: transform, opacity;
+  transition: opacity 0.25s ease-out;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cardStatusLed {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-family: monospace, var(--font-heading), sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #F4F7FA;
+  line-height: 1;
+}
+
+.cardSublabel {
+  font-family: monospace, var(--font-body), sans-serif;
+  font-size: 0.64rem;
+  color: #A7B0BC;
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1;
+}
+
+/* SVG Connector Overlay for HERO-14 Spatial Coherence */
+.connectorSvgOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 11;
+  overflow: visible;
+}
+
+/* Card Alignment Specific Overrides for Spatial Connector Anchor */
+.alignLeft {
+  transform: translate(0, 0);
+  transform-origin: left top;
+}
+
+.alignRight {
+  transform: translate(-100%, 0);
+  transform-origin: right top;
+}
+
+.alignCenter {
+  transform: translate(-50%, 0);
+  transform-origin: center top;
+}
+

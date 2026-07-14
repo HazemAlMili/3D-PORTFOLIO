@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, Material } from "three";
 import { usePortfolioStore } from "../../store/portfolioStore";
-import { SCENE01_COLORS } from "../../constants/scene01Config";
+import { SCENE01_COLORS, PERF_DEBUG } from "../../constants/scene01Config";
 import { SystemBootMotionState } from "./systemBootMotion";
+import { pointerInfluence } from "../../interaction/usePointerInfluence";
 
 interface SystemBootKernelProps {
   motion: SystemBootMotionState;
@@ -15,8 +16,10 @@ export function SystemBootKernel({ motion }: SystemBootKernelProps) {
   const scanRingRef = useRef<Mesh>(null);
   
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
+  const localProgress = usePortfolioStore((state) => state.sceneLocalProgress);
 
   useFrame((state) => {
+    if (localProgress >= 1.0) return;
     const elapsed = state.clock.getElapsedTime();
     
     // 1. Core scale and pulsation calculations
@@ -30,43 +33,54 @@ export function SystemBootKernel({ motion }: SystemBootKernelProps) {
       // Stabilizes and grows to final core scale of 0.15
       targetScale += motion.coreStabilize * 0.09;
       
-      // Shrinks slightly during identity compile to clear text space
-      const shrinkFactor = motion.identityCompile * 0.03 * (1.0 - motion.systemLock);
-      targetScale -= shrinkFactor;
-
       // Aggressive portal open expansion (up to 1.35)
-      const portalScale = targetScale + motion.portalOpen * 1.2;
+      // During kernelAbsorb: core swells slightly as it receives fragments
+      const portalScale = targetScale + motion.portalOpen * 1.2 + motion.kernelAbsorb * 0.18;
       
       const pulseSpeed = motion.portalOpen > 0.1 ? 6 : 2;
       const pulseFactor = 1.0 + Math.sin(elapsed * pulseSpeed) * (0.04 + motion.portalOpen * 0.06);
       
-      coreRef.current.scale.setScalar(portalScale * pulseFactor);
+      // Morph: let kernel stay alive through absorption, then compress at enterSystem
+      const finalCoreScale = portalScale * pulseFactor * (1.0 - motion.enterSystem * 0.85);
+      coreRef.current.scale.setScalar(finalCoreScale);
       coreRef.current.rotation.y = elapsed * 0.15;
+
+      // Mouse parallax depth response
+      coreRef.current.position.set(
+        pointerInfluence.smoothX * 0.05,
+        -pointerInfluence.smoothY * 0.05,
+        0
+      );
     }
 
     // 2. Outer shell scale and rotation (builds during Phase 3 - shellFormation)
     if (shellRef.current) {
       // Dormant/Pulse: scale is 0. Grows progressively during shellFormation
-      let targetShellScale = motion.shellFormation * 0.32; // base size 0.32
-
-      // Shrinks slightly during identity compile
-      const shrinkFactor = motion.identityCompile * 0.05 * (1.0 - motion.systemLock);
-      targetShellScale -= shrinkFactor;
+      const targetShellScale = motion.shellFormation * 0.32; // base size 0.32
 
       const portalScale = targetShellScale + motion.portalOpen * 1.1;
       
+      // Shell shrinks during enterSystem (not during earlier ingestion)
+      const finalShellScale = portalScale * (1.0 - motion.enterSystem * 0.9);
       // Vertical assembly extrusion (Y-axis traces in from flat to round)
       if (reducedMotion) {
-        shellRef.current.scale.setScalar(portalScale);
+        shellRef.current.scale.setScalar(finalShellScale);
       } else {
         const buildHeight = motion.shellFormation;
-        shellRef.current.scale.set(portalScale, portalScale * buildHeight, portalScale);
+        shellRef.current.scale.set(finalShellScale, finalShellScale * buildHeight, finalShellScale);
       }
 
       // Elevated spin speed during formation phase (slowed by 50%)
       const spinSpeed = 0.1 + (1.0 - motion.coreStabilize) * 0.3;
       shellRef.current.rotation.y = -elapsed * spinSpeed;
       shellRef.current.rotation.x = elapsed * 0.05;
+
+      // Mouse parallax depth response
+      shellRef.current.position.set(
+        pointerInfluence.smoothX * 0.08,
+        -pointerInfluence.smoothY * 0.08,
+        0
+      );
     }
 
     // 3. Scan ring expansion (triggers during firstPulse wake)
@@ -79,7 +93,7 @@ export function SystemBootKernel({ motion }: SystemBootKernelProps) {
       if (mat) {
         // Pulse once and fade out
         const opacity = Math.max(0, Math.sin(expandProgress * Math.PI) * 0.6);
-        mat.opacity = opacity * (1.0 - motion.systemLock);
+        mat.opacity = opacity * (1.0 - motion.systemLock) * (1.0 - motion.enterSystem);
       }
     }
   });
@@ -88,16 +102,22 @@ export function SystemBootKernel({ motion }: SystemBootKernelProps) {
   const baseOpacity = 0.15 + motion.firstPulse * 0.15 + motion.coreStabilize * 0.7 * (1.0 - motion.enterSystem);
 
   // Shell opacity: only visible after shell formation starts
-  const shellOpacity = baseOpacity * motion.shellFormation * 0.45;
+  const shellOpacity = baseOpacity * motion.shellFormation * 0.45 * (1.0 - motion.enterSystem * 0.9);
 
   // Emissive intensity spikes during firstPulse and portalOpen
+  // kernelAbsorb adds a subtle brightness surge as fragments collapse into the core
   const emissivePulsePeak = Math.sin(motion.firstPulse * Math.PI) * 1.5;
-  const coreEmissive = 0.12 + emissivePulsePeak + motion.coreStabilize * 0.68 + motion.portalOpen * 3.5;
+  const coreEmissive = (0.12 + emissivePulsePeak + motion.coreStabilize * 0.68 + motion.portalOpen * 3.5 + motion.kernelAbsorb * 2.2) * (1.0 - motion.enterSystem * 0.85);
+
+  // Unmount after enterSystem fully compresses the kernel
+  if (localProgress >= 1.0) {
+    return null;
+  }
 
   return (
     <group position={[0, 0, 0]}>
       {/* Outer rotating technical shell (assembles in Phase 3) */}
-      {motion.shellFormation > 0.01 && (
+      {motion.shellFormation > 0.01 && !PERF_DEBUG.disableKernelShell && (
         <mesh ref={shellRef} renderOrder={10}>
           <icosahedronGeometry args={[1.2, 1]} />
           <meshStandardMaterial
@@ -141,7 +161,7 @@ export function SystemBootKernel({ motion }: SystemBootKernelProps) {
       {/* Glow light source */}
       <pointLight
         position={[0, 0, 0]}
-        intensity={(0.1 + motion.firstPulse * 1.5 + motion.coreStabilize * 1.2 + motion.portalOpen * 4.5) * (1.0 - motion.enterSystem)}
+        intensity={(0.1 + motion.firstPulse * 1.5 + motion.coreStabilize * 1.2 + motion.portalOpen * 4.5 + motion.kernelAbsorb * 1.8) * (1.0 - motion.enterSystem * 0.85)}
         distance={5}
         color={SCENE01_COLORS.softCyan}
       />

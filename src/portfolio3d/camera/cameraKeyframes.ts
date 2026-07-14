@@ -29,12 +29,12 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
   },
 
   "scene-02-hero": {
-    // Approach: wide overview giving hero device context in space
-    // Enter: comfortable framing — main display fills screen but isn't inside it
-    // Exit: pull back for Architecture scene handoff
-    approach: { position: [0, 0, 9.0],  target: [0, 0, 0], fov: 52 },
-    enter:    { position: [0, 0, 2.0],  target: [0, 0, 0], fov: 68 },
-    exit:     { position: [0, 0, 9.0],  target: [0, 0, 0], fov: 52 },
+    // Approach: continuous spatial emergence out of Scene 01 portal exit [0, 0.0, 0.9]
+    // Enter: centered overview framing the centered DOM Mission HUD & large orbits
+    // Exit: angled pullback aligned with Scene 03 Architecture entry route
+    approach: { position: [0, 0.1, 1.2],  target: [0, 0, -0.2], fov: 58 },
+    enter:    { position: [0, 0.0, 3.8], target: [0, 0, 0], fov: 55 },
+    exit:     { position: [0.4, 0.2, 7.5], target: [0.3, 0.1, 0], fov: 52 },
   },
 
   "scene-03-architecture": {

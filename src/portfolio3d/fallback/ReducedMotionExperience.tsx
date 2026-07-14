@@ -17,6 +17,7 @@ export function ReducedMotionExperience() {
           className={`toggle-button ${isReducedMotion ? "active" : ""}`}
           onClick={toggleReducedMotion}
           aria-label="Toggle Reduced Motion Experience"
+          data-interactive="reduced-motion-toggle"
         >
           {isReducedMotion ? "♿ Reduced Motion ON" : "♿ Reduced Motion OFF"}
         </button>

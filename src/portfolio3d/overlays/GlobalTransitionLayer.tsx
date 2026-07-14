@@ -61,19 +61,6 @@ export function GlobalTransitionLayer() {
         justifyContent: "center",
       }}
     >
-      {/* Subtle data lines sweep/radial ring to represent portal/bridge */}
-      <div
-        style={{
-          width: "75%",
-          height: "75%",
-          border: `2px dashed rgba(56, 214, 255, ${opacity * 0.2})`,
-          borderRadius: "50%",
-          boxShadow: `0 0 35px rgba(56, 214, 255, ${opacity * 0.1})`,
-          transform: `scale(${0.85 + opacity * 0.2})`,
-          opacity: opacity,
-          transition: "transform 0.05s linear",
-        }}
-      />
     </div>
   );
 }
