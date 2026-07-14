@@ -9,4 +9,10 @@ export interface SceneCameraStates {
   approach: CameraPose;
   enter: CameraPose;
   exit: CameraPose;
+  /** Optional mobile-specific override for approach/enter/exit poses */
+  mobile?: {
+    approach: CameraPose;
+    enter: CameraPose;
+    exit: CameraPose;
+  };
 }

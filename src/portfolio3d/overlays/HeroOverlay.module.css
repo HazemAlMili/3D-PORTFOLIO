@@ -148,26 +148,33 @@
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .heroOverlay {
+    /* Move to upper portion of screen so 3D system has room below */
+    top: 12%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     text-align: center;
-    width: 95%;
-    max-width: 480px;
+    width: 92%;
+    max-width: 460px;
     padding: var(--spacing-xs);
+    /* Prevent any overflow */
+    overflow: hidden;
   }
 
   .heroOverlayContent {
     align-items: center;
+    gap: 6px;
   }
 
   .missionHeadline {
-    font-size: 1.35rem;
+    font-size: clamp(1.1rem, 4.2vw, 1.5rem);
     max-width: 100%;
+    line-height: 1.3;
   }
 
   .missionSubtext {
-    font-size: 0.88rem;
+    font-size: clamp(0.78rem, 3vw, 0.95rem);
     max-width: 100%;
+    margin-bottom: 4px;
   }
 
   .heroOverlayCtas {
@@ -180,7 +187,25 @@
 
   .ctaButton {
     width: 100%;
-    max-width: 280px;
+    max-width: 260px;
+    min-height: 42px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra narrow screens: 375px iPhone SE / iPhone 8 */
+@media (max-width: 390px) {
+  .heroOverlay {
+    top: 8%;
+    width: 95%;
+  }
+
+  .missionHeadline {
+    font-size: 1.05rem;
+  }
+
+  .missionSubtext {
+    font-size: 0.75rem;
   }
 }
 

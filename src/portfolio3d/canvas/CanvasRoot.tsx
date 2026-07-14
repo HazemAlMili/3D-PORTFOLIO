@@ -5,7 +5,11 @@ import { SceneManager } from "../scenes";
 import { CameraController } from "../camera";
 import { usePortfolioStore } from "../store/portfolioStore";
 import { usePointerListener } from "../interaction/usePointerInfluence";
+import { isMobileDevice } from "../utils/mobileUtils";
 import "./CanvasRoot.css";
+
+// Cap DPR lower on mobile to prevent overheating on 3× OLED displays
+const MAX_DPR = isMobileDevice() ? 1.5 : 2.0;
 
 export function CanvasRoot() {
   const dpr = usePortfolioStore((state) => state.dpr);
@@ -23,7 +27,7 @@ export function CanvasRoot() {
             near: 0.1,
             far: 100,
           }}
-          dpr={[1, Math.max(1, Math.min(2, dpr))]}
+          dpr={[1, Math.max(1, Math.min(MAX_DPR, dpr))]}
           gl={{
             antialias: true,
             alpha: true,
@@ -40,4 +44,3 @@ export function CanvasRoot() {
     </div>
   );
 }
-

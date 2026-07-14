@@ -1,12 +1,64 @@
 import { useEffect, useRef, useCallback } from "react";
 import { createScrollProgressController } from "./ScrollProgressController";
 import { usePortfolioStore } from "../store/portfolioStore";
+import { MAX_PROGRESS_DELTA_MOBILE } from "./scrollProtection";
+import { isMobileDevice } from "../utils/mobileUtils";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Scroll profiles
+// ─────────────────────────────────────────────────────────────────────────────
+
+const DESKTOP_PROFILE = {
+  // Wheel: maps raw pixel delta to progress step
+  // Clamp: ±80px per event (limits single-tick velocity)
+  wheelMultiplier: 0.00003,
+  maxWheelDelta: 80,
+  // Deadzone: ignore tiny trackpad inertia drifts
+  wheelDeadzone: 0.0001,
+};
+
+const MOBILE_PROFILE = {
+  // Touch multiplier is tuned to be cinematic:
+  //   old: 0.0002 → a 50px swipe = 0.010 progress (skips beats)
+  //   new: 0.00008 → a 50px swipe = 0.004 progress (controlled glide)
+  touchMultiplier: 0.00008,
+  // Per-event flick clamp: max raw delta accepted per touchmove event (px)
+  // Stops aggressive flicks from jumping across scenes
+  maxTouchDeltaPx: 35,
+  // Deadzone: ignore micro-oscillations from resting finger
+  touchDeadzone: 0.00008,
+  // Max progress step per controller frame (tighter than desktop)
+  maxProgressDelta: MAX_PROGRESS_DELTA_MOBILE,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stable viewport height
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns a stable viewport height that does not jump when the mobile browser
+ * address bar collapses/expands. Prefers visualViewport when available.
+ */
+function getStableViewportHeight(): number {
+  if (typeof window === "undefined") return 768;
+  // visualViewport is stable even when address bar animates
+  if (window.visualViewport) {
+    return window.visualViewport.height;
+  }
+  return window.innerHeight;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hook
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function useScrollProgress() {
   const controllerRef = useRef<ReturnType<typeof createScrollProgressController> | null>(null);
   const targetProgressRef = useRef(0);
   const isHandlingWheelOrTouchRef = useRef(false);
   const wheelOrTouchTimeoutRef = useRef<number | null>(null);
+  // Track per-frame touch velocity for flick detection
+  const lastTouchDeltaRef = useRef(0);
 
   const setHandlingWheelOrTouch = useCallback(() => {
     isHandlingWheelOrTouchRef.current = true;
@@ -20,13 +72,17 @@ export function useScrollProgress() {
       } else {
         isHandlingWheelOrTouchRef.current = false;
       }
-    }, 150);
+    }, 200); // extended from 150ms to 200ms to give mobile more settle time
   }, []);
 
   const update = useCallback(() => {
+    // Block native scroll updates while touch/wheel is actively controlling progress
+    // This prevents the duplicate input path (native scroll event + touchmove)
     if (isHandlingWheelOrTouchRef.current) return;
+
     const scrollY = window.scrollY;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const viewportH = getStableViewportHeight();
+    const maxScroll = document.documentElement.scrollHeight - viewportH;
     const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
     
     targetProgressRef.current = progress;
@@ -40,8 +96,32 @@ export function useScrollProgress() {
     targetProgressRef.current = usePortfolioStore.getState().scrollProgress;
     update();
 
+    const isMobile = isMobileDevice();
+
+    // ── Viewport height stabilization for mobile ────────────────────────────
+    // Re-run progress calculation when visualViewport resizes (address bar collapse)
+    // Use a ref-based timeout to debounce rapid resize events during scroll
+    const vpResizeTimeoutRef: { current: number | null } = { current: null };
+    const handleViewportResize = () => {
+      if (vpResizeTimeoutRef.current !== null) {
+        window.clearTimeout(vpResizeTimeoutRef.current);
+      }
+      vpResizeTimeoutRef.current = window.setTimeout(() => {
+        // Only update if not in active touch gesture
+        if (!isHandlingWheelOrTouchRef.current) {
+          update();
+        }
+      }, 80);
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", handleViewportResize);
+    }
+
+    // ── Touch state ─────────────────────────────────────────────────────────
     let touchStartY = 0;
 
+    // ── Wheel handler (desktop) ──────────────────────────────────────────────
     const handleWheel = (e: WheelEvent) => {
       // Intercept native wheel to kill default momentum and drift
       e.preventDefault();
@@ -55,15 +135,15 @@ export function useScrollProgress() {
       }
 
       // Clamp max delta per event to limit single-tick velocity
-      const maxWheelDelta = 80;
-      const clampedDeltaY = Math.min(maxWheelDelta, Math.max(-maxWheelDelta, deltaY));
+      const clampedDeltaY = Math.min(
+        DESKTOP_PROFILE.maxWheelDelta,
+        Math.max(-DESKTOP_PROFILE.maxWheelDelta, deltaY)
+      );
 
-      // Map wheel delta to a controlled, small progress step (further reduced to 0.00003 for high-precision slowdown)
-      const speedMultiplier = 0.00003;
-      const progressDelta = clampedDeltaY * speedMultiplier;
+      const progressDelta = clampedDeltaY * DESKTOP_PROFILE.wheelMultiplier;
 
       // Apply deadzone to ignore tiny trackpad/inertia deltas
-      if (Math.abs(progressDelta) < 0.0001) return;
+      if (Math.abs(progressDelta) < DESKTOP_PROFILE.wheelDeadzone) return;
 
       const nextProgress = Math.min(1, Math.max(0, targetProgressRef.current + progressDelta));
       targetProgressRef.current = nextProgress;
@@ -73,16 +153,18 @@ export function useScrollProgress() {
       }
     };
 
+    // ── Touch handlers (mobile) ───────────────────────────────────────────────
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         touchStartY = e.touches[0].clientY;
+        lastTouchDeltaRef.current = 0;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touchY = e.touches[0].clientY;
-        const deltaY = touchStartY - touchY;
+        const rawDeltaY = touchStartY - touchY;
         touchStartY = touchY;
 
         if (e.cancelable) {
@@ -90,17 +172,48 @@ export function useScrollProgress() {
         }
         setHandlingWheelOrTouch();
 
-        // Slow down touch swipe to 0.0002 for high-precision trackpad drift
-        const speedMultiplier = 0.0002;
-        const progressDelta = deltaY * speedMultiplier;
+        if (isMobile) {
+          // ── Mobile cinematic profile ──────────────────────────────────────
+          // 1. Hard-clamp raw pixel delta to stop aggressive flicks
+          const clampedDeltaY = Math.min(
+            MOBILE_PROFILE.maxTouchDeltaPx,
+            Math.max(-MOBILE_PROFILE.maxTouchDeltaPx, rawDeltaY)
+          );
 
-        if (Math.abs(progressDelta) < 0.0001) return;
+          // 2. Apply mobile touch multiplier (significantly slower than desktop)
+          const progressDelta = clampedDeltaY * MOBILE_PROFILE.touchMultiplier;
 
-        const nextProgress = Math.min(1, Math.max(0, targetProgressRef.current + progressDelta));
-        targetProgressRef.current = nextProgress;
+          // 3. Deadzone to ignore resting finger micro-oscillations
+          if (Math.abs(progressDelta) < MOBILE_PROFILE.touchDeadzone) return;
 
-        if (controllerRef.current) {
-          controllerRef.current.updateProgress(nextProgress, { syncScrollbar: true });
+          // 4. Clamp how far targetProgress can jump from current (prevents beat-skipping)
+          const currentProgress = usePortfolioStore.getState().scrollProgress;
+          const rawNext = targetProgressRef.current + progressDelta;
+          const clampedNext = Math.min(
+            currentProgress + MOBILE_PROFILE.maxProgressDelta,
+            Math.max(currentProgress - MOBILE_PROFILE.maxProgressDelta, rawNext)
+          );
+          const nextProgress = Math.min(1, Math.max(0, clampedNext));
+          targetProgressRef.current = nextProgress;
+
+          lastTouchDeltaRef.current = progressDelta;
+
+          if (controllerRef.current) {
+            controllerRef.current.updateProgress(nextProgress, {
+              syncScrollbar: true,
+              maxDelta: MOBILE_PROFILE.maxProgressDelta,
+            });
+          }
+        } else {
+          // ── Desktop touch (trackpad swipe gestures) ───────────────────────
+          const progressDelta = rawDeltaY * 0.0002;
+          if (Math.abs(progressDelta) < 0.0001) return;
+          const nextProgress = Math.min(1, Math.max(0, targetProgressRef.current + progressDelta));
+          targetProgressRef.current = nextProgress;
+
+          if (controllerRef.current) {
+            controllerRef.current.updateProgress(nextProgress, { syncScrollbar: true });
+          }
         }
       }
     };
@@ -117,6 +230,13 @@ export function useScrollProgress() {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
+
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", handleViewportResize);
+      }
+      if (vpResizeTimeoutRef.current !== null) {
+        window.clearTimeout(vpResizeTimeoutRef.current);
+      }
 
       if (controllerRef.current) {
         controllerRef.current.destroy();

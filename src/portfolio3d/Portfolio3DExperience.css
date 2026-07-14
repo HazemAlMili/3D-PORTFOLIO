@@ -92,3 +92,26 @@ body,
   outline-offset: 4px;
   box-shadow: 0 0 15px rgba(56, 214, 255, 0.35);
 }
+
+/* ─── Mobile Safety Rules ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html, body, #root {
+    /* Prevent horizontal overflow on all mobile browsers */
+    overflow-x: hidden;
+    /* Stabilize viewport height — prevents layout jumps when address bar hides */
+    min-height: -webkit-fill-available;
+  }
+
+  .portfolio3d-experience {
+    /* Use dvh (dynamic viewport height) for Safari compatibility */
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Prevent scroll-driven canvas from creating horizontal bleed */
+  .portfolio3d-canvas-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+}

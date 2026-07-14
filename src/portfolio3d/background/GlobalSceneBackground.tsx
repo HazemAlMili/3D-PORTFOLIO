@@ -4,6 +4,9 @@ import { Group } from "three";
 import { Stars, Grid } from "@react-three/drei";
 import { usePortfolioStore } from "../store/portfolioStore";
 import { usePointerInfluence } from "../interaction/usePointerInfluence";
+import { isMobileDevice } from "../utils/mobileUtils";
+
+const IS_MOBILE = isMobileDevice();
 
 export function GlobalSceneBackground() {
   const groupRef = useRef<Group>(null);
@@ -14,8 +17,14 @@ export function GlobalSceneBackground() {
   const pointer = usePointerInfluence();
 
   // Low particle counts for cheap background depth points
+  // Mobile gets halved counts to preserve GPU budget
   const particleCount = useMemo(() => {
     if (reducedMotion) return 0;
+    if (IS_MOBILE) {
+      if (deviceTier === "low") return 6;
+      if (deviceTier === "medium") return 15;
+      return 25;
+    }
     if (deviceTier === "low") return 15;
     if (deviceTier === "medium") return 35;
     return 60;
@@ -63,8 +72,8 @@ export function GlobalSceneBackground() {
 
   return (
     <group ref={groupRef}>
-      {/* 1. Global Cinematic Starfield */}
-      <Stars radius={120} depth={40} count={1800} factor={3.5} saturation={0.4} fade speed={0.4} />
+      {/* 1. Global Cinematic Starfield — halved on mobile for GPU budget */}
+      <Stars radius={120} depth={40} count={IS_MOBILE ? 900 : 1800} factor={3.5} saturation={0.4} fade speed={0.4} />
 
       {/* 2. Faint Grid Lines */}
       {!reducedMotion && (

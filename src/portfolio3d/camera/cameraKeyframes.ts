@@ -26,6 +26,13 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
     approach: { position: [0, 0.15, 7.5], target: [0, 0, 0], fov: 48 },
     enter:    { position: [0, 0.05, 3.8], target: [0, 0, 0], fov: 50 },
     exit:     { position: [0, 0.0, 0.9], target: [0, 0, -0.2], fov: 58 },
+    // Mobile: pull back further and widen FOV so the shell doesn't clip screen edges
+    // Y=0 on enter/approach for perfect vertical centering (desktop uses slight Y tilt)
+    mobile: {
+      approach: { position: [0, 0.0, 9.0], target: [0, 0, 0], fov: 44 },
+      enter:    { position: [0, 0.0, 5.5], target: [0, 0, 0], fov: 44 },
+      exit:     { position: [0, 0.0, 1.2], target: [0, 0, -0.2], fov: 54 },
+    },
   },
 
   "scene-02-hero": {
@@ -35,6 +42,13 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
     approach: { position: [0, 0.1, 1.2],  target: [0, 0, -0.2], fov: 58 },
     enter:    { position: [0, 0.0, 3.8], target: [0, 0, 0], fov: 55 },
     exit:     { position: [0.4, 0.2, 7.5], target: [0.3, 0.1, 0], fov: 52 },
+    // Mobile: pull back so orbit system doesn't swallow the mission text
+    // Target [0,0,0] matches mobile-centered HeroCommandNode (groupX=0)
+    mobile: {
+      approach: { position: [0, 0.1, 1.5],  target: [0, 0, -0.2], fov: 54 },
+      enter:    { position: [0, 0.0, 6.0],  target: [0, 0, 0],    fov: 46 },
+      exit:     { position: [0, 0.2, 9.0],  target: [0, 0, 0],    fov: 46 },
+    },
   },
 
   "scene-03-architecture": {

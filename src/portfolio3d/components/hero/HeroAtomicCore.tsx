@@ -3,6 +3,9 @@ import { useFrame } from "@react-three/fiber";
 import { Group, PointLight } from "three";
 import { SCENE_02_COLORS } from "../../constants/scene02Config";
 import { pointerInfluence } from "../../interaction/usePointerInfluence";
+import { isMobileDevice } from "../../utils/mobileUtils";
+
+const IS_MOBILE = isMobileDevice();
 
 interface HeroAtomicCoreProps {
   nodeBuild: number;
@@ -36,7 +39,9 @@ export function HeroAtomicCore({
   });
 
   const confirmPulse = Math.sin(systemCompleteProgress * Math.PI) * 0.18;
-  const scaleVal = (reducedMotion ? 1.0 : 0.88 + nodeBuild * 0.12 + confirmPulse) * 1.75;
+  // Mobile: boost scale 1.3x so core is visually dominant as the scene anchor
+  const mobileScaleBoost = IS_MOBILE ? 1.3 : 1.0;
+  const scaleVal = (reducedMotion ? 1.0 : 0.88 + nodeBuild * 0.12 + confirmPulse) * 1.75 * mobileScaleBoost;
 
   return (
     <group
@@ -50,7 +55,7 @@ export function HeroAtomicCore({
         <meshStandardMaterial
           color={SCENE_02_COLORS.accentCyan}
           emissive={SCENE_02_COLORS.coreGlow}
-          emissiveIntensity={1.0 * coreOpacity}
+          emissiveIntensity={(IS_MOBILE ? 1.5 : 1.0) * coreOpacity}
           transparent
           opacity={coreOpacity}
           roughness={0.2}

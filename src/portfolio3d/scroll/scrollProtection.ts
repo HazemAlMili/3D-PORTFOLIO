@@ -6,7 +6,6 @@
  * side-effect-free, and fully unit-testable.
  */
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 /**
  * Maximum allowed change in scrollProgress per update frame.
@@ -19,16 +18,20 @@
 export const MAX_PROGRESS_DELTA = 0.009;
 
 /**
+ * Mobile-specific max progress delta — tighter to prevent beat-skipping on
+ * fast flick gestures. Limits a single touch frame to ~0.6% of total progress.
+ */
+export const MAX_PROGRESS_DELTA_MOBILE = 0.005;
+
+/**
  * Minimum delta magnitude required to register a direction change.
  * Prevents micro-oscillations from toggling the scroll direction flag.
  */
 export const DIRECTION_CHANGE_THRESHOLD = 0.001;
 
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 export type ScrollDirection = "forward" | "backward" | null;
 
-// ─── Pure Utilities ───────────────────────────────────────────────────────────
 
 /**
  * Clamps the target progress so it cannot deviate from current by more than

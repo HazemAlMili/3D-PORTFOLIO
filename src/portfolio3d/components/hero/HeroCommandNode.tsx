@@ -14,6 +14,9 @@ import { HeroAtomicCore } from "./HeroAtomicCore";
 import { HeroGlbStation } from "./HeroGlbStation";
 import { ATOM_ORBITS, getLockedPosition } from "./heroAtomLayout";
 import { usePointerInfluence } from "../../interaction/usePointerInfluence";
+import { isMobileDevice } from "../../utils/mobileUtils";
+
+const IS_MOBILE = isMobileDevice();
 
 interface HeroCommandNodeProps {
   localProgress: number;
@@ -171,8 +174,12 @@ export function HeroCommandNode({
   // Before p = 0.06 (Scene 01 exit bridge), return null so 3D Command Core does not render prematurely.
   if (opacity <= 0.005 || (p < 0.06 && !reducedMotion)) return null;
 
+  // On mobile: center the command node (desktop offset X=1.8 pushes it right of screen center)
+  // On desktop: keep the original split-composition offset
+  const groupX = IS_MOBILE ? 0.0 : 1.8;
+
   return (
-    <group position={[1.8, -0.1, 0]}>
+    <group position={[groupX, -0.1, 0]}>
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* 1. Central Living System Core (Atomic Nucleus & Containment Shell)  */}
       {/* ─────────────────────────────────────────────────────────────────── */}
