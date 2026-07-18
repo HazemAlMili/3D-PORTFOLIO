@@ -35,17 +35,15 @@ export function HeroCommandNode({
   const [nodeStart, nodeEnd] = SCENE_02_SUB_PHASES.commandNode;
   const [capStart, capEnd] = SCENE_02_SUB_PHASES.capabilities;
   const [sysCompStart, sysCompEnd] = SCENE_02_SUB_PHASES.systemComplete;
-  const [railStart, railEnd] = SCENE_02_SUB_PHASES.routeRail;
   const [handoffStart, handoffEnd] = SCENE_02_SUB_PHASES.handoff;
 
   const nodeBuild = reducedMotion ? 1.0 : smoothstep01(normalizeRange(p, nodeStart, nodeEnd));
   const capProgress = reducedMotion ? 1.0 : smoothstep01(normalizeRange(p, capStart, capEnd));
   const systemCompleteProgress = reducedMotion ? 0.0 : smoothstep01(normalizeRange(p, sysCompStart, sysCompEnd));
-  const railProgress = reducedMotion ? 1.0 : smoothstep01(normalizeRange(p, railStart, railEnd));
   const handoffProgress = reducedMotion ? 1.0 : smoothstep01(normalizeRange(p, handoffStart, handoffEnd));
 
-  const coreOpacity = opacity * nodeBuild * (1.0 - handoffProgress * 0.6);
-  const capBaseOpacity = opacity * capProgress * (1.0 - handoffProgress * 0.5);
+  const coreOpacity = opacity * nodeBuild * (1.0 - handoffProgress * 1.0);
+  const capBaseOpacity = opacity * capProgress * (1.0 - handoffProgress * 1.0);
   const systemCompleteGlow = Math.sin(systemCompleteProgress * Math.PI) * 0.45;
 
   const busProgress = reducedMotion ? 1.0 : smoothstep01(normalizeRange(p, 0.48, 0.82));
@@ -356,49 +354,6 @@ export function HeroCommandNode({
           </group>
         );
       })()}
-
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* 3. Directional Route Continuation (Earned Outward from Orbit 5)     */}
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {railProgress > 0.01 && (
-        <group>
-          {/* Main forward data line guiding to Scene 03 */}
-          <Line
-            points={[
-              [0.27, -0.82, -0.4],
-              [0.27, -0.9, -2.5],
-              [0.27, -1.0, -5.0],
-            ]}
-            color={SCENE_02_COLORS.accentCyan}
-            lineWidth={2.0}
-            transparent
-            opacity={opacity * Math.max(railProgress * 0.65, handoffProgress * 0.9)}
-            dashed
-            dashScale={12}
-            dashSize={0.1}
-            gapSize={0.05}
-          />
-
-          {/* Pulse beacon traveling outward along the delivery route */}
-          {(handoffProgress > 0.01 || railProgress > 0.5) && (
-            <mesh
-              position={[
-                0.27 - 0.0 * Math.max(railProgress * 0.4, handoffProgress),
-                -0.82 - 0.18 * Math.max(railProgress * 0.4, handoffProgress),
-                -0.4 - 4.6 * Math.max(railProgress * 0.4, handoffProgress),
-              ]}
-              renderOrder={25}
-            >
-              <sphereGeometry args={[0.07, 16, 16]} />
-              <meshBasicMaterial
-                color={SCENE_02_COLORS.accentCyan}
-                transparent
-                opacity={opacity * Math.max(railProgress * 0.8, 1.0 - handoffProgress * 0.3)}
-              />
-            </mesh>
-          )}
-        </group>
-      )}
     </group>
   );
 }

@@ -1,6 +1,6 @@
 /**
  * scene04Config.ts
- * Pacing constants, dimensions, and color tokens for Scene 04 (Projects / Work Layer).
+ * Pacing constants, dimensions, anchors, and color tokens for Scene 04 (Projects / Work Layer).
  */
 
 export const SCENE_04_SUB_PHASES = {
@@ -33,13 +33,28 @@ export const SCENE_04_DIMENSIONS = {
 
 export const SCENE_04_ANCHORS = {
   /**
-   * Source anchor representing the bottom (Deployment) layer of the Scene 03
-   * Architecture blueprint in world coordinates.
+   * Source anchor representing the delivery pipeline exit output of Scene 03
+   * Delivery Engine in desktop world coordinates.
    */
-  architectureSource: [1.1, -0.56, 0.01] as [number, number, number],
+  architectureSourceDesktop: [4.2, -1.8, -3.8] as [number, number, number],
+  /**
+   * Source anchor representing the delivery pipeline exit output of Scene 03
+   * Delivery Engine in mobile vertical world coordinates.
+   */
+  architectureSourceMobile: [0.0, -3.2, -3.2] as [number, number, number],
+  /**
+   * Legacy alias for desktop architecture source backward compatibility.
+   */
+  architectureSource: [4.2, -1.8, -3.8] as [number, number, number],
   /**
    * Target receiving anchor representing the center of the Laptop screen face
    * in local coordinates where the projects panel renders.
    */
   laptopScreenTarget: [0, 0.4, 0.10] as [number, number, number],
 } as const;
+
+export function getScene04ArchitectureSource(isMobile: boolean): [number, number, number] {
+  return isMobile
+    ? SCENE_04_ANCHORS.architectureSourceMobile
+    : SCENE_04_ANCHORS.architectureSourceDesktop;
+}

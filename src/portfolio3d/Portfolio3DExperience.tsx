@@ -64,12 +64,13 @@ export function Portfolio3DExperience() {
       {/* Global Cinematic Vignette overlay */}
       <div className="cinematic-vignette" />
       
-      {/* Scroll spacer to define vertical scrollable height (8 scenes * 300vh) */}
-      <div className="portfolio3d-scroll-spacer" style={{ height: "2400vh", pointerEvents: "none" }} />
+      {/* Scroll spacer to define vertical scrollable height (8 scenes * 100vh) */}
+      <div className="portfolio3d-scroll-spacer" style={{ height: "800vh", pointerEvents: "none" }} />
 
       {/* Skip Intro Button — pure DOM overlay (NOT inside Canvas, avoids Html portal crash) */}
       {showSkipButton && (
         <button
+          type="button"
           id="skip-intro-btn"
           className="skip-intro-button"
           onClick={handleSkipIntro}

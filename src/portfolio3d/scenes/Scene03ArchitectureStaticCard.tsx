@@ -1,36 +1,28 @@
 import styles from "./Scene03ArchitectureStaticCard.module.css";
-import { SCENE_03_LAYERS } from "../constants/scene03Config";
+import { PRODUCTION_LAYERS, SYSTEM_FORGE_COPY } from "../constants/scene03Config";
 
 export function Scene03ArchitectureStaticCard() {
   return (
-    <div className={styles.staticArchCard} role="main" aria-label="Architecture introduction">
+    <div className={styles.staticArchCard} role="main" aria-label="System Forge introduction">
       <div className={styles.staticArchCardContent}>
-        <h2 className={styles.staticArchHeader}>SYSTEM ARCHITECTURE</h2>
+        <h2 className={styles.staticArchHeader}>{SYSTEM_FORGE_COPY.statusBadge}</h2>
         <p className={styles.staticArchSubtitle}>
-          The robust structure behind every digital experience
+          {SYSTEM_FORGE_COPY.headline}
         </p>
 
         <div className={styles.staticArchStack}>
-          {SCENE_03_LAYERS.map((layer, index) => (
+          {PRODUCTION_LAYERS.map((layer) => (
             <div key={layer.id} className={styles.staticArchLayer}>
               <div className={styles.staticArchLayerTitle}>
-                <span className={styles.staticArchLayerIndex}>0{index + 1}</span>
-                {layer.title}
+                {layer.label}
               </div>
-              <div className={styles.staticArchLayerDesc}>{layer.desc}</div>
-              <div className={styles.staticArchLayerSpecs}>
-                {index === 0 && "STACK: React · R3F · Canvas · CSS Modules"}
-                {index === 1 && "SPECS: REST · JSON Contracts · RESTful Design"}
-                {index === 2 && "LOGIC: Node.js · Services · Core Engines"}
-                {index === 3 && "STORE: ACID Transactions · Query Plans"}
-                {index === 4 && "HOST: Cloud Platforms · CDNs · Edge Cache"}
-              </div>
+              <div className={styles.staticArchLayerDesc}>{layer.sublabel}</div>
             </div>
           ))}
         </div>
 
         <div className={styles.staticArchFooter}>
-          <span>⚡ Full experience available with motion enabled</span>
+          <span>⚡ Full System Forge 3D motion available when motion enabled</span>
         </div>
       </div>
     </div>

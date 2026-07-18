@@ -14,6 +14,7 @@ export function Scene04ProjectsStaticCard() {
         <div className={styles.tabs} role="tablist" aria-label="Select project case study">
           {PROJECT_DATA.map((project, idx) => (
             <button
+              type="button"
               key={project.id}
               role="tab"
               id={`tab-${project.id}`}

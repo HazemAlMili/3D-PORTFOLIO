@@ -47,26 +47,24 @@ export function smoothstep01(t: number): number {
 export function getSystemBootMotionState(localProgress: number): SystemBootMotionState {
   const p = clamp01(localProgress);
 
-  const dormant = normalizeRange(p, 0.00, 0.14);
-  const firstPulse = smoothstep01(normalizeRange(p, 0.14, 0.26));
-  const shellFormation = smoothstep01(normalizeRange(p, 0.26, 0.42)); // aligned to data gathering
-  const coreStabilize = smoothstep01(normalizeRange(p, 0.30, 0.42));
-  const dataGathering = smoothstep01(normalizeRange(p, 0.26, 0.42));
-  
+  const dormant = normalizeRange(p, 0.00, 0.05);           // 0.00 – 0.05 (very brief hold)
+  const firstPulse = smoothstep01(normalizeRange(p, 0.05, 0.18));   // 0.05 – 0.18
+  const shellFormation = smoothstep01(normalizeRange(p, 0.18, 0.36));
+  const coreStabilize = smoothstep01(normalizeRange(p, 0.22, 0.36));
+  const dataGathering = smoothstep01(normalizeRange(p, 0.18, 0.36));
+
   // Panel Timings
-  const panelEnter = smoothstep01(normalizeRange(p, 0.62, 0.72));
-  const panelHold = normalizeRange(p, 0.72, 0.84);
-  const panelExit = smoothstep01(normalizeRange(p, 0.84, 0.92));
+  const panelEnter = smoothstep01(normalizeRange(p, 0.58, 0.68));
+  const panelHold = normalizeRange(p, 0.68, 0.82);
+  const panelExit = smoothstep01(normalizeRange(p, 0.82, 0.90));
 
   // Architectural layers and portal locking
-  const layersOnline = smoothstep01(normalizeRange(p, 0.72, 0.84));
-  const systemLock = smoothstep01(normalizeRange(p, 0.82, 0.90));
-  // Cinematic ingestion: all elements collapse toward kernel (0.80 – 0.96)
-  const collapseProgress = smoothstep01(normalizeRange(p, 0.80, 0.96));
-  // Kernel absorption brightness feedback (0.88 – 0.98)
-  const kernelAbsorb = smoothstep01(normalizeRange(p, 0.88, 0.98));
-  const portalOpen = smoothstep01(normalizeRange(p, 0.90, 1.00));
-  const enterSystem = smoothstep01(normalizeRange(p, 0.97, 1.00));
+  const layersOnline = smoothstep01(normalizeRange(p, 0.68, 0.82));
+  const systemLock = smoothstep01(normalizeRange(p, 0.80, 0.88));
+  const collapseProgress = smoothstep01(normalizeRange(p, 0.78, 0.95));
+  const kernelAbsorb = smoothstep01(normalizeRange(p, 0.86, 0.97));
+  const portalOpen = smoothstep01(normalizeRange(p, 0.88, 1.00));
+  const enterSystem = smoothstep01(normalizeRange(p, 0.95, 1.00));
 
   // Compute composite opacity and line drawing progress for the panel HUD
   let panelOpacity = 0;

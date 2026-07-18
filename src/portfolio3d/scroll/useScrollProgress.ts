@@ -92,9 +92,39 @@ export function useScrollProgress() {
   }, []);
 
   useEffect(() => {
+    let qaScrollTimeoutId: number | null = null;
+
+    // ── Query Parameter Hook for QA screenshot validation ───────────────────
+    const urlParams = new URLSearchParams(window.location.search);
+    const progressParam = urlParams.get("progress");
+    const reducedMotionParam = urlParams.get("reducedMotion");
+
+    if (reducedMotionParam === "true") {
+      usePortfolioStore.getState().setReducedMotion(true);
+    } else if (reducedMotionParam === "false") {
+      usePortfolioStore.getState().setReducedMotion(false);
+    }
+
     controllerRef.current = createScrollProgressController();
-    targetProgressRef.current = usePortfolioStore.getState().scrollProgress;
-    update();
+
+    if (progressParam !== null) {
+      const parsed = parseFloat(progressParam);
+      if (!isNaN(parsed)) {
+        usePortfolioStore.getState().setScrollProgress(parsed);
+        targetProgressRef.current = parsed;
+        // Schedule scroll alignment to ensure DOM layout is complete
+        qaScrollTimeoutId = window.setTimeout(() => {
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          window.scrollTo(0, maxScroll * parsed);
+        }, 50);
+      } else {
+        targetProgressRef.current = usePortfolioStore.getState().scrollProgress;
+        update();
+      }
+    } else {
+      targetProgressRef.current = usePortfolioStore.getState().scrollProgress;
+      update();
+    }
 
     const isMobile = isMobileDevice();
 
@@ -244,6 +274,9 @@ export function useScrollProgress() {
       }
       if (wheelOrTouchTimeoutRef.current !== null) {
         window.clearTimeout(wheelOrTouchTimeoutRef.current);
+      }
+      if (qaScrollTimeoutId !== null) {
+        window.clearTimeout(qaScrollTimeoutId);
       }
     };
   }, [update, setHandlingWheelOrTouch]);

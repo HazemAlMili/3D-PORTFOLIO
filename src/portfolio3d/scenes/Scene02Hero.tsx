@@ -58,7 +58,10 @@ export function Scene02Hero({
   if (isTransitioningFrom01 && PERF_DEBUG.disableNextSceneDuringExit) {
     return null;
   }
-
+  
+  // Hard boundary isolation: do not render Scene 02 once it is complete
+  if (localProgress >= 1.0) return null;
+ 
   // Render absolutely nothing if opacity is tiny to save frame budget (P5)
   if (!shouldRenderHeavy) return null;
 

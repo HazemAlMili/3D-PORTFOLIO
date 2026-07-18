@@ -1,0 +1,158 @@
+/* src/portfolio3d/overlays/DeliveryEngineOverlay.module.css */
+
+.deliveryOverlay {
+  position: absolute;
+  top: 24%;
+  left: 5%;
+  transform: translateY(0);
+  text-align: left;
+  pointer-events: none;
+  width: 90%;
+  max-width: 420px;
+  padding: 0.8rem;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.deliveryOverlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(8, 20, 34, 0.90);
+  border: 1px solid rgba(56, 214, 255, 0.35);
+  border-radius: 16px;
+  font-family: monospace, sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: #38D6FF;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  box-shadow: 0 4px 12px rgba(4, 7, 12, 0.8);
+}
+
+.statusDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #38D6FF;
+  box-shadow: 0 0 6px #38D6FF;
+}
+
+.headline {
+  font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #F4F7FA;
+  margin: 0;
+  max-width: 420px;
+  text-shadow: 0 4px 16px rgba(5, 7, 10, 0.95), 0 0 10px rgba(5, 7, 10, 0.7);
+}
+
+.subtext {
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #A7B0BC;
+  margin: 0;
+  max-width: 400px;
+  text-shadow: 0 2px 10px rgba(5, 7, 10, 0.95);
+}
+
+/* Secondary Stage Summary Pills Row */
+.stagePillsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.stagePill {
+  font-family: monospace, sans-serif;
+  font-size: 0.62rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(6, 16, 28, 0.75);
+  border: 1px solid rgba(56, 214, 255, 0.18);
+  color: #8C99A8;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease-out;
+}
+
+.stagePillActive {
+  background: rgba(56, 214, 255, 0.18);
+  border-color: rgba(56, 214, 255, 0.75);
+  color: #38D6FF;
+  text-shadow: 0 0 8px rgba(56, 214, 255, 0.6);
+  transform: scale(1.03);
+}
+
+.stagePillCompleted {
+  background: rgba(8, 20, 34, 0.85);
+  border-color: rgba(56, 214, 255, 0.35);
+  color: #D0D8E2;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .deliveryOverlay {
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 92%;
+    max-width: 440px;
+    padding: 0.4rem;
+    overflow: hidden;
+  }
+
+  .deliveryOverlayContent {
+    align-items: center;
+    gap: 4px;
+  }
+
+  .headline {
+    font-size: clamp(1.0rem, 4.0vw, 1.35rem);
+    max-width: 100%;
+    line-height: 1.25;
+  }
+
+  .subtext {
+    font-size: clamp(0.72rem, 2.8vw, 0.85rem);
+    max-width: 100%;
+  }
+
+  .stagePillsRow {
+    justify-content: center;
+    margin-top: 6px;
+    gap: 3px;
+  }
+
+  .stagePill {
+    font-size: 0.58rem;
+    padding: 2px 5px;
+  }
+}
+
+@media (max-width: 390px) {
+  .deliveryOverlay {
+    top: 6%;
+    width: 95%;
+  }
+
+  .headline {
+    font-size: 0.95rem;
+  }
+
+  .subtext {
+    font-size: 0.70rem;
+  }
+}

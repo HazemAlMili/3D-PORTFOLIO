@@ -67,8 +67,9 @@
   pointer-events: none;
 }
 
-/* Custom slot override for Scene 02 to prevent transform containing block issues */
-.content-overlay-slot[data-scene-id="scene-02-hero"] {
+/* Custom slot override for Scene 02 and Scene 03 to prevent transform containing block issues */
+.content-overlay-slot[data-scene-id="scene-02-hero"],
+.content-overlay-slot[data-scene-id="scene-03-architecture"] {
   top: 0;
   left: 0;
   width: 100%;
@@ -76,7 +77,8 @@
   max-width: none;
   transform: none;
 }
-.content-overlay-slot[data-scene-id="scene-02-hero"].active {
+.content-overlay-slot[data-scene-id="scene-02-hero"].active,
+.content-overlay-slot[data-scene-id="scene-03-architecture"].active {
   transform: none;
 }
 

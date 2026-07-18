@@ -1,11 +1,12 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Group, Vector3 } from "three";
-import { Line } from "@react-three/drei";
+import { Group } from "three";
 import { LaptopDevice } from "../components/LaptopDevice";
 import { ProjectCaseStudyPanel } from "../components/ProjectCaseStudyPanel";
 import { PROJECT_DATA } from "../content/projectData";
-import { SCENE_04_SUB_PHASES, SCENE_04_COLORS, SCENE_04_ANCHORS } from "../constants/scene04Config";
+import {
+  SCENE_04_SUB_PHASES,
+} from "../constants/scene04Config";
 import { usePortfolioStore } from "../store/portfolioStore";
 
 interface Scene04ProjectsProps {
@@ -45,14 +46,6 @@ export function Scene04Projects({ sceneId, sceneIndex, localProgress, opacity = 
     deviceGroupRef.current.rotation.x = Math.cos(t * 0.5) * 0.005 * dampFactor;
   });
 
-  // Transition calculations from Scene 03 to Scene 04
-  const transitionOpacity = localProgress < 0.40 ? (1 - localProgress / 0.40) : 0;
-  const approachT = Math.min(1, Math.max(0, localProgress / 0.40));
-  const packetPos = new Vector3().lerpVectors(
-    new Vector3(...SCENE_04_ANCHORS.architectureSource),
-    new Vector3(...SCENE_04_ANCHORS.laptopScreenTarget),
-    approachT
-  );
   const immerseLen = immerseEnd - immerseStart;
 
   // Normalise progress inside immerse hold phase
@@ -122,33 +115,8 @@ export function Scene04Projects({ sceneId, sceneIndex, localProgress, opacity = 
         </group>
       </group>
 
-      {/* ================= TRANSITION SIGNAL (Scene 03 Architecture -> Scene 04 Laptop Screen) ================= */}
-      {transitionOpacity > 0.01 && (
-        <group>
-          {/* Transition connecting path */}
-          <Line
-            points={[SCENE_04_ANCHORS.architectureSource, SCENE_04_ANCHORS.laptopScreenTarget]}
-            color={SCENE_04_COLORS.accentCyan}
-            lineWidth={1.2}
-            transparent
-            opacity={transitionOpacity * 0.4}
-            dashed
-            dashScale={12}
-            dashSize={0.05}
-            gapSize={0.03}
-          />
-          {/* Scroll-deterministic traveling packet */}
-          <mesh position={[packetPos.x, packetPos.y, packetPos.z]}>
-            <sphereGeometry args={[0.035, 8, 8]} />
-            <meshBasicMaterial
-              color={SCENE_04_COLORS.accentCyan}
-              transparent
-              opacity={transitionOpacity * 0.9}
-            />
-          </mesh>
-        </group>
-      )}
     </group>
   );
 }
+
 export default Scene04Projects;

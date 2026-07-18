@@ -1,5 +1,6 @@
 import { usePortfolioStore } from "../store/portfolioStore";
 import { HeroOverlay } from "./HeroOverlay";
+import { ProductEngineOverlay } from "./ProductEngineOverlay";
 import { Scene04ProjectsStaticCard } from "../scenes/Scene04ProjectsStaticCard";
 import { Scene06ResponsivePerformanceStaticCard } from "../scenes/Scene06ResponsivePerformanceStaticCard";
 import { Scene08ContactStaticCard } from "../scenes/Scene08ContactStaticCard";
@@ -58,6 +59,8 @@ export function ContentOverlayRoot() {
                 <SystemBootIdentityOverlay localProgress={clampedProgress} />
               ) : sceneId === "scene-02-hero" ? (
                 shouldRenderStatic ? null : <HeroOverlay />
+              ) : sceneId === "scene-03-architecture" ? (
+                <ProductEngineOverlay localProgress={clampedProgress} />
               ) : sceneId === "scene-04-projects" ? (
                 shouldRenderStatic ? <Scene04ProjectsStaticCard /> : null
               ) : sceneId === "scene-06-responsive-performance" ? (

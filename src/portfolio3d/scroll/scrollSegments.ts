@@ -53,11 +53,11 @@ export function buildSceneSegments(weights: number[] = SCROLL_WEIGHTS): SceneSeg
       end,
       subPhases: sceneId === "scene-01-opening"
         ? {
-            // Scene 01 — cinematic portal: gradual pullback reveal, long hold to 0.90
-            approach: [0.00, 0.25],
-            enter:    [0.25, 0.42],
-            immerse:  [0.42, 0.90],
-            exit:     [0.90, 1.00],
+            // Scene 01 — cinematic portal: short approach, fast content entry
+            approach: [0.00, 0.10],
+            enter:    [0.10, 0.30],
+            immerse:  [0.30, 0.88],
+            exit:     [0.88, 1.00],
           }
         : sceneId === "scene-02-hero"
         ? {

@@ -2,12 +2,55 @@ import { useRef, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { usePortfolioStore } from "../store/portfolioStore";
-import { resolveCameraPose } from "./CameraDirector";
-import { SCENE_CAMERA_KEYFRAMES } from "./cameraKeyframes";
+import { resolveCameraPose, easeInOutCubic } from "./CameraDirector";
+import { SCENE_CAMERA_KEYFRAMES, SCENE_03_CAMERA_BEATS } from "./cameraKeyframes";
 import { buildSceneSegments } from "../scroll/scrollSegments";
 import { isMobileDevice } from "../utils/mobileUtils";
 
 const SEGMENTS = buildSceneSegments();
+
+function resolveScene03Pose(localProgress: number, isMobile: boolean): { position: [number, number, number]; target: [number, number, number]; fov: number } {
+  // Scene 02 Exit Pose (Starting point of the first beat at localProgress = 0)
+  const scene02Exit = isMobile
+    ? { position: [0, 0.2, 9.0] as [number, number, number], target: [0, 0, 0] as [number, number, number], fov: 46 }
+    : { position: [0.4, 0.2, 7.5] as [number, number, number], target: [0.3, 0.1, 0] as [number, number, number], fov: 52 };
+
+  const beats = SCENE_03_CAMERA_BEATS;
+  let activeIdx = beats.findIndex(b => localProgress >= b.start && localProgress <= b.end);
+  if (activeIdx === -1) {
+    activeIdx = localProgress <= 0 ? 0 : beats.length - 1;
+  }
+
+  const currentBeat = beats[activeIdx];
+  const startProgress = currentBeat.start;
+  const endProgress = currentBeat.end;
+
+  const startPose = activeIdx === 0
+    ? scene02Exit
+    : (isMobile ? beats[activeIdx - 1].mobile : beats[activeIdx - 1].desktop);
+
+  const endPose = isMobile ? currentBeat.mobile : currentBeat.desktop;
+
+  const duration = endProgress - startProgress;
+  const t = duration > 0 ? (localProgress - startProgress) / duration : 1.0;
+  const easedT = easeInOutCubic(Math.min(1, Math.max(0, t)));
+
+  const position: [number, number, number] = [
+    startPose.position[0] + (endPose.position[0] - startPose.position[0]) * easedT,
+    startPose.position[1] + (endPose.position[1] - startPose.position[1]) * easedT,
+    startPose.position[2] + (endPose.position[2] - startPose.position[2]) * easedT,
+  ];
+
+  const target: [number, number, number] = [
+    startPose.target[0] + (endPose.target[0] - startPose.target[0]) * easedT,
+    startPose.target[1] + (endPose.target[1] - startPose.target[1]) * easedT,
+    startPose.target[2] + (endPose.target[2] - startPose.target[2]) * easedT,
+  ];
+
+  const fov = startPose.fov + (endPose.fov - startPose.fov) * easedT;
+
+  return { position, target, fov };
+}
 
 export function CameraController() {
   const { camera } = useThree();
@@ -39,11 +82,24 @@ export function CameraController() {
   }, []);
 
   useFrame((_, delta) => {
-    const pose = resolveCameraPose(
+    let pose = resolveCameraPose(
       scrollProgress,
       SEGMENTS,
       effectiveKeyframes
     );
+
+    const isMobile = isMobileDevice();
+    const scene03 = SEGMENTS.find((s) => s.sceneId === "scene-03-architecture");
+    if (scene03 && scrollProgress >= scene03.start && scrollProgress <= scene03.end) {
+      if (reducedMotion) {
+        pose = isMobile
+          ? { position: [0, 0.0, 6.0], target: [0, 0, 0], fov: 46 }
+          : { position: [0.50, 0.0, 5.4], target: [0.55, 0.0, 0], fov: 50 };
+      } else {
+        const localT = (scrollProgress - scene03.start) / (scene03.end - scene03.start || 1);
+        pose = resolveScene03Pose(localT, isMobile);
+      }
+    }
 
     const targetVec = new Vector3(pose.target[0], pose.target[1], pose.target[2]);
     const targetPos = new Vector3(pose.position[0], pose.position[1], pose.position[2]);

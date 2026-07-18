@@ -1,0 +1,139 @@
+/* ProductEngineOverlay.module.css — Scene 03 Product Assembly Engine (PRODUCT-01) */
+
+.overlayRoot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+/* Confident premium narrative panel — styled to match Scene 02 Hero alignment */
+.hudCard {
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  transform: translateY(-50%);
+  width: 38%;
+  max-width: 480px;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 16px);
+  padding: var(--spacing-md, 26px) var(--spacing-lg, 32px);
+  background: rgba(10, 24, 40, 0.68);
+  border: 1px solid rgba(56, 214, 255, 0.28);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(56, 214, 255, 0.12);
+  transition: opacity 0.3s ease;
+}
+
+/* Badge row */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: #38D6FF;
+  text-transform: uppercase;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38D6FF;
+  box-shadow: 0 0 8px #38D6FF, 0 0 16px rgba(56, 214, 255, 0.4);
+  flex-shrink: 0;
+}
+
+/* Headline */
+.headline {
+  font-family: var(--font-heading, 'Inter', sans-serif);
+  font-size: 1.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #F4F7FA;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Subtext */
+.subtext {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.96rem;
+  line-height: 1.62;
+  color: #A7B0BC;
+  margin: 0;
+}
+
+/* Divider between subtext and phase label */
+.divider {
+  width: 32px;
+  height: 1px;
+  background: rgba(56, 214, 255, 0.30);
+}
+
+/* Current phase label (subtle, updated per scroll beat) */
+.phaseLabel {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.10em;
+  color: rgba(56, 214, 255, 0.65);
+  text-transform: uppercase;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hudCard {
+    top: 6%;
+    left: 5%;
+    right: 5%;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    transform: none;
+    padding: 18px 20px;
+    gap: 12px;
+  }
+
+  .headline {
+    font-size: 1.35rem;
+  }
+
+  .subtext {
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+}
+
+/* ── Very small screens ───────────────────────────────────────────────────── */
+@media (max-width: 390px) {
+  .hudCard {
+    top: 4%;
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  .headline {
+    font-size: 1.20rem;
+  }
+
+  .subtext {
+    font-size: 0.80rem;
+    line-height: 1.45;
+  }
+}
