@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
 async function runReview() {
   try {
@@ -94,4 +94,4 @@ You MUST structure your response strictly using the following Markdown template.
   }
 }
 
-runReview();
+await runReview();
