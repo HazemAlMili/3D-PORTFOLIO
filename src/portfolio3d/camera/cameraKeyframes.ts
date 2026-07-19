@@ -52,18 +52,16 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
   },
 
   "scene-03-architecture": {
-    // Product Assembly Engine — large product object anchored right of center
-    // Approach: pull back enough to see full product + left HUD in frame
-    // Enter:    slight right bias to frame product hero, comfortable FOV
-    // Exit:     pull back toward Scene 04 approach
-    approach: { position: [0.6, 0.1, 8.0], target: [0.5, 0, 0], fov: 50 },
-    enter:    { position: [0.60, 0.0, 5.0], target: [0.85, 0, 0], fov: 50 },
-    exit:     { position: [0.6, 0.1, 8.0], target: [0.5, 0, 0], fov: 50 },
-    // Mobile: centered, product fills vertical space
+    // Product Assembly Engine — cinematic side angle from the right
+    // Exposes product right-side physical depth, maintains negative space with left HUD
+    approach: { position: [4.1, 0.4, 8.5], target: [1.7, 0.0, 0], fov: 50 },
+    enter:    { position: [3.7, 0.1, 4.7], target: [1.8, 0.0, 0], fov: 48 },
+    exit:     { position: [4.1, 0.4, 8.5], target: [1.7, 0.0, 0], fov: 50 },
+    // Mobile: subtle right-side angle to fit portrait aspect ratios without clipping
     mobile: {
-      approach: { position: [0, 0.0, 8.5], target: [0, 0, 0], fov: 46 },
-      enter:    { position: [0, 0.0, 6.0], target: [0, 0, 0], fov: 46 },
-      exit:     { position: [0, 0.0, 9.0], target: [0, 0, 0], fov: 46 },
+      approach: { position: [1.2, 0.1, 8.5], target: [0, -0.2, 0], fov: 46 },
+      enter:    { position: [1.1, 0.05, 5.2], target: [0, -0.2, 0], fov: 46 },
+      exit:     { position: [1.2, 0.1, 9.0], target: [0, -0.2, 0], fov: 46 },
     },
   },
 
@@ -121,52 +119,52 @@ export interface CameraBeat {
 export const SCENE_03_CAMERA_BEATS: CameraBeat[] = [
   {
     start: 0.00,
-    end: 0.14,
-    // Beat 1 - Discovery Entry: transition from Scene 02 exit to offset entry framing
-    desktop: { position: [0.60, 0.10, 6.2], target: [0.55, 0.0, 0], fov: 50 },
-    mobile: { position: [0, 0.1, 8.5], target: [0, 0, 0], fov: 46 }
+    end: 0.12,
+    // Beat 1 - Discovery Entry: Wide three-quarter side view establishing physical screen object
+    desktop: { position: [3.8, 0.45, 5.8], target: [1.7, 0.0, 0], fov: 48 },
+    mobile: { position: [1.2, 0.05, 7.0], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.14,
-    end: 0.30,
-    // Beat 2 - Side Reveal: swing rightward to create parallax showing build area
-    desktop: { position: [0.75, 0.15, 5.8], target: [0.55, 0.0, 0], fov: 50 },
-    mobile: { position: [0.15, 0.05, 8.0], target: [0, 0, 0], fov: 46 }
+    start: 0.12,
+    end: 0.26,
+    // Beat 2 - Side Reveal: Increase lateral perspective, revealing frame thickness & layers
+    desktop: { position: [3.9, 0.4, 5.2], target: [1.7, 0.0, 0], fov: 48 },
+    mobile: { position: [1.2, 0.05, 6.6], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.30,
-    end: 0.48,
-    // Beat 3 - Push-In Assembly: move in close to the build area, lower and focus
-    desktop: { position: [0.60, -0.05, 4.4], target: [0.55, 0.0, 0], fov: 50 },
-    mobile: { position: [0, -0.05, 6.2], target: [0, 0, 0], fov: 46 }
+    start: 0.26,
+    end: 0.42,
+    // Beat 3 - Push-In Assembly: Move closer to central INTERACTION region without flattening
+    desktop: { position: [3.4, 0.2, 4.0], target: [1.8, 0.1, 0], fov: 48 },
+    mobile: { position: [0.9, 0.0, 5.2], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.48,
-    end: 0.62,
-    // Beat 4 - Top / Inspection Angle: elevate camera to inspect stacked layers
-    desktop: { position: [0.55, 1.00, 5.0], target: [0.55, -0.05, 0], fov: 48 },
-    mobile: { position: [0, 0.6, 6.5], target: [0, -0.05, 0], fov: 46 }
+    start: 0.42,
+    end: 0.58,
+    // Beat 4 - Top / Inspection Angle: Elevate slightly for stack inspection while preserving side depth
+    desktop: { position: [3.5, 0.9, 4.2], target: [1.8, -0.1, 0], fov: 46 },
+    mobile: { position: [1.0, 0.6, 5.4], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.62,
-    end: 0.80,
-    // Beat 5 - Optimization Motion: low-angle dynamic sweep to support the wave
-    desktop: { position: [0.45, -0.20, 4.6], target: [0.55, 0.0, 0], fov: 52 },
-    mobile: { position: [-0.1, -0.15, 6.3], target: [0, 0, 0], fov: 46 }
+    start: 0.58,
+    end: 0.86,
+    // Beat 5 - Optimization Motion: Settle and reduce camera motion during optimization sweep
+    desktop: { position: [3.7, 0.1, 4.6], target: [1.8, 0.0, 0], fov: 48 },
+    mobile: { position: [1.1, -0.08, 5.2], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.80,
-    end: 0.92,
-    // Beat 6 - Hero Reveal: settle into premium aligned product portrait framing
-    desktop: { position: [0.50, 0.0, 5.4], target: [0.55, 0.0, 0], fov: 50 },
-    mobile: { position: [0, 0.0, 6.0], target: [0, 0, 0], fov: 46 }
+    start: 0.86,
+    end: 0.94,
+    // Beat 6 - Hero Reveal: Settle into premium stable three-quarter product portrait
+    desktop: { position: [3.7, 0.1, 4.7], target: [1.8, 0.0, 0], fov: 48 },
+    mobile: { position: [1.1, 0.0, 5.2], target: [0, -0.2, 0], fov: 44 }
   },
   {
-    start: 0.92,
+    start: 0.94,
     end: 1.00,
-    // Beat 7 - Launch Framing: track bottom-right/forward to handoff to Scene 04
-    desktop: { position: [0.60, 0.10, 7.8], target: [0.50, 0.0, 0], fov: 50 },
-    mobile: { position: [0, 0.0, 9.0], target: [0, 0, 0], fov: 46 }
+    // Beat 7 - Launch Framing: Maintain side angle while preparing the Scene 03 -> Scene 04 handoff
+    desktop: { position: [3.9, 0.15, 5.6], target: [1.7, 0.0, 0], fov: 48 },
+    mobile: { position: [1.2, 0.05, 7.0], target: [0, -0.2, 0], fov: 44 }
   }
 ];
 

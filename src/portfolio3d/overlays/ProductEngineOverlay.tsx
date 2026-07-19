@@ -32,10 +32,10 @@ export function ProductEngineOverlay({ localProgress }: ProductEngineOverlayProp
     return null;
   }
 
-  // Calm exit: fade slightly during launch handoff (0.88 – 1.00)
+  // Decisive exit: fade out cleanly during handoff release (0.94 – 0.98)
   const exitOpacity =
-    localProgress > 0.88
-      ? 1.0 - ((localProgress - 0.88) / 0.12) * 0.40
+    localProgress > 0.94
+      ? Math.max(0, 1.0 - (localProgress - 0.94) / 0.04)
       : 1.0;
 
   // Derive current phase label from localProgress
@@ -75,11 +75,12 @@ export function ProductEngineOverlay({ localProgress }: ProductEngineOverlayProp
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getPhaseLabel(p: number): string {
-  if (p < 0.14) return "Idea Spark";
-  if (p < 0.28) return "Interface Screens";
+  if (p < 0.12) return "Idea Spark";
+  if (p < 0.26) return "Interface Screens";
   if (p < 0.42) return "Interactive Flow";
   if (p < 0.58) return "System Connections";
-  if (p < 0.74) return "Product Content";
-  if (p < 0.90) return "Ready State";
+  if (p < 0.72) return "Product Content";
+  if (p < 0.86) return "Optimization Sweep";
+  if (p < 0.94) return "Ready State";
   return "Handoff to Projects";
 }

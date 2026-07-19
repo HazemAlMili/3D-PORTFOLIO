@@ -33,32 +33,40 @@ export function ProductLaunchHandoff({
   isMobile = false,
   reducedMotion = false,
 }: ProductLaunchHandoffProps) {
-  const packetRef = useRef<THREE.Mesh>(null);
+  const packetRef = useRef<THREE.Group>(null);
 
-  // ── 1. Target Coordinates (relative to Scene 03 product anchor) ───────────
+  // ── 1. Target Coordinates (relative to Scene 03 product anchor at X=1.80) ────
+  // Beam exits rightward off-screen toward Scene 04 — no steep drop.
   const localTarget = useMemo((): [number, number, number] => {
     if (isMobile) {
-      return [0.0, -2.8, -3.2];
+      return [0.0, 0.0, -2.0];
     }
-    // Desktop anchor is at 1.8. Scene 04 archSource is 4.2. Laptop target is [0, 0.4, 0.1] in Scene 04 local.
-    // 4.2 - 1.8 = +2.4 in X. So let's aim roughly toward +2.4, -1.8, -3.8.
-    return [2.4, -1.8, -3.8];
-  }, [isMobile]);
+    // Exit right past the product frame, slightly above center — beam goes right-ward
+    return [W * 1.6, 0.10, 0.0];
+  }, [isMobile, W]);
 
-  // Start point of launch: bottom-right corner of the product shell
-  const localStart = useMemo((): [number, number, number] => [W, -H, 0], [W, H]);
+  // Start point: right-center edge of the product frame (not bottom-right)
+  const localStart = useMemo((): [number, number, number] => {
+    if (isMobile) {
+      return [0.0, H * 0.10, 0.10];
+    }
+    return [W * 0.50, H * 0.10, 0.10];
+  }, [isMobile, W, H]);
 
   // ── 2. Timings ────────────────────────────────────────────────────────────
-  // 0.94 - 0.96: Output point wakes up
-  const outputPointT = Math.max(0, Math.min(1, (localProgress - 0.94) / 0.02));
+  // 0.88 - 0.94: Output point wakes up & gold beam charges
+  const outputPointT = Math.max(0, Math.min(1, (localProgress - 0.88) / 0.06));
   
-  // 0.96 - 0.99: Packet travels
+  // 0.90 - 1.00: Conduit beam extends
+  const beamProgress = Math.max(0, Math.min(1, (localProgress - 0.90) / 0.08));
+
+  // 0.92 - 1.00: Proof packet travels
   const packetProgress = reducedMotion
     ? 1.0
-    : Math.max(0, Math.min(1, (localProgress - 0.96) / 0.03));
+    : Math.max(0, Math.min(1, (localProgress - 0.92) / 0.08));
     
-  // 0.98 - 1.00: Receiver cue activation
-  const receiverGlowT = Math.max(0, Math.min(1, (localProgress - 0.98) / 0.02));
+  // 0.96 - 1.00: Receiver cue activation
+  const receiverGlowT = Math.max(0, Math.min(1, (localProgress - 0.96) / 0.04));
 
   // ── 3. Path calculation ───────────────────────────────────────────────────
   const currentPacketPos = useMemo((): [number, number, number] => {
@@ -71,75 +79,110 @@ export function ProductLaunchHandoff({
     ];
   }, [localTarget, localStart, packetProgress]);
 
+  const beamEndPos = useMemo((): [number, number, number] => {
+    const [tx, ty, tz] = localTarget;
+    const [sx, sy, sz] = localStart;
+    return [
+      sx + (tx - sx) * beamProgress,
+      sy + (ty - sy) * beamProgress,
+      sz + (tz - sz) * beamProgress,
+    ];
+  }, [localTarget, localStart, beamProgress]);
+
   useFrame(() => {
-    if (reducedMotion || localProgress < 0.96 || !packetRef.current) return;
+    if (reducedMotion || localProgress < 0.92 || !packetRef.current) return;
     const [px, py, pz] = currentPacketPos;
     packetRef.current.position.set(px, py, pz);
   });
 
-  // Short directional trail behind the packet
-  const trailPoints = useMemo((): [number, number, number][] => {
-    const [px, py, pz] = currentPacketPos;
-    const [sx, sy, sz] = localStart;
-    // Trail stretches back halfway to start
-    return [
-      [sx + (px - sx) * 0.5, sy + (py - sy) * 0.5, sz + (pz - sz) * 0.5],
-      [px, py, pz],
-    ];
-  }, [currentPacketPos, localStart]);
+  // Directional conduit line
+  const conduitPoints = useMemo((): [number, number, number][] => {
+    return [localStart, beamEndPos];
+  }, [localStart, beamEndPos]);
 
-  if (localProgress < 0.94 || opacity <= 0.01) return null;
+  if (localProgress < 0.88 || opacity <= 0.01) return null;
 
-  const baseOpacity = opacity * Math.min(1, (localProgress - 0.94) / 0.02);
+  const baseOpacity = opacity * Math.min(1, (localProgress - 0.88) / 0.04);
 
   return (
     <group>
-      {/* ── A. Output Point ──────────────────────────────────────────────────── */}
+      {/* ── A. Output Point Node ─────────────────────────────────────────────── */}
       {outputPointT > 0 && (
-        <mesh position={localStart} renderOrder={30}>
-          <sphereGeometry args={[isMobile ? 0.012 : 0.018, 12, 12]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentGold}
-            transparent
-            opacity={baseOpacity * outputPointT * (1.0 - packetProgress)} // Fades out as packet leaves
-          />
-        </mesh>
-      )}
-
-      {/* ── B. Traveling Proof Packet ────────────────────────────────────────── */}
-      {!reducedMotion && packetProgress > 0 && packetProgress < 1.0 && (
-        <group>
-          {/* Packet Core */}
-          <mesh ref={packetRef} renderOrder={35} position={currentPacketPos}>
-            <sphereGeometry args={[isMobile ? 0.012 : 0.018, 12, 12]} />
+        <group position={localStart}>
+          <mesh renderOrder={30}>
+            <sphereGeometry args={[isMobile ? 0.016 : 0.024, 12, 12]} />
             <meshBasicMaterial
               color={PRODUCT_ENGINE_COLORS.accentGold}
               transparent
-              opacity={baseOpacity * (1.0 - receiverGlowT)} // Fades as it reaches target
+              opacity={baseOpacity * outputPointT}
             />
           </mesh>
-          
-          {/* Subtle Directional Trail */}
-          <Line
-            points={trailPoints}
-            color={PRODUCT_ENGINE_COLORS.accentGold}
-            lineWidth={isMobile ? 0.8 : 1.2}
-            transparent
-            opacity={baseOpacity * 0.40 * (1.0 - receiverGlowT)}
-          />
+          <mesh renderOrder={29}>
+            <torusGeometry args={[0.04, 0.003, 8, 24]} />
+            <meshBasicMaterial
+              color={PRODUCT_ENGINE_COLORS.accentCyan}
+              transparent
+              opacity={baseOpacity * outputPointT * 0.70}
+            />
+          </mesh>
         </group>
       )}
 
-      {/* ── C. Scene 04 Receiver Target Cue ──────────────────────────────────── */}
+      {/* ── B. Connecting Handoff Conduit Beam ───────────────────────────────── */}
+      {beamProgress > 0 && (
+        <Line
+          points={conduitPoints}
+          color={PRODUCT_ENGINE_COLORS.accentGold}
+          lineWidth={isMobile ? 3.0 : 5.5}
+          transparent
+          opacity={baseOpacity * 0.90}
+        />
+      )}
+
+      {/* ── C. Traveling Proof Packet ────────────────────────────────────────── */}
+      {!reducedMotion && packetProgress > 0 && (
+        <group ref={packetRef} renderOrder={35} position={currentPacketPos}>
+          {/* Core packet sphere */}
+          <mesh renderOrder={36}>
+            <sphereGeometry args={[isMobile ? 0.032 : 0.052, 16, 16]} />
+            <meshBasicMaterial
+              color={PRODUCT_ENGINE_COLORS.accentGold}
+              transparent
+              opacity={baseOpacity * 0.98}
+            />
+          </mesh>
+          {/* Packet halo aura */}
+          <mesh renderOrder={35}>
+            <torusGeometry args={[isMobile ? 0.055 : 0.085, 0.006, 8, 32]} />
+            <meshBasicMaterial
+              color={PRODUCT_ENGINE_COLORS.accentCyan}
+              transparent
+              opacity={baseOpacity * 0.85}
+            />
+          </mesh>
+        </group>
+      )}
+
+      {/* ── D. Scene 04 Receiver Target Cue ──────────────────────────────────── */}
       {receiverGlowT > 0 && (
-        <mesh position={localTarget} renderOrder={30}>
-          <sphereGeometry args={[0.06 + receiverGlowT * 0.04, 16, 16]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentCyan}
-            transparent
-            opacity={baseOpacity * receiverGlowT * 0.40} // Subtle landing pulse
-          />
-        </mesh>
+        <group position={localTarget}>
+          <mesh renderOrder={30}>
+            <sphereGeometry args={[0.06 + receiverGlowT * 0.04, 16, 16]} />
+            <meshBasicMaterial
+              color={PRODUCT_ENGINE_COLORS.accentCyan}
+              transparent
+              opacity={baseOpacity * receiverGlowT * 0.60}
+            />
+          </mesh>
+          <mesh renderOrder={29}>
+            <torusGeometry args={[0.09, 0.004, 8, 28]} />
+            <meshBasicMaterial
+              color={PRODUCT_ENGINE_COLORS.accentGold}
+              transparent
+              opacity={baseOpacity * receiverGlowT * 0.80}
+            />
+          </mesh>
+        </group>
       )}
     </group>
   );

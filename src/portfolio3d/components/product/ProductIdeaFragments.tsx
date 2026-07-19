@@ -97,8 +97,8 @@ export function ProductIdeaFragments({
 
   const globalFade = opacity * entryFade * traceFade;
 
-  // Seed fragments deterministically
-  const fragmentCount = isMobile ? 10 : 22;
+  // Seed fragments deterministically (reduced count for smooth 60 FPS performance)
+  const fragmentCount = isMobile ? 4 : 8;
   const fragments = useMemo((): FragmentData[] => {
     const list: FragmentData[] = [];
     const types: FragmentData["type"][] = ["glass", "blueprint", "code", "node", "bracket"];
@@ -200,7 +200,7 @@ export function ProductIdeaFragments({
     groupRef.current.rotation.z = Math.sin(time * 0.3) * 0.005;
   });
 
-  if (globalFade <= 0.01) return null;
+  if (globalFade <= 0.01 || localProgress > 0.40) return null;
 
   return (
     <group ref={groupRef}>
@@ -275,14 +275,10 @@ export function ProductIdeaFragments({
             {frag.type === "glass" && (
               <mesh renderOrder={12}>
                 <planeGeometry args={[frag.size[0], frag.size[1]]} />
-                <meshStandardMaterial
+                <meshBasicMaterial
                   color={PRODUCT_ENGINE_COLORS.chamberDepth}
-                  emissive={PRODUCT_ENGINE_COLORS.accentCyan}
-                  emissiveIntensity={0.03}
                   transparent
-                  opacity={fragOpacity * 0.50}
-                  roughness={0.1}
-                  metalness={0.2}
+                  opacity={fragOpacity * 0.40}
                   depthWrite={false}
                 />
               </mesh>

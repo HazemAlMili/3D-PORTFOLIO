@@ -4,6 +4,7 @@ import { Vector3, PerspectiveCamera } from "three";
 import { usePortfolioStore } from "../store/portfolioStore";
 import { resolveCameraPose, easeInOutCubic } from "./CameraDirector";
 import { SCENE_CAMERA_KEYFRAMES, SCENE_03_CAMERA_BEATS } from "./cameraKeyframes";
+import { usePointerInfluence } from "../interaction/usePointerInfluence";
 import { buildSceneSegments } from "../scroll/scrollSegments";
 import { isMobileDevice } from "../utils/mobileUtils";
 
@@ -56,6 +57,7 @@ export function CameraController() {
   const { camera } = useThree();
   const scrollProgress = usePortfolioStore((state) => state.scrollProgress);
   const reducedMotion = usePortfolioStore((state) => state.reducedMotion);
+  const pointer = usePointerInfluence();
 
   const currentPosition = useRef(new Vector3());
   const currentTarget = useRef(new Vector3());
@@ -103,6 +105,16 @@ export function CameraController() {
 
     const targetVec = new Vector3(pose.target[0], pose.target[1], pose.target[2]);
     const targetPos = new Vector3(pose.position[0], pose.position[1], pose.position[2]);
+
+    // Apply restrained mouse-reactive depth parallax for Scene 03 desktop presentation
+    if (scene03 && scrollProgress >= scene03.start && scrollProgress <= scene03.end && !isMobile && !reducedMotion) {
+      const mouseOffsetX = pointer.smoothX * 0.18;
+      const mouseOffsetY = -pointer.smoothY * 0.10;
+      targetPos.x += mouseOffsetX * 0.5;
+      targetPos.y += mouseOffsetY * 0.5;
+      targetVec.x += mouseOffsetX * 0.2;
+      targetVec.y += mouseOffsetY * 0.2;
+    }
 
     // Apply custom storyboard locked camera path for Scene 01
     const scene01 = SEGMENTS[0];

@@ -19,11 +19,11 @@
 .hudCard {
   position: absolute;
   top: 50%;
-  left: 6%;
+  left: 5%;
   transform: translateY(-50%);
-  width: 38%;
-  max-width: 480px;
-  min-width: 340px;
+  width: 25%;
+  max-width: 320px;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm, 16px);

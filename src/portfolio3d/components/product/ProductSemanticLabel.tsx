@@ -1,4 +1,4 @@
-import { Billboard, Text } from "@react-three/drei";
+import { Text } from "@react-three/drei";
 
 interface ProductSemanticLabelProps {
   /** Label text (e.g. "IDEA", "SCREENS", "INTERACTION", "CONNECTIONS", "CONTENT", "READY") */
@@ -24,7 +24,7 @@ interface ProductSemanticLabelProps {
 /**
  * ProductSemanticLabel — user-friendly story label attached to a 3D product module.
  *
- * Uses @react-three/drei Text inside a Billboard so it always faces camera.
+ * Uses @react-three/drei Text. Locked flat onto screen surface.
  */
 export function ProductSemanticLabel({
   text,
@@ -44,24 +44,19 @@ export function ProductSemanticLabel({
   const effectiveFontSize = isMobile ? fontSize * 0.78 : fontSize;
 
   return (
-    <Billboard
-      position={position}
-      follow={true}
-      lockX={false}
-      lockY={false}
-      lockZ={false}
-    >
+    <group position={position}>
       <Text
         fontSize={effectiveFontSize}
         color={color}
         anchorX={anchorX}
         anchorY="middle"
-        letterSpacing={0.06}
+        letterSpacing={0.08}
         fillOpacity={Math.min(1, Math.max(0, opacity))}
+        material-depthWrite={false}
         renderOrder={30}
       >
         {displayText}
       </Text>
-    </Billboard>
+    </group>
   );
 }

@@ -55,19 +55,43 @@ export function Scene04Projects({ sceneId, sceneIndex, localProgress, opacity = 
   const stepCount = PROJECT_DATA.length;
   const activeIndex = Math.min(stepCount - 1, Math.floor(immerseT * stepCount));
 
+  // Smooth approach opacity from localProgress = 0.00 for seamless handoff reception
+  // Only force 1.0 if reducedMotion is explicitly enabled, not during low-opacity transition fades.
+  const approachOpacity = reducedMotion
+    ? 1.0
+    : Math.max(0, Math.min(1, localProgress / (enterStart || 0.01)));
+
+  // Handoff arrival pulse (0.00 - 0.22)
+  const arrivalPulseT = Math.max(0, Math.min(1, localProgress / 0.22));
+  const arrivalGlowOpa = (1.0 - arrivalPulseT) * opacity;
+
   if (!shouldRenderHeavy) return null;
 
   return (
     <group position={[0, 0, 0]} userData={{ sceneId, sceneIndex }}>
-      {/* Lights tailored to a laptop desk environment */}
-      <ambientLight intensity={0.15} color="#0F172A" />
-      <directionalLight position={[4, 6, 3]} intensity={0.8} color="#FFFFFF" />
-      <directionalLight position={[-4, 3, 2]} intensity={0.4} color="#38D6FF" />
-      <pointLight position={[0, 1, 2]} intensity={0.3} color="#38D6FF" />
+      {/* Lights tailored to a laptop desk environment - scaled cleanly with approachOpacity to prevent leaks */}
+      <ambientLight intensity={0.15 * approachOpacity} color="#0F172A" />
+      <directionalLight position={[4, 6, 3]} intensity={0.8 * approachOpacity} color="#FFFFFF" />
+      <directionalLight position={[-4, 3, 2]} intensity={0.4 * approachOpacity} color="#38D6FF" />
+      <pointLight position={[0, 1, 2]} intensity={0.3 * approachOpacity} color="#38D6FF" />
 
-      {/* Floating chassis container */}
-      <group ref={deviceGroupRef}>
+      {/* Floating chassis container - completely hidden until the transition actually starts */}
+      <group ref={deviceGroupRef} visible={approachOpacity > 0.005}>
         <LaptopDevice />
+
+        {/* Handoff Arrival Receiver Node (0.00 - 0.22) */}
+        {arrivalGlowOpa > 0.01 && (
+          <group position={[0, 0.4, 0.12]}>
+            <mesh renderOrder={30}>
+              <sphereGeometry args={[0.024, 12, 12]} />
+              <meshBasicMaterial color="#D8A84F" transparent opacity={arrivalGlowOpa * 0.90} />
+            </mesh>
+            <mesh renderOrder={29} scale={[1 + arrivalPulseT * 1.5, 1 + arrivalPulseT * 1.5, 1]}>
+              <torusGeometry args={[0.12, 0.004, 8, 32]} />
+              <meshBasicMaterial color="#38D6FF" transparent opacity={arrivalGlowOpa * 0.75} />
+            </mesh>
+          </group>
+        )}
 
         {/* Project content rendered on screen face (Z=0.10) */}
         <group position={[0, 0.4, 0.10]}>

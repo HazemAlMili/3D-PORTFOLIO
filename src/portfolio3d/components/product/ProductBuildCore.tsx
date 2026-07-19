@@ -7,11 +7,11 @@ import { ProductSemanticLabel } from "./ProductSemanticLabel";
 import { ProductPerformanceWave } from "./ProductPerformanceWave";
 import { ProductLaunchHandoff } from "./ProductLaunchHandoff";
 
-// ── Product shell dimensions ──────────────────────────────────────────────────
-const DESKTOP_W = 1.48;
-const DESKTOP_H = 0.84;
-const MOBILE_W  = 1.05;
-const MOBILE_H  = 0.62;
+// ── Product shell dimensions (PRODUCT-POLISH-14A enlarged heroic staging) ────
+const DESKTOP_W = 1.70;
+const DESKTOP_H = 1.00;
+const MOBILE_W  = 1.30;
+const MOBILE_H  = 0.78;
 
 // ── Timing helpers & Three-Stage Lifecycle System ──────────────────────────────
 function clamp01(t: number): number {
@@ -31,7 +31,7 @@ function easeOut(t: number): number {
  * Calculates continuous 3-stage lifecycle for every visual element:
  *   1. Pre-appearance (ghost): faint outline/glow before buildStart
  *   2. Build-in: smooth transition (opacity 0.10 -> 1.0, scale 0.92 -> 1.0, active glow pulse)
- *   3. Settle: glow calms down, opacity settles to ~0.65 as downstream beats take focus
+ *   3. Settle: glow calms down, opacity settles to ~0.68 as downstream beats take focus
  */
 function getThreeStageBeatState(
   p: number,
@@ -95,18 +95,17 @@ interface ProductBuildCoreProps {
 }
 
 /**
- * ProductBuildCore.tsx — Scene 03 User-Friendly Story Build System
- *                        (PRODUCT-STORY-USER-05)
+ * ProductBuildCore.tsx — Scene 03 Recomposed Cinematic Product Build System
+ *                        (PRODUCT-RECOMPOSE-11)
  *
- * Smooth cinematic 7-beat user-friendly narrative pipeline:
- *
- *   Beat 1: IDEA        → spark / seed orb (0.00 – 0.14)
- *   Beat 2: SCREENS     → screen interface & layout zones (0.14 – 0.28)
- *   Beat 3: INTERACTION → UI cards, buttons, & interactive flow (0.28 – 0.42)
- *   Beat 4: CONNECTIONS → clean system connector links (0.42 – 0.58)
- *   Beat 5: CONTENT     → structured content blocks & data core (0.58 – 0.74)
- *   Beat 6: READY       → polished final product lock & indicators (0.74 – 0.90)
- *   Beat 7: HANDOFF     → proof packet releases to Scene 04 (0.90 – 1.00)
+ * Smooth cinematic 7-stage user-friendly narrative pipeline:
+ *   Beat 1: IDEA        → seed orb at top-left origin (0.00 – 0.12)
+ *   Beat 2: SCREENS     → screen interface & layout frame (0.12 – 0.26)
+ *   Beat 3: INTERACTION → central UI flow & action nodes (0.26 – 0.42)
+ *   Beat 4: CONNECTIONS → mid-lower system bridge conduits (0.42 – 0.58)
+ *   Beat 5: CONTENT     → 3D product content cards in lower body (0.58 – 0.72)
+ *   Beat 6: READY       → polished top-right product lock & indicators (0.72 – 0.86 wave / 0.86 – 0.94 lock)
+ *   Beat 7: HANDOFF     → proof packet releases to Scene 04 (0.94 – 1.00)
  */
 export function ProductBuildCore({
   localProgress,
@@ -119,7 +118,7 @@ export function ProductBuildCore({
   const PW = isMobile ? MOBILE_W : DESKTOP_W;
   const PH = isMobile ? MOBILE_H : DESKTOP_H;
 
-  const wireT = fadeIn(localProgress, 0.08, 0.24, reducedMotion);
+  const wireT = fadeIn(localProgress, 0.06, 0.20, reducedMotion);
   const entryZ = reducedMotion
     ? 0
     : THREE.MathUtils.lerp(-0.8, 0, clamp01(wireT * 1.3));
@@ -133,16 +132,17 @@ export function ProductBuildCore({
 
   if (localProgress < 0.01 || opacity <= 0.01) return null;
 
-  const baseOpacity = opacity * wireT;
-  const tiltY = isMobile ? 0.08 : 0.28;
-  const tiltX = isMobile ? 0.05 : 0.12;
+  const exitFade = localProgress > 0.94 ? Math.max(0, 1.0 - (localProgress - 0.94) / 0.04) : 1.0;
+  const baseOpacity = opacity * wireT * exitFade;
+  const tiltY = isMobile ? 0.04 : 0.10;
+  const tiltX = isMobile ? 0.03 : 0.05;
 
   const waveActive =
-    localProgress >= 0.70 && localProgress <= 0.82 && !reducedMotion;
+    localProgress >= 0.72 && localProgress <= 0.86 && !reducedMotion;
   const wavePulse = waveActive
-    ? Math.sin(Math.PI * ((localProgress - 0.70) / 0.12))
+    ? Math.sin(Math.PI * ((localProgress - 0.72) / 0.14))
     : 0;
-  const afterWave = localProgress > 0.82 || reducedMotion;
+  const afterWave = localProgress > 0.86 || reducedMotion;
 
   const moduleProps: ModuleBaseProps = {
     localProgress,
@@ -160,11 +160,14 @@ export function ProductBuildCore({
   };
 
   return (
-    <group position={[0, 0, entryZ]}>
+    <group position={[0, 0.08, entryZ]}>
       <group ref={shellRef} rotation={[tiltX, tiltY, 0]}>
 
+        {/* ── Story Path Connectors (IDEA -> SCREENS -> INTERACTION -> CONNECTIONS -> CONTENT -> READY) ── */}
+        <StoryPathConnectors {...dimProps} />
+
         {/* ── Beat 1: IDEA ───────────────────────────── */}
-        <IdeaCore {...moduleProps} />
+        <IdeaCore {...dimProps} />
 
         {/* ── Beat 2: SCREENS ────────────────────────── */}
         <ScreensSurface {...dimProps} />
@@ -207,38 +210,132 @@ export function ProductBuildCore({
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. IDEA CORE (Beat 1: 0.00 – 0.14)
+// STORY PATH CONNECTORS (Sequential neon vector links & pulse data nodes)
 // ═══════════════════════════════════════════════════════════════════════════
-function IdeaCore({ localProgress, baseOpacity, isMobile, reducedMotion, wavePulse }: ModuleBaseProps) {
-  // Pre: 0.00, Build: 0.04-0.12, Settle: 0.14+
-  const beat = getThreeStageBeatState(localProgress, 0.00, 0.04, 0.12, reducedMotion);
-  if (beat.opacity <= 0.005) return null;
+function StoryPathConnectors({ localProgress, baseOpacity, W, H, isMobile, reducedMotion }: ModuleWithDimsProps) {
+  // StoryPath connectors served their purpose once READY is visible (0.86+).
+  // Removing them at local 0.86 saves 10 draw calls during the expensive Exit phase.
+  if (reducedMotion || localProgress < 0.12 || localProgress > 0.86) return null;
 
-  const settledMult = beat.isComplete && !reducedMotion ? 0.35 : 1.0;
-  const opa = baseOpacity * beat.opacity * settledMult;
+  const pw = W * 0.98;
+  const ph = H * 0.98;
 
-  const px = isMobile ? -0.58 : -0.88;
-  const py = isMobile ? 0.36 : 0.58;
-  const pz = isMobile ? 0.24 : 0.34 + beat.zOffset;
+  const ideaPos: [number, number, number] = [-pw * 0.58, ph * 0.58, 0.24];
+  const screensPos: [number, number, number] = [-pw * 0.20, ph * 0.50, 0.08];
+  const interactPos: [number, number, number] = [0.04, isMobile ? 0.26 : 0.42, 0.08];
+  const connectPos: [number, number, number] = [0.04, isMobile ? -0.04 : -0.06, 0.04];
+  const contentPos: [number, number, number] = [0.04, isMobile ? -0.34 : -0.54, 0.04];
+  const readyPos: [number, number, number] = [1.52, 0.90, 0.04];
+
+  const path1Opa = clamp01((localProgress - 0.12) / 0.10); // Idea -> Screens
+  const path2Opa = clamp01((localProgress - 0.24) / 0.12); // Screens -> Interaction
+  const path3Opa = clamp01((localProgress - 0.40) / 0.12); // Interaction -> Connections
+  const path4Opa = clamp01((localProgress - 0.56) / 0.12); // Connections -> Content
+  const path5Opa = clamp01((localProgress - 0.72) / 0.12); // Content -> Ready
+
+  const opa = baseOpacity * 0.45;
+
+  return (
+    <group>
+      {path1Opa > 0.01 && (
+        <group>
+          <Line points={[ideaPos, screensPos]} color={PRODUCT_ENGINE_COLORS.accentCyan} lineWidth={isMobile ? 0.8 : 1.2} transparent opacity={opa * path1Opa} />
+          <mesh position={interpolatedPos(ideaPos, screensPos, path1Opa)}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentCyan} transparent opacity={opa * path1Opa * 0.9} />
+          </mesh>
+        </group>
+      )}
+      {path2Opa > 0.01 && (
+        <group>
+          <Line points={[screensPos, interactPos]} color={PRODUCT_ENGINE_COLORS.accentBlue} lineWidth={isMobile ? 0.8 : 1.2} transparent opacity={opa * path2Opa} />
+          <mesh position={interpolatedPos(screensPos, interactPos, path2Opa)}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentBlue} transparent opacity={opa * path2Opa * 0.9} />
+          </mesh>
+        </group>
+      )}
+      {path3Opa > 0.01 && (
+        <group>
+          <Line points={[interactPos, connectPos]} color={PRODUCT_ENGINE_COLORS.accentBlue} lineWidth={isMobile ? 0.8 : 1.2} transparent opacity={opa * path3Opa} />
+          <mesh position={interpolatedPos(interactPos, connectPos, path3Opa)}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentBlue} transparent opacity={opa * path3Opa * 0.9} />
+          </mesh>
+        </group>
+      )}
+      {path4Opa > 0.01 && (
+        <group>
+          <Line points={[connectPos, contentPos]} color={PRODUCT_ENGINE_COLORS.accentGold} lineWidth={isMobile ? 0.8 : 1.2} transparent opacity={opa * path4Opa} />
+          <mesh position={interpolatedPos(connectPos, contentPos, path4Opa)}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentGold} transparent opacity={opa * path4Opa * 0.9} />
+          </mesh>
+        </group>
+      )}
+      {path5Opa > 0.01 && (
+        <group>
+          <Line points={[contentPos, readyPos]} color={PRODUCT_ENGINE_COLORS.accentGold} lineWidth={isMobile ? 0.8 : 1.2} transparent opacity={opa * path5Opa} />
+          <mesh position={interpolatedPos(contentPos, readyPos, path5Opa)}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentGold} transparent opacity={opa * path5Opa * 0.9} />
+          </mesh>
+        </group>
+      )}
+    </group>
+  );
+}
+
+function interpolatedPos(a: [number, number, number], b: [number, number, number], t: number): [number, number, number] {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 1. IDEA CORE (Beat 1: 0.00 – 0.12) — Top-Left System Origin
+// ═══════════════════════════════════════════════════════════════════════════
+function IdeaCore({ localProgress, baseOpacity, W, H, isMobile, reducedMotion, wavePulse }: ModuleWithDimsProps) {
+  // Pre: 0.00, Build: 0.02-0.10, Settle: 0.12+
+  const beat = getThreeStageBeatState(localProgress, 0.00, 0.02, 0.10, reducedMotion);
+
+  // IDEA served its role by local 0.50. Exit-fade to 0 by 0.68 to free render budget
+  // during the expensive CONNECTIONS / CONTENT / READY / EXIT beats.
+  const ideaExitFade = !reducedMotion && localProgress > 0.50
+    ? Math.max(0, 1.0 - (localProgress - 0.50) / 0.18)
+    : 1.0;
+  if (beat.opacity <= 0.005 || ideaExitFade <= 0.005) return null;
+
+  const settledMult = beat.isComplete && !reducedMotion ? 0.55 : 1.0;
+  const opa = baseOpacity * beat.opacity * settledMult * ideaExitFade;
+
+  const pw = W * 0.98;
+  const ph = H * 0.98;
+
+  const px = isMobile ? -pw * 0.65 : -pw * 0.58;
+  const py = isMobile ? ph * 0.65 : ph * 0.58;
+  const pz = isMobile ? 0.20 : 0.24 + beat.zOffset;
 
   return (
     <group position={[px, py, pz]} scale={[beat.scale, beat.scale, beat.scale]}>
       {/* Spotlight glow during build-in */}
       {beat.glow > 0.02 && (
         <mesh position={[0, 0, -0.02]} renderOrder={19}>
-          <planeGeometry args={[0.42, 0.42]} />
+          <planeGeometry args={[0.55, 0.55]} />
           <meshBasicMaterial
             color={PRODUCT_ENGINE_COLORS.accentCyan}
             transparent
-            opacity={opa * beat.glow * 0.28}
+            opacity={opa * beat.glow * 0.35}
             depthWrite={false}
           />
         </mesh>
       )}
 
-      {/* Core glow orb */}
+      {/* Core glow orb (larger & brighter) */}
       <mesh renderOrder={22}>
-        <sphereGeometry args={[0.062, 16, 16]} />
+        <sphereGeometry args={[0.09, 16, 16]} />
         <meshBasicMaterial
           color={PRODUCT_ENGINE_COLORS.accentCyan}
           transparent
@@ -246,33 +343,41 @@ function IdeaCore({ localProgress, baseOpacity, isMobile, reducedMotion, wavePul
         />
       </mesh>
 
-      {/* Halo */}
+      {/* Inner halo */}
       <mesh renderOrder={21}>
-        <sphereGeometry args={[0.11, 16, 16]} />
+        <sphereGeometry args={[0.15, 16, 16]} />
         <meshBasicMaterial
           color={PRODUCT_ENGINE_COLORS.accentCyan}
           transparent
-          opacity={opa * 0.22}
+          opacity={opa * 0.28}
         />
       </mesh>
 
-      {/* Orbit ring */}
-      <mesh rotation={[Math.PI * 0.25, 0, Math.PI * 0.08]}>
-        <torusGeometry args={[0.135, 0.0045, 8, 40]} />
+      {/* Dual counter-rotating orbit rings */}
+      <mesh rotation={[Math.PI * 0.25, 0, Math.PI * 0.08]} renderOrder={23}>
+        <torusGeometry args={[0.18, 0.006, 8, 40]} />
         <meshBasicMaterial
           color={PRODUCT_ENGINE_COLORS.accentCyan}
           transparent
-          opacity={opa * 0.65}
+          opacity={opa * 0.75}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI * 0.30, Math.PI * 0.15, 0]} renderOrder={23}>
+        <torusGeometry args={[0.22, 0.004, 8, 40]} />
+        <meshBasicMaterial
+          color={PRODUCT_ENGINE_COLORS.accentBlue}
+          transparent
+          opacity={opa * 0.50}
         />
       </mesh>
 
       {/* Story Label: IDEA */}
       <ProductSemanticLabel
         text="IDEA"
-        position={[0, 0.18, 0]}
+        position={[0, 0.24, 0]}
         color={PRODUCT_ENGINE_COLORS.accentCyan}
-        opacity={opa * 0.95}
-        fontSize={0.095}
+        opacity={baseOpacity * (beat.isGhost ? 0.1 : beat.isBuild ? beat.opacity : 1.0) * ideaExitFade}
+        fontSize={0.090}
         anchorX="center"
         isMobile={isMobile}
         showOnMobile={true}
@@ -282,18 +387,18 @@ function IdeaCore({ localProgress, baseOpacity, isMobile, reducedMotion, wavePul
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 2. SCREENS SURFACE (Beat 2: 0.14 – 0.28)
+// 2. SCREENS SURFACE (Beat 2: 0.12 – 0.26) — Upper Interface Structure
 // ═══════════════════════════════════════════════════════════════════════════
 function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMotion, wavePulse, afterWave }: ModuleWithDimsProps) {
-  // Pre: 0.08, Build: 0.14-0.24, Settle: 0.28+
-  const beat = getThreeStageBeatState(localProgress, 0.08, 0.14, 0.24, reducedMotion);
+  // Pre: 0.06, Build: 0.12-0.22, Settle: 0.26+
+  const beat = getThreeStageBeatState(localProgress, 0.06, 0.12, 0.22, reducedMotion);
   if (beat.opacity <= 0.005) return null;
 
-  const pw = W * 0.85;
-  const ph = H * 0.82;
+  const pw = W * 0.98;
+  const ph = H * 0.98;
   const pz = 0.08 + beat.zOffset;
 
-  const topNavY  = ph * 0.62;
+  const topNavY  = ph * 0.78;
   const statusY  = -ph * 0.62;
   const zoneLine = pw * 0.76;
 
@@ -314,30 +419,13 @@ function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMot
 
   return (
     <group position={[0.04, 0.06, 0]} scale={[beat.scale, beat.scale, beat.scale]}>
-      {/* Spotlight glow during build-in */}
-      {beat.glow > 0.02 && (
-        <mesh position={[0, 0, pz - 0.02]} renderOrder={11}>
-          <planeGeometry args={[pw * 2.1, ph * 2.1]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentCyan}
-            transparent
-            opacity={opa * beat.glow * 0.14}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
-
-      {/* Glass screen fill plane */}
-      <mesh position={[0, 0, pz - 0.01]} renderOrder={12}>
+      {/* Background glass glow fill plane (seated behind internal cards) */}
+      <mesh position={[0, 0, -0.45]} renderOrder={2}>
         <planeGeometry args={[pw * 2, ph * 2]} />
-        <meshStandardMaterial
-          color={PRODUCT_ENGINE_COLORS.chamberDepth}
-          emissive={PRODUCT_ENGINE_COLORS.accentCyan}
-          emissiveIntensity={0.025 * beat.opacity + wavePulse * 0.025}
+        <meshBasicMaterial
+          color="#071526"
           transparent
-          opacity={opa * (0.48 + (afterWave ? 0.06 : 0))}
-          roughness={0.05}
-          metalness={0.16}
+          opacity={opa * (0.38 + (afterWave ? 0.06 : 0))}
           depthWrite={false}
         />
       </mesh>
@@ -346,16 +434,20 @@ function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMot
       <Line
         points={outerBorder}
         color={PRODUCT_ENGINE_COLORS.accentCyan}
-        lineWidth={isMobile ? 1.2 : (afterWave ? 1.8 : 1.5)}
+        lineWidth={isMobile ? 1.2 : (afterWave ? 1.8 : 1.4)}
         transparent
-        opacity={opa * (0.85 + waveBoost + (afterWave ? 0.08 : 0))}
+        opacity={opa * (0.72 + waveBoost * 0.6 + (afterWave ? 0.06 : 0))}
       />
 
-      {/* Top screen header divider */}
+      {/* Top screen header bar fill (refined dark blue glass) & divider */}
+      <mesh position={[0, topNavY + (ph - topNavY) * 0.5, pz + 0.005]} renderOrder={13}>
+        <planeGeometry args={[pw * 1.95, (ph - topNavY) * 0.95]} />
+        <meshBasicMaterial color="#0B1E38" transparent opacity={opa * 0.60} depthWrite={false} />
+      </mesh>
       <Line
         points={[[-zoneLine, topNavY, pz + 0.01], [zoneLine, topNavY, pz + 0.01]]}
         color={PRODUCT_ENGINE_COLORS.accentCyan}
-        lineWidth={isMobile ? 0.55 : 0.80}
+        lineWidth={isMobile ? 0.60 : 0.80}
         transparent
         opacity={opa * 0.65}
       />
@@ -364,38 +456,34 @@ function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMot
       <Line
         points={[[-zoneLine * 0.85, statusY, pz + 0.01], [zoneLine * 0.85, statusY, pz + 0.01]]}
         color={PRODUCT_ENGINE_COLORS.accentBlue}
-        lineWidth={isMobile ? 0.45 : 0.65}
+        lineWidth={isMobile ? 0.70 : 1.00}
         transparent
-        opacity={opa * 0.50}
+        opacity={opa * 0.70}
       />
 
-      {/* Screen layout indicator nodes */}
+      {/* Screen layout indicator nodes & window controls */}
       {!isMobile && (
-        <>
-          <mesh position={[-pw * 0.74, topNavY + (ph - topNavY) * 0.30, pz + 0.02]} renderOrder={15}>
-            <sphereGeometry args={[0.014, 8, 8]} />
-            <meshBasicMaterial
-              color={PRODUCT_ENGINE_COLORS.accentCyan}
-              transparent
-              opacity={opa * 0.85}
-            />
-          </mesh>
-          <mesh position={[-pw * 0.54, topNavY + (ph - topNavY) * 0.30, pz + 0.02]} renderOrder={15}>
-            <sphereGeometry args={[0.011, 8, 8]} />
-            <meshBasicMaterial
-              color={PRODUCT_ENGINE_COLORS.accentBlue}
-              transparent
-              opacity={opa * 0.65}
-            />
-          </mesh>
+        <group>
+          {/* Top header window controls */}
+          {[-pw * 0.80, -pw * 0.72, -pw * 0.64].map((dotX, idx) => (
+            <mesh key={idx} position={[dotX, topNavY + (ph - topNavY) * 0.50, pz + 0.02]} renderOrder={15}>
+              <sphereGeometry args={[0.016, 10, 10]} />
+              <meshBasicMaterial
+                color={idx === 0 ? PRODUCT_ENGINE_COLORS.accentCyan : idx === 1 ? PRODUCT_ENGINE_COLORS.accentBlue : PRODUCT_ENGINE_COLORS.accentGold}
+                transparent
+                opacity={opa * 0.95}
+              />
+            </mesh>
+          ))}
+          {/* Nav header link line */}
           <Line
-            points={[[pw * 0.20, topNavY + (ph - topNavY) * 0.30, pz + 0.01], [pw * 0.60, topNavY + (ph - topNavY) * 0.30, pz + 0.01]]}
+            points={[[pw * 0.20, topNavY + (ph - topNavY) * 0.50, pz + 0.01], [pw * 0.70, topNavY + (ph - topNavY) * 0.50, pz + 0.01]]}
             color={PRODUCT_ENGINE_COLORS.accentCyan}
-            lineWidth={0.50}
+            lineWidth={0.90}
             transparent
-            opacity={opa * 0.40}
+            opacity={opa * 0.65}
           />
-        </>
+        </group>
       )}
 
       {/* Screen corner brackets */}
@@ -408,20 +496,20 @@ function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMot
             [c.x, c.y + c.sy * cornerLen, pz + 0.01] as [number, number, number],
           ]}
           color={PRODUCT_ENGINE_COLORS.accentCyan}
-          lineWidth={2.2}
+          lineWidth={1.6}
           transparent
-          opacity={opa * 0.92}
+          opacity={opa * 0.78}
         />
       ))}
 
       {/* Story Label: SCREENS */}
       <ProductSemanticLabel
         text="SCREENS"
-        position={[0, ph - 0.06, pz + 0.02]}
+        position={[-pw * 0.25, ph - 0.12, pz + 0.02]}
         color={PRODUCT_ENGINE_COLORS.accentCyan}
-        opacity={opa * 0.95}
+        opacity={baseOpacity * (beat.isGhost ? 0.1 : beat.isBuild ? beat.opacity : 0.95)}
         fontSize={0.095}
-        anchorX="center"
+        anchorX="left"
         isMobile={isMobile}
         showOnMobile={true}
       />
@@ -430,67 +518,65 @@ function ScreensSurface({ localProgress, baseOpacity, W, H, isMobile, reducedMot
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 3. INTERACTION NODES (Beat 3: 0.28 – 0.42)
+// 3. INTERACTION NODES (Beat 3: 0.26 – 0.42) — Active Center Zone
 // ═══════════════════════════════════════════════════════════════════════════
 function InteractionNodes({ localProgress, baseOpacity, isMobile, reducedMotion, wavePulse }: ModuleBaseProps) {
-  // Pre: 0.22, Build: 0.28-0.38, Settle: 0.42+
-  const beat = getThreeStageBeatState(localProgress, 0.22, 0.28, 0.38, reducedMotion);
+  // Pre: 0.20, Build: 0.26-0.36, Settle: 0.42+
+  const beat = getThreeStageBeatState(localProgress, 0.20, 0.26, 0.36, reducedMotion);
   if (beat.opacity <= 0.005) return null;
 
   const opa = baseOpacity * beat.opacity;
   const waveBoost = wavePulse * 0.18;
 
   const px = 0.04;
-  const py = isMobile ? 0.06 : 0.12;
-  const pz = isMobile ? -0.12 : -0.12 + beat.zOffset;
+  const py = isMobile ? 0.26 : 0.42;
+  const pz = isMobile ? 0.05 : 0.08 + beat.zOffset;
 
-  const cardW = isMobile ? 0.26 : 0.38;
-  const cardH = isMobile ? 0.09 : 0.12;
+  const cardW = isMobile ? 0.28 : 0.42;
+  const cardH = isMobile ? 0.10 : 0.14;
+  const cardD = 0.03;
 
   return (
     <group position={[px, py, pz]} scale={[beat.scale, beat.scale, beat.scale]}>
-      {/* Active reveal spotlight glow */}
-      {beat.glow > 0.02 && (
-        <mesh position={[0, 0, -0.01]} renderOrder={14}>
-          <planeGeometry args={[cardW * 2.2, cardH * 2.2]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentBlue}
-            transparent
-            opacity={opa * beat.glow * 0.22}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
+      {/* 3D Glass Box Action Card */}
+      <mesh renderOrder={14}>
+        <boxGeometry args={[cardW * 2, cardH * 2, cardD]} />
+        <meshBasicMaterial
+          color="#0B1E36"
+          transparent
+          opacity={opa * 0.50}
+          depthWrite={false}
+        />
+      </mesh>
 
       {/* Interactive UI Action Card outline */}
       <Line
         points={[
-          [-cardW, cardH, 0], [cardW, cardH, 0], [cardW, -cardH, 0], [-cardW, -cardH, 0], [-cardW, cardH, 0]
+          [-cardW, cardH, cardD * 0.51], [cardW, cardH, cardD * 0.51], [cardW, -cardH, cardD * 0.51], [-cardW, -cardH, cardD * 0.51], [-cardW, cardH, cardD * 0.51]
         ]}
         color={PRODUCT_ENGINE_COLORS.accentBlue}
         lineWidth={isMobile ? 1.0 : 1.4}
         transparent
-        opacity={opa * (0.85 + waveBoost)}
+        opacity={opa * (0.78 + waveBoost * 0.5)}
       />
 
       {/* Button action nodes on card */}
       {[-cardW * 0.6, 0, cardW * 0.6].map((nx, i) => (
-        <group key={i} position={[nx, 0, 0.02]}>
+        <group key={i} position={[nx, 0, cardD * 0.52]}>
           <mesh renderOrder={17}>
-            <sphereGeometry args={[0.020, 10, 10]} />
+            <sphereGeometry args={[0.026, 12, 12]} />
             <meshBasicMaterial
               color={i === 1 ? PRODUCT_ENGINE_COLORS.accentCyan : PRODUCT_ENGINE_COLORS.accentBlue}
               transparent
-              opacity={opa * (0.90 + (i === 1 ? wavePulse * 0.10 : 0))}
+              opacity={opa * (0.95 + (i === 1 ? wavePulse * 0.05 : 0))}
             />
           </mesh>
-          <Line
-            points={[[0, -0.04, 0.01], [0, 0.04, 0.01]]}
-            color={PRODUCT_ENGINE_COLORS.accentCyan}
-            lineWidth={0.50}
-            transparent
-            opacity={opa * 0.50}
-          />
+          {i === 1 && (
+            <mesh renderOrder={16}>
+              <torusGeometry args={[0.038, 0.003, 8, 24]} />
+              <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentCyan} transparent opacity={opa * 0.70} />
+            </mesh>
+          )}
         </group>
       ))}
 
@@ -498,9 +584,9 @@ function InteractionNodes({ localProgress, baseOpacity, isMobile, reducedMotion,
       <ProductSemanticLabel
         text="INTERACTION"
         mobileText="FLOW"
-        position={[0, cardH + 0.08, 0.02]}
-        color={PRODUCT_ENGINE_COLORS.accentBlue}
-        opacity={opa * 0.92}
+        position={[0, cardH + 0.12, cardD * 0.6]}
+        color="#48C6EF"
+        opacity={baseOpacity * (beat.isGhost ? 0.1 : beat.isBuild ? beat.opacity : 0.95)}
         fontSize={0.095}
         anchorX="center"
         isMobile={isMobile}
@@ -511,7 +597,7 @@ function InteractionNodes({ localProgress, baseOpacity, isMobile, reducedMotion,
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 4. CONNECTIONS BRIDGE (Beat 4: 0.42 – 0.58)
+// 4. CONNECTIONS BRIDGE (Beat 4: 0.42 – 0.58) — Mid-Lower System Bridge
 // ═══════════════════════════════════════════════════════════════════════════
 function ConnectionsBridge({
   localProgress,
@@ -528,11 +614,11 @@ function ConnectionsBridge({
   const waveBoost = wavePulse * 0.18;
 
   const px = 0.04;
-  const py = isMobile ? -0.14 : -0.16;
-  const pz = isMobile ? -0.26 : -0.28 + beat.zOffset;
+  const py = isMobile ? -0.04 : -0.06;
+  const pz = isMobile ? -0.06 : -0.06 + beat.zOffset;
 
-  const bw = isMobile ? 0.40 : 0.54;
-  const bh = isMobile ? 0.18 : 0.24;
+  const bw = isMobile ? 0.42 : 0.58;
+  const bh = isMobile ? 0.16 : 0.22;
   const bz = 0;
 
   const borderRect: [number, number, number][] = [
@@ -541,30 +627,13 @@ function ConnectionsBridge({
 
   return (
     <group position={[px, py, pz]} scale={[beat.scale, beat.scale, beat.scale]}>
-      {/* Active reveal spotlight glow */}
-      {beat.glow > 0.02 && (
-        <mesh position={[0, 0, bz - 0.01]} renderOrder={9}>
-          <planeGeometry args={[bw * 2.1, bh * 2.1]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentBlue}
-            transparent
-            opacity={opa * beat.glow * 0.16}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
-
       {/* System connection plate fill */}
       <mesh position={[0, 0, bz - 0.005]} renderOrder={10}>
         <planeGeometry args={[bw * 2, bh * 2]} />
-        <meshStandardMaterial
-          color={PRODUCT_ENGINE_COLORS.chamberDepth}
-          emissive={PRODUCT_ENGINE_COLORS.accentBlue}
-          emissiveIntensity={0.018 * beat.opacity + wavePulse * 0.02}
+        <meshBasicMaterial
+          color="#0B1C33"
           transparent
-          opacity={opa * 0.52}
-          roughness={0.08}
-          metalness={0.18}
+          opacity={opa * 0.45}
           depthWrite={false}
         />
       </mesh>
@@ -573,21 +642,21 @@ function ConnectionsBridge({
       <Line
         points={borderRect}
         color={PRODUCT_ENGINE_COLORS.accentBlue}
-        lineWidth={isMobile ? 1.0 : 1.3}
+        lineWidth={isMobile ? 0.9 : 1.2}
         transparent
-        opacity={opa * (0.75 + waveBoost)}
+        opacity={opa * (0.72 + waveBoost * 0.5)}
       />
 
-      {/* Clean vertical connection conduits */}
+      {/* Vertical connection conduits — 2 lines (reduced from 4 for perf) */}
       {!isMobile &&
-        ([-bw * 0.33, bw * 0.33] as number[]).map((vx, i) => (
+        ([-bw * 0.30, bw * 0.30] as number[]).map((vx, i) => (
           <Line
             key={i}
-            points={[[vx, bh * 0.85, bz + 0.01], [vx, -bh * 0.85, bz + 0.01]]}
+            points={[[vx, bh * 0.88, bz + 0.01], [vx, -bh * 0.88, bz + 0.01]]}
             color={PRODUCT_ENGINE_COLORS.accentBlue}
-            lineWidth={0.45}
+            lineWidth={0.8}
             transparent
-            opacity={opa * 0.42}
+            opacity={opa * 0.55}
           />
         ))}
 
@@ -596,11 +665,11 @@ function ConnectionsBridge({
         [[-bw, bh], [bw, bh], [-bw, -bh], [bw, -bh]] as [number, number][]
       ).map(([cx, cy], i) => (
         <mesh key={i} position={[cx, cy, bz + 0.02]} renderOrder={14}>
-          <sphereGeometry args={[0.010, 6, 6]} />
+          <sphereGeometry args={[0.018, 10, 10]} />
           <meshBasicMaterial
             color={PRODUCT_ENGINE_COLORS.accentBlue}
             transparent
-            opacity={opa * (0.70 + waveBoost)}
+            opacity={opa * (0.90 + waveBoost)}
           />
         </mesh>
       ))}
@@ -609,8 +678,8 @@ function ConnectionsBridge({
       <ProductSemanticLabel
         text="CONNECTIONS"
         position={[-bw - 0.12, 0, 0.02]}
-        color={PRODUCT_ENGINE_COLORS.accentBlue}
-        opacity={opa * 0.90}
+        color="#48C6EF"
+        opacity={baseOpacity * (beat.isGhost ? 0.1 : beat.isBuild ? beat.opacity : 0.95)}
         fontSize={0.088}
         anchorX="right"
         isMobile={isMobile}
@@ -620,10 +689,10 @@ function ConnectionsBridge({
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 5. CONTENT CORE (Beat 5: 0.58 – 0.74)
+// 5. CONTENT CORE (Beat 5: 0.58 – 0.72) — Lower Product Body & 3D Glass Cards
 // ═══════════════════════════════════════════════════════════════════════════
 function ContentCore({ localProgress, baseOpacity, isMobile, reducedMotion, wavePulse }: ModuleBaseProps) {
-  // Pre: 0.52, Build: 0.58-0.68, Settle: 0.74+
+  // Pre: 0.52, Build: 0.58-0.68, Settle: 0.72+
   const beat = getThreeStageBeatState(localProgress, 0.52, 0.58, 0.68, reducedMotion);
   if (beat.opacity <= 0.005) return null;
 
@@ -631,59 +700,63 @@ function ContentCore({ localProgress, baseOpacity, isMobile, reducedMotion, wave
   const waveBoost = wavePulse * 0.20;
 
   const px = 0.04;
-  const py = isMobile ? -0.34 : -0.48;
-  const pz = isMobile ? -0.38 : -0.48 + beat.zOffset;
+  const py = isMobile ? -0.34 : -0.54;
+  const pz = isMobile ? 0.02 : 0.04 + beat.zOffset;
 
-  const spX = isMobile ? 0.18 : 0.28;
+  const cardSpacing = isMobile ? 0.24 : 0.40;
+  const cardW = isMobile ? 0.10 : 0.16;
+  const cardH = isMobile ? 0.09 : 0.13;
+  const cardD = 0.02;
+
+  const cardRect: [number, number, number][] = [
+    [-cardW, cardH, cardD * 0.51], [cardW, cardH, cardD * 0.51], [cardW, -cardH, cardD * 0.51], [-cardW, -cardH, cardD * 0.51], [-cardW, cardH, cardD * 0.51]
+  ];
 
   return (
     <group position={[px, py, pz]} scale={[beat.scale, beat.scale, beat.scale]}>
-      {/* Active reveal spotlight glow */}
-      {beat.glow > 0.02 && (
-        <mesh position={[0, 0, -0.06]} renderOrder={8}>
-          <planeGeometry args={[spX * 2 + 0.4, 0.35]} />
-          <meshBasicMaterial
-            color={PRODUCT_ENGINE_COLORS.accentGold}
-            transparent
-            opacity={opa * beat.glow * 0.16}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
-
-      {/* Three distributed database nodes beside each other */}
-      {[-spX, 0, spX].map((nx, i) => {
-        const isCyanNode = i === 2; // Active rightmost node
-        const nodeColor = isCyanNode ? PRODUCT_ENGINE_COLORS.accentCyan : PRODUCT_ENGINE_COLORS.accentGold;
-        const nodeR = 0.10;
-        const nodeH = 0.05;
+      {/* 3 Structured 3D glass product content cards */}
+      {[-cardSpacing, 0, cardSpacing].map((cx, i) => {
+        const isGold = i === 1 || i === 2;
+        const color = isGold ? PRODUCT_ENGINE_COLORS.accentGold : PRODUCT_ENGINE_COLORS.accentCyan;
 
         return (
-          <group key={i} position={[nx, 0, 0]}>
-            {/* Database disc cylinder */}
-            <mesh rotation={[Math.PI * 0.5, 0, 0]} renderOrder={11}>
-              <cylinderGeometry args={[nodeR, nodeR, nodeH, 16]} />
-              <meshStandardMaterial
-                color={PRODUCT_ENGINE_COLORS.chamberDepth}
-                emissive={nodeColor}
-                emissiveIntensity={0.038 * beat.opacity + wavePulse * 0.035}
+          <group key={i} position={[cx, 0, 0]}>
+            {/* 3D Glass card chassis */}
+            <mesh renderOrder={11}>
+              <boxGeometry args={[cardW * 2, cardH * 2, cardD]} />
+              <meshBasicMaterial
+                color={isGold ? "#241B0A" : "#091F33"}
                 transparent
-                opacity={opa * 0.68}
-                roughness={0.10}
-                metalness={0.20}
+                opacity={opa * 0.50}
                 depthWrite={false}
               />
             </mesh>
 
-            {/* Neon outer ring (the circles) */}
-            <mesh renderOrder={12}>
-              <torusGeometry args={[nodeR + 0.03, 0.005, 8, 30]} />
-              <meshBasicMaterial
-                color={nodeColor}
-                transparent
-                opacity={opa * (0.75 + waveBoost)}
-              />
-            </mesh>
+            {/* Content card border */}
+            <Line
+              points={cardRect}
+              color={color}
+              lineWidth={isMobile ? 0.9 : 1.0}
+              transparent
+              opacity={opa * (0.78 + waveBoost * 0.5)}
+            />
+
+            {/* Header bar & skeleton lines */}
+            <Line
+              points={[[-cardW * 0.70, cardH * 0.40, cardD * 0.52], [cardW * 0.70, cardH * 0.40, cardD * 0.52]]}
+              color={color}
+              lineWidth={1.0}
+              transparent
+              opacity={opa * 0.85}
+            />
+            {/* Glowing progress bar */}
+            <Line
+              points={[[-cardW * 0.70, -cardH * 0.20, cardD * 0.52], [-cardW * 0.70 + cardW * 1.4 * 0.70, -cardH * 0.20, cardD * 0.52]]}
+              color={color}
+              lineWidth={1.2}
+              transparent
+              opacity={opa * 0.80}
+            />
           </group>
         );
       })}
@@ -691,9 +764,9 @@ function ContentCore({ localProgress, baseOpacity, isMobile, reducedMotion, wave
       {/* Story Label: CONTENT */}
       <ProductSemanticLabel
         text="CONTENT"
-        position={[0, -0.22, 0.02]}
+        position={[0, cardH + 0.08, 0.02]}
         color={PRODUCT_ENGINE_COLORS.accentGold}
-        opacity={opa * 0.95}
+        opacity={baseOpacity * (beat.isGhost ? 0.1 : beat.isBuild ? beat.opacity : 0.95)}
         fontSize={0.090}
         anchorX="center"
         isMobile={isMobile}
@@ -704,7 +777,7 @@ function ContentCore({ localProgress, baseOpacity, isMobile, reducedMotion, wave
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 6. READY PRODUCT FRAME (Beat 6: 0.74 – 0.90)
+// 6. READY PRODUCT FRAME (Beat 6: 0.86 – 0.94) — Top-Right Completion Lock
 // ═══════════════════════════════════════════════════════════════════════════
 function ReadyProductFrame({
   localProgress,
@@ -716,8 +789,8 @@ function ReadyProductFrame({
   wavePulse,
   afterWave,
 }: ModuleWithDimsProps) {
-  const wireT = fadeIn(localProgress, 0.08, 0.24, reducedMotion);
-  const readyBeat = getThreeStageBeatState(localProgress, 0.74, 0.80, 0.86, reducedMotion);
+  const wireT = fadeIn(localProgress, 0.06, 0.20, reducedMotion);
+  const readyBeat = getThreeStageBeatState(localProgress, 0.80, 0.86, 0.92, reducedMotion);
 
   const DZ = isMobile ? 0.07 : 0.12;
 
@@ -737,7 +810,6 @@ function ReadyProductFrame({
   ];
 
   const baseOpa = baseOpacity * wireT;
-  // READY shouldn't fade out as much because it's the final lock state
   const readyLockFade = readyBeat.isComplete && !reducedMotion ? 0.5 : 0;
   const readyOpa = Math.min(1.0, readyBeat.opacity + readyLockFade);
   const readyBoost = readyOpa * 0.55;
@@ -751,19 +823,17 @@ function ReadyProductFrame({
     { x:  W, y: -H, sx: -1, sy:  1 },
   ];
 
-  const frontOpacity = baseOpa * (0.65 + waveBoost2 + readyBoost + (afterWave ? 0.15 : 0));
+  const frontOpacity = baseOpa * (0.75 + waveBoost2 + readyBoost + (afterWave ? 0.15 : 0));
 
   return (
-    <group scale={[readyBeat.scale, readyBeat.scale, readyBeat.scale]}>
-      {/* Subtle background plane */}
+    <group position={[0.04, 0.06, 0]} scale={[readyBeat.scale, readyBeat.scale, readyBeat.scale]}>
+      {/* Subtle background plane — meshBasicMaterial (was PBR meshStandardMaterial) */}
       <mesh position={[0, 0, -DZ]} renderOrder={8}>
         <planeGeometry args={[W * 2, H * 2]} />
-        <meshStandardMaterial
+        <meshBasicMaterial
           color={PRODUCT_ENGINE_COLORS.chamberDepth}
           transparent
-          opacity={baseOpa * 0.08}
-          roughness={0.04}
-          metalness={0.14}
+          opacity={baseOpa * 0.12}
           depthWrite={false}
         />
       </mesh>
@@ -772,18 +842,18 @@ function ReadyProductFrame({
       <Line
         points={outerFront}
         color={readyOpa > 0.4 ? PRODUCT_ENGINE_COLORS.accentGold : PRODUCT_ENGINE_COLORS.accentCyan}
-        lineWidth={isMobile ? 1.2 : (afterWave ? 2.0 : 1.4)}
+        lineWidth={isMobile ? 1.2 : (afterWave ? 2.0 : 1.6)}
         transparent
-        opacity={frontOpacity}
+        opacity={frontOpacity * 0.85}
       />
 
       {/* Back outer frame */}
       <Line
         points={outerBack}
         color={PRODUCT_ENGINE_COLORS.accentBlue}
-        lineWidth={isMobile ? 0.6 : 0.85}
+        lineWidth={isMobile ? 0.6 : 0.9}
         transparent
-        opacity={baseOpa * (0.45 + (afterWave ? 0.15 : 0))}
+        opacity={baseOpa * (0.40 + (afterWave ? 0.10 : 0))}
       />
 
       {/* Corner struts */}
@@ -794,7 +864,7 @@ function ReadyProductFrame({
           color={PRODUCT_ENGINE_COLORS.accentBlue}
           lineWidth={isMobile ? 0.5 : 0.7}
           transparent
-          opacity={baseOpa * (0.35 + (afterWave ? 0.15 : 0))}
+          opacity={baseOpa * (0.35 + (afterWave ? 0.10 : 0))}
         />
       ))}
 
@@ -808,34 +878,34 @@ function ReadyProductFrame({
             [c.x, c.y + c.sy * cornerLen, DZ * 0.35]            as [number, number, number],
           ]}
           color={readyOpa > 0.30 ? PRODUCT_ENGINE_COLORS.accentGold : PRODUCT_ENGINE_COLORS.accentCyan}
-          lineWidth={2.4}
+          lineWidth={1.8}
           transparent
-          opacity={baseOpa * (0.88 + readyBoost + (afterWave ? 0.12 : 0))}
+          opacity={baseOpa * (0.80 + readyBoost * 0.6 + (afterWave ? 0.10 : 0))}
         />
       ))}
 
       {/* Corner status glow nodes */}
       {([[-W, H], [W, H], [-W, -H], [W, -H]] as [number, number][]).map(([cx, cy], i) => (
         <mesh key={i} position={[cx, cy, DZ * 0.50]} renderOrder={17}>
-          <sphereGeometry args={[0.015, 8, 8]} />
+          <sphereGeometry args={[0.022, 10, 10]} />
           <meshBasicMaterial
             color={readyOpa > 0.40 ? PRODUCT_ENGINE_COLORS.accentGold : PRODUCT_ENGINE_COLORS.accentCyan}
             transparent
-            opacity={baseOpa * (0.85 + wavePulse * 0.15 + readyBoost * 1.5)}
+            opacity={baseOpa * (0.90 + wavePulse * 0.15 + readyBoost * 1.5)}
           />
         </mesh>
       ))}
 
       {/* Hero Lock completion marks (top right) */}
-      {readyOpa > 0.5 && (
+      {readyOpa > 0.3 && (
         <group position={[W - 0.08, H - 0.08, DZ * 0.40]}>
-          <mesh renderOrder={18} position={[-0.03, 0, 0]}>
-            <sphereGeometry args={[0.008, 8, 8]} />
-            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentGold} transparent opacity={baseOpa * readyOpa} />
+          <mesh renderOrder={18} position={[-0.04, 0, 0]}>
+            <sphereGeometry args={[0.014, 10, 10]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentGold} transparent opacity={baseOpa * (0.8 + readyOpa * 0.2)} />
           </mesh>
           <mesh renderOrder={18} position={[0, 0, 0]}>
-            <sphereGeometry args={[0.008, 8, 8]} />
-            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentCyan} transparent opacity={baseOpa * readyOpa * 0.7} />
+            <sphereGeometry args={[0.014, 10, 10]} />
+            <meshBasicMaterial color={PRODUCT_ENGINE_COLORS.accentCyan} transparent opacity={baseOpa * (0.8 + readyOpa * 0.2)} />
           </mesh>
         </group>
       )}
@@ -844,9 +914,9 @@ function ReadyProductFrame({
       {readyOpa > 0.05 && (
         <ProductSemanticLabel
           text="READY"
-          position={[W - 0.16, H - 0.12, DZ * 0.35]}
+          position={[W - 0.22, H - 0.16, DZ * 0.35]}
           color={PRODUCT_ENGINE_COLORS.accentGold}
-          opacity={readyOpa * baseOpacity * 0.95}
+          opacity={readyOpa * baseOpacity * 0.98}
           fontSize={0.11}
           anchorX="right"
           isMobile={isMobile}

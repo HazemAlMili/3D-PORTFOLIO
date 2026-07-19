@@ -23,18 +23,22 @@ export const PRODUCT_ENGINE_COPY = {
 // ─── Product Assembly Phases ────────────────────────────────────────────────
 
 export const PRODUCT_ENGINE_PHASES = {
-  ideaSpark:        [0.00, 0.12] as [number, number], // Small spark arrives from Scene 02 direction
-  wireframe:        [0.12, 0.28] as [number, number], // Large floating product wireframe appears
-  uiGlass:          [0.28, 0.44] as [number, number], // Wireframe transforms into glass UI shell
-  fullStack:        [0.44, 0.60] as [number, number], // 3D depth layers reveal: Frontend → API → Backend → Data
-  performanceWave:  [0.70, 0.82] as [number, number], // Cyan optimization wave sweeps the product (main wow)
-  productLock:      [0.82, 0.92] as [number, number], // Product stabilizes — UX / API / DATA / PERF / READY
-  launchHandoff:    [0.92, 1.00] as [number, number], // Proof packet releases into Scene 04
+  ideaSpark:        [0.00, 0.12] as [number, number], // IDEA enters and activates build space
+  screens:          [0.12, 0.26] as [number, number], // SCREENS structure forms from IDEA seed
+  interaction:      [0.26, 0.42] as [number, number], // INTERACTION wakes up in center
+  connections:      [0.42, 0.58] as [number, number], // CONNECTIONS link product zones
+  content:          [0.58, 0.72] as [number, number], // CONTENT modules settle into lower body
+  performanceWave:  [0.72, 0.86] as [number, number], // Optimization wave sweeps product
+  productLock:      [0.86, 0.94] as [number, number], // READY locks as final hero payoff
+  launchHandoff:    [0.94, 1.00] as [number, number], // Proof packet handoff to Scene 04
 
-  // Convenience aliases
+  // Legacy aliases for backward compatibility
+  wireframe:        [0.12, 0.26] as [number, number],
+  uiGlass:          [0.26, 0.42] as [number, number],
+  fullStack:        [0.42, 0.58] as [number, number],
   enter:            [0.00, 0.12] as [number, number],
-  exit:             [0.92, 1.00] as [number, number],
-  immerse:          [0.12, 0.88] as [number, number],
+  exit:             [0.94, 1.00] as [number, number],
+  immerse:          [0.12, 0.94] as [number, number],
 } as const;
 
 // ─── Product Engine Colors ──────────────────────────────────────────────────
@@ -92,7 +96,7 @@ export const PRODUCT_ENGINE_LAYOUT = {
   // Desktop: left HUD text, right large product object
   desktopHudLeft:      "5%",
   desktopProductRight: "55%",     // product anchor starts at 55% from left
-  desktopProductX:     1.80,      // R3F world units — optimized for stable 45% screen width gap
+  desktopProductX:     2.50,      // R3F world units — optimized for stable 45% screen width gap
   desktopProductY:     0.0,
 
   // Mobile: top compact copy, center product object
