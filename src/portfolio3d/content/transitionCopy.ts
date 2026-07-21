@@ -74,7 +74,7 @@ export const TRANSITION_COPY: TransitionCopy[] = [
   {
     from: "scene-03-architecture",
     to: "scene-04-projects",
-    caption: "Proof begins where structure holds.",
+    caption: "",
     alternates: [
       "Architecture, tested in the real.",
       "Design becomes delivery.",

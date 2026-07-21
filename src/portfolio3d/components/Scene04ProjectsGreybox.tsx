@@ -1,5 +1,6 @@
 import { usePortfolioStore } from "../store/portfolioStore";
 import { ConnectedProjectScreenRing } from "./ConnectedProjectScreenRing";
+import { Scene04HubTitle } from "./Scene04HubTitle";
 
 interface Scene04ProjectsGreyboxProps {
   localProgress: number;
@@ -17,7 +18,10 @@ export function Scene04ProjectsGreybox({ localProgress, opacity = 1.0 }: Scene04
 
   return (
     <group name="s04_greybox_root">
-      {/* 3D Connected Project Screen Ring (3 verified screens, pure math resolver) */}
+      {/* Scene 04 Hub Title Group (Hub-only reveal, fades out during P1 approach) */}
+      <Scene04HubTitle localProgress={localProgress} opacity={opacity} />
+
+      {/* 3D Connected Project Screen Ring (4 verified screens, pure math resolver) */}
       <ConnectedProjectScreenRing localProgress={localProgress} opacity={ringOpacity} />
     </group>
   );
