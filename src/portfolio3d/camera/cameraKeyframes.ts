@@ -67,12 +67,18 @@ export const SCENE_CAMERA_KEYFRAMES: Record<SceneId, SceneCameraStates> = {
 
 
   "scene-04-projects": {
-    // Approach: overview — laptop visible in environment
-    // Enter: comfortable laptop screen framing — slide deck readable
-    // Exit: pull back for product UX handoff
-    approach: { position: [0.3, 0.2, 8.0],  target: [0, 0.1, 0], fov: 52 },
-    enter:    { position: [0,   0,   2.2],  target: [0, 0.1, 0], fov: 68 },
-    exit:     { position: [0,   0.2, 8.5],  target: [0, 0,   0], fov: 52 },
+    // Project Proof Rail — 7-Beat Camera Sequence (S04-P02 Shot Bible)
+    // Approach (Beat 01): [0.8, 0.3, 7.2] -> receiving dock follow
+    // Enter (Beat 06):    [0.95, 0.08, 2.35] -> locked hero readability composition
+    // Exit (Beat 07):     [0.3, 0.18, 7.8] -> UX extraction pullback toward Scene 05
+    approach: { position: [0.80, 0.30, 7.20], target: [0.10, 0.30, 0.10], fov: 50 },
+    enter:    { position: [0.95, 0.08, 2.35], target: [0.95, 0.08, 0.00], fov: 48 },
+    exit:     { position: [0.30, 0.18, 7.80], target: [0.00, 0.00, 0.00], fov: 52 },
+    mobile: {
+      approach: { position: [0.00, 0.20, 8.50], target: [0.00, 0.30, 0.10], fov: 46 },
+      enter:    { position: [0.00, 0.00, 3.80], target: [0.00, 0.00, 0.00], fov: 42 },
+      exit:     { position: [0.00, 0.20, 8.20], target: [0.00, 0.00, 0.00], fov: 48 },
+    },
   },
 
   "scene-05-product-ux": {
@@ -167,4 +173,57 @@ export const SCENE_03_CAMERA_BEATS: CameraBeat[] = [
     mobile: { position: [1.2, 0.05, 7.0], target: [0, -0.2, 0], fov: 44 }
   }
 ];
+
+export const SCENE_04_CAMERA_BEATS: CameraBeat[] = [
+  {
+    start: 0.00,
+    end: 0.12,
+    // Beat 01 — Incoming Follow: Follow handoff seed onto receiving dock
+    desktop: { position: [0.80, 0.30, 7.20], target: [0.10, 0.30, 0.10], fov: 50 },
+    mobile:  { position: [0.00, 0.20, 8.50], target: [0.00, 0.30, 0.10], fov: 46 },
+  },
+  {
+    start: 0.12,
+    end: 0.27,
+    // Beat 02 — Gallery Reveal: Lateral curve exposing proof rail and gallery depth
+    desktop: { position: [2.20, 0.40, 6.00], target: [0.80, 0.20, -0.50], fov: 52 },
+    mobile:  { position: [0.80, 0.30, 7.80], target: [0.20, 0.20, -0.50], fov: 46 },
+  },
+  {
+    start: 0.27,
+    end: 0.42,
+    // Beat 03 — Project Establishment: Active project 3/4 side angle establishment
+    desktop: { position: [1.80, 0.25, 4.20], target: [1.10, 0.10, 0.00], fov: 52 },
+    mobile:  { position: [0.50, 0.10, 5.80], target: [0.10, 0.00, 0.00], fov: 44 },
+  },
+  {
+    start: 0.42,
+    end: 0.60,
+    // Beat 04 — Inspection Arc: Reveal physical construction and structural layers
+    desktop: { position: [1.40, 0.15, 3.20], target: [1.10, 0.10, 0.00], fov: 50 },
+    mobile:  { position: [0.30, 0.05, 4.80], target: [0.00, 0.00, 0.00], fov: 44 },
+  },
+  {
+    start: 0.60,
+    end: 0.74,
+    // Beat 05 — Proof Push-In: Controlled push-in to readable proof perspective
+    desktop: { position: [1.10, 0.10, 2.60], target: [1.00, 0.10, 0.00], fov: 48 },
+    mobile:  { position: [0.15, 0.00, 4.20], target: [0.00, 0.00, 0.00], fov: 44 },
+  },
+  {
+    start: 0.74,
+    end: 0.88,
+    // Beat 06 — Hero Readability Lock: Stable hero readability composition (Left HUD 32%, Right Project 56%)
+    desktop: { position: [0.95, 0.08, 2.35], target: [0.95, 0.08, 0.00], fov: 48 },
+    mobile:  { position: [0.00, 0.00, 3.80], target: [0.00, 0.00, 0.00], fov: 42 },
+  },
+  {
+    start: 0.88,
+    end: 1.00,
+    // Beat 07 — UX Extraction: Extraction pullback following UX surface into Scene 05
+    desktop: { position: [0.30, 0.18, 7.80], target: [0.00, 0.00, 0.00], fov: 52 },
+    mobile:  { position: [0.00, 0.20, 8.20], target: [0.00, 0.00, 0.00], fov: 48 },
+  },
+];
+
 

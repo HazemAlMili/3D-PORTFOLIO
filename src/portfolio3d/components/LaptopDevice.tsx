@@ -1,6 +1,10 @@
 import { SCENE_04_COLORS, SCENE_04_DIMENSIONS } from "../constants/scene04Config";
 
-export function LaptopDevice() {
+interface LaptopDeviceProps {
+  opacity?: number;
+}
+
+export function LaptopDevice({ opacity = 1.0 }: LaptopDeviceProps) {
   const {
     screenBezelWidth: w,
     screenBezelHeight: h,
@@ -20,6 +24,9 @@ export function LaptopDevice() {
           color={SCENE_04_COLORS.bezel}
           metalness={0.8}
           roughness={0.25}
+          transparent
+          opacity={opacity}
+          depthWrite={opacity >= 0.99}
         />
       </mesh>
 
@@ -29,9 +36,12 @@ export function LaptopDevice() {
         <meshStandardMaterial
           color={SCENE_04_COLORS.screenBg}
           emissive={SCENE_04_COLORS.screenEmissive}
-          emissiveIntensity={0.65}
+          emissiveIntensity={0.65 * opacity}
           metalness={0.1}
           roughness={0.4}
+          transparent
+          opacity={opacity}
+          depthWrite={opacity >= 0.99}
         />
       </mesh>
 
@@ -41,9 +51,12 @@ export function LaptopDevice() {
         <meshStandardMaterial
           color={SCENE_04_COLORS.accentCyan}
           emissive={SCENE_04_COLORS.accentCyan}
-          emissiveIntensity={0.5}
+          emissiveIntensity={0.5 * opacity}
           metalness={0.5}
           roughness={0.2}
+          transparent
+          opacity={opacity}
+          depthWrite={opacity >= 0.99}
         />
       </mesh>
 
@@ -54,6 +67,9 @@ export function LaptopDevice() {
           color="#12151B"
           metalness={0.9}
           roughness={0.15}
+          transparent
+          opacity={opacity}
+          depthWrite={opacity >= 0.99}
         />
       </mesh>
 
@@ -66,6 +82,9 @@ export function LaptopDevice() {
             color={SCENE_04_COLORS.bezel}
             metalness={0.8}
             roughness={0.25}
+            transparent
+            opacity={opacity}
+            depthWrite={opacity >= 0.99}
           />
         </mesh>
 
@@ -76,6 +95,9 @@ export function LaptopDevice() {
             color="#0D0F13"
             metalness={0.4}
             roughness={0.8}
+            transparent
+            opacity={opacity}
+            depthWrite={opacity >= 0.99}
           />
         </mesh>
 
@@ -85,7 +107,8 @@ export function LaptopDevice() {
           <meshBasicMaterial
             color={SCENE_04_COLORS.keyboardGlow}
             transparent
-            opacity={0.35}
+            opacity={0.35 * opacity}
+            depthWrite={false}
           />
         </mesh>
 
@@ -96,6 +119,9 @@ export function LaptopDevice() {
             color="#14181F"
             metalness={0.7}
             roughness={0.4}
+            transparent
+            opacity={opacity}
+            depthWrite={opacity >= 0.99}
           />
         </mesh>
       </group>

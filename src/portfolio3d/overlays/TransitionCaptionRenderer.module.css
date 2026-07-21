@@ -12,11 +12,11 @@
 
 .captionRoot {
   position: fixed;
-  bottom: 22%;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
-  z-index: 20;
+  z-index: 50;
   width: 90%;
   max-width: var(--container-md);
   text-align: center;
@@ -49,10 +49,10 @@
   }
 }
 
-/* Mobile — ensure it does not clip off screen edges */
+/* Mobile — ensure it sits cleanly at the bottom without clipping */
 @media (max-width: 480px) {
   .captionRoot {
-    bottom: 32%;
+    bottom: 6%;
     width: 88%;
   }
 

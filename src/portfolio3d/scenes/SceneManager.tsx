@@ -240,6 +240,11 @@ export function SceneManager({ visible = true }: SceneManagerProps) {
         const seg = segments[idx];
         const fadeOpacity = getSceneFadeOpacity(idx, scrollProgress, segments);
 
+        // Hard scene-boundary unmount isolation: Scene 03 unmounts immediately when Scene 04 begins,
+        // and Scene 05 does not mount until Scene 04 finishes.
+        if (idx === 2 && scrollProgress >= seg.end) return null;
+        if (idx === 4 && scrollProgress < seg.start) return null;
+
         // Always render the current active scene, or any scene with opacity above threshold (P6 budget)
         const shouldRender = idx === currentIdx || fadeOpacity > RENDER_THRESHOLD;
 

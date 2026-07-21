@@ -1,34 +1,61 @@
 import type { ProjectEntry } from "./types";
 
+export type { ProjectEntry };
+
 export const PROJECT_DATA: ProjectEntry[] = [
   {
     id: "project-1",
-    title: "Commerce Operations Platform",
-    oneLineDescription: "A dashboard for tracking orders, fulfillment, and performance.",
-    problem: "Teams needed clearer visibility across orders, delays, and handoffs.",
-    built: "Role-based dashboard, order flow, performance metrics, and operational views.",
-    stack: ["React", "TypeScript", "REST APIs", "Dashboard Architecture"],
-    architectureNote: "UI state separated from data-fetching and role-based access flows.",
-    result: "Faster operational visibility and cleaner decision-making."
+    title: "Hireny AI",
+    role: "AI RECRUITMENT PLATFORM",
+    oneLineDescription: "AI-powered job board featuring automated resume evaluation.",
+    problem: "Job seekers needed a simpler way to discover roles and evaluate their resumes before applying.",
+    built: "Built the full-stack platform, Supabase authentication, database and resume storage, plus an AI resume-analysis queue.",
+    stack: ["React", "TypeScript", "Supabase", "TailwindCSS"],
+    architectureNote: "Architected full-stack cloud infrastructure with automated AI resume evaluation and queue processing.",
+    result: "A working job board with automated resume evaluation and complete candidate application flows.",
+    liveUrl: "https://hirenyai.vercel.app/",
+    githubUrl: "https://github.com/HazemAlMili/Hireny_AI",
+    image: "/hirenyai.png"
   },
   {
     id: "project-2",
-    title: "Interactive Brand Experience",
-    oneLineDescription: "A cinematic web experience built around storytelling and 3D interaction.",
-    problem: "Static landing pages were not enough to communicate premium positioning.",
-    built: "Scroll-driven scenes, animated content layers, and responsive fallback experience.",
-    stack: ["React", "Three.js", "R3F", "Zustand", "TypeScript"],
-    architectureNote: "Scene state and scroll progress drive camera and content deterministically.",
-    result: "A more memorable and premium brand journey."
+    title: "Aqar",
+    role: "REAL ESTATE MARKETPLACE",
+    oneLineDescription: "Real-estate marketplace with property listings, maps, and responsive React UI.",
+    problem: "Property discovery required clearer listings, advanced filtering, search, and map-based browsing.",
+    built: "Built reusable React listing and property-detail components, multi-layer filters, interactive maps, and responsive UI.",
+    stack: ["React", "JavaScript", "Bootstrap", "CSS"],
+    architectureNote: "Developed scalable React architecture with dynamic property filtering and interactive map integration.",
+    result: "A responsive property-discovery experience for browsing, filtering, and comparing available properties.",
+    liveUrl: "https://real-estate14.vercel.app/",
+    githubUrl: "https://github.com/HazemAlMili/GDG-Final-Project",
+    image: "/Aqar.jpg"
   },
   {
     id: "project-3",
-    title: "Admin Workflow System",
-    oneLineDescription: "A structured interface for managing users, content, and internal actions.",
-    problem: "Manual workflows created confusion and inconsistent follow-up.",
-    built: "Admin views, reusable components, filtered tables, and action states.",
-    stack: ["React", "TypeScript", "REST APIs", "Component Systems"],
-    architectureNote: "Data models and UI states designed for maintainability.",
-    result: "Cleaner workflow visibility and easier internal operations."
+    title: "Enactus Portal",
+    role: "ORGANIZATION MANAGEMENT PLATFORM",
+    oneLineDescription: "ERP portal for member management, RBAC, analytics, and departmental workflows.",
+    problem: "Member records, departments, roles, performance, and contributions needed to be managed in one centralized system.",
+    built: "Led the full-stack build using Next.js, Node.js, Supabase, role-based access, admin analytics, XP, and leaderboards.",
+    stack: ["Next.js", "Node.js", "Supabase", "TailwindCSS"],
+    architectureNote: "Full-stack ERP system with Supabase schema, RBAC security, and departmental workflow engine.",
+    result: "A centralized portal for member management, departmental workflows, performance tracking, and contribution recognition.",
+    liveUrl: "https://enactus-portal.vercel.app/",
+    githubUrl: "https://github.com/HazemAlMili/enactus-portal",
+    image: "/Enactus-portal.png"
+  },
+  {
+    id: "project-4",
+    title: "Personal Portfolio",
+    role: "PERSONAL PORTFOLIO & SHOWCASE",
+    oneLineDescription: "Portfolio showcasing scroll-driven experiences and project showcases.",
+    problem: "Developers need a memorable visual identity to showcase full-stack applications and engineering capabilities.",
+    built: "Built a portfolio website using React, Vite.",
+    stack: ["React", "TypeScript", "Vite"],
+    architectureNote: "Developed a Personal portfolio architecture, and responsive overlays.",
+    result: "A performance-optimized portfolio experience with seamless camera transitions, micro-interactions, and responsive layouts.",
+    liveUrl: "https://hazemalmelli.vercel.app/",
+    githubUrl: "https://github.com/HazemAlMili/Hazem-Hub"
   }
 ];

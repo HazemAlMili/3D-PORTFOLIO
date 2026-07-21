@@ -58,6 +58,7 @@ export interface ArchitectureContent {
 export interface ProjectEntry {
   id: string;
   title: string;
+  role?: string;
   oneLineDescription: string;
   problem: string;
   built: string;
@@ -66,6 +67,7 @@ export interface ProjectEntry {
   result: string;
   liveUrl?: string;
   githubUrl?: string;
+  image?: string;
 }
 
 /**

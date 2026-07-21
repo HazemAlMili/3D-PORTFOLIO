@@ -5,3 +5,21 @@ dist
 .DS_Store
 tsconfig.tsbuildinfo
 repomix-output.xml
+
+# Generated Scene 04 evidence
+docs/scene04/evidence/
+
+# Temporary capture scripts
+scratch/capture_*.js
+scratch/capture_*.mjs
+scratch/*capture*.js
+scratch/*capture*.mjs
+scratch/*playwright*.js
+scratch/*evidence*.js
+scratch/*.cjs
+scratch/*.mjs
+
+# Browser-generated media
+page@*.webm
+page@*.png
+**/trace.zip

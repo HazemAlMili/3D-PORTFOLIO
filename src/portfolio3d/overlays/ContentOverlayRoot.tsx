@@ -35,6 +35,10 @@ export function ContentOverlayRoot() {
           const sceneId = seg.sceneId;
           const fadeOpacity = getSceneFadeOpacity(index, scrollProgress, segments);
 
+          // Hard scene-boundary unmount isolation for DOM overlays:
+          if (index === 2 && scrollProgress >= seg.end) return null;
+          if (index === 4 && scrollProgress < seg.start) return null;
+
           // Performance optimization: only render adjacent slots that are active or fading in/out
           const isToRender = indexesToRender.includes(index);
           const shouldRender = isToRender && (index === activeSceneIndex || fadeOpacity > 0.01);
@@ -62,7 +66,9 @@ export function ContentOverlayRoot() {
               ) : sceneId === "scene-03-architecture" ? (
                 <ProductEngineOverlay localProgress={clampedProgress} />
               ) : sceneId === "scene-04-projects" ? (
-                shouldRenderStatic ? <Scene04ProjectsStaticCard /> : null
+                shouldRenderStatic ? (
+                  <Scene04ProjectsStaticCard />
+                ) : null
               ) : sceneId === "scene-06-responsive-performance" ? (
                 shouldRenderStatic ? <Scene06ResponsivePerformanceStaticCard /> : null
               ) : sceneId === "scene-08-contact" ? (

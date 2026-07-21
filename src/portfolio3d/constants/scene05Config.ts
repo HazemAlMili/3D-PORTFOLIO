@@ -3,7 +3,7 @@
  * Pacing constants, anchors, and colors for Scene 05 (Product UX Thinking).
  */
 
-import { SCENE_04_ANCHORS } from "./scene04Config";
+import { SCENE_04_ANCHORS, resolveUXTransferWorldAnchor } from "./scene04Config";
 
 export const SCENE_05_SUB_PHASES = {
   approach: [0.00, 0.30] as [number, number],
@@ -31,3 +31,7 @@ export const SCENE_05_ANCHORS = {
    */
   tabletUXTarget: [0, 0, 0.062] as [number, number, number],
 } as const;
+
+export function resolveScene05SourceAnchor(isMobile: boolean): [number, number, number] {
+  return resolveUXTransferWorldAnchor(isMobile);
+}

@@ -26,8 +26,8 @@ export interface SceneSegment {
 // Scene 06: 0.11     (phone approach runway)
 // Scene 07: 0.11     (system core node constellation)
 // Scene 08: 0.08     (contact lockup)
-// Total: 0.20+0.14+0.13+0.12+0.11+0.11+0.11+0.08 = 1.00 ✅
-export const SCROLL_WEIGHTS = [0.20, 0.14, 0.13, 0.12, 0.11, 0.11, 0.11, 0.08];
+// Total: 0.10+0.08+0.07+0.45+0.08+0.07+0.09+0.06 = 1.00 ✅
+export const SCROLL_WEIGHTS = [0.10, 0.08, 0.07, 0.45, 0.08, 0.07, 0.09, 0.06];
 
 export const SCENE_IDS = [
   "scene-01-opening",

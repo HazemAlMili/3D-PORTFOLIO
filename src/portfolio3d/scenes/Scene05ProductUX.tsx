@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import { Vector3 } from "three";
 import { TabletDevice } from "../components/TabletDevice";
 import { PRODUCT_THINKING_DATA } from "../content/productThinkingData";
-import { SCENE_05_COLORS, SCENE_05_ANCHORS } from "../constants/scene05Config";
+import { SCENE_05_COLORS, SCENE_05_ANCHORS, resolveScene05SourceAnchor } from "../constants/scene05Config";
+import { isMobileDevice } from "../utils/mobileUtils";
 
 interface Scene05ProductUXProps {
   sceneId: string;
@@ -12,6 +14,9 @@ interface Scene05ProductUXProps {
 }
 
 export function Scene05ProductUX({ sceneId, sceneIndex, localProgress, opacity = 1.0 }: Scene05ProductUXProps) {
+  const isMobile = isMobileDevice();
+  const sourceAnchor = useMemo(() => resolveScene05SourceAnchor(isMobile), [isMobile]);
+
   // Transition budget check
   const shouldRenderHeavy = opacity > 0.02;
   if (!shouldRenderHeavy) return null;
@@ -25,7 +30,7 @@ export function Scene05ProductUX({ sceneId, sceneIndex, localProgress, opacity =
   const transitionOpacity = localProgress < 0.30 ? (1 - localProgress / 0.30) : 0;
   const approachT = Math.min(1, Math.max(0, localProgress / 0.30));
   const packetPos = new Vector3().lerpVectors(
-    new Vector3(...SCENE_05_ANCHORS.laptopProjectsSource),
+    new Vector3(...sourceAnchor),
     new Vector3(...SCENE_05_ANCHORS.tabletUXTarget),
     approachT
   );
@@ -45,7 +50,7 @@ export function Scene05ProductUX({ sceneId, sceneIndex, localProgress, opacity =
         <group>
           {/* Transition connecting path */}
           <Line
-            points={[SCENE_05_ANCHORS.laptopProjectsSource, SCENE_05_ANCHORS.tabletUXTarget]}
+            points={[sourceAnchor, SCENE_05_ANCHORS.tabletUXTarget]}
             color={SCENE_05_COLORS.accentCyan}
             lineWidth={1.2}
             transparent
